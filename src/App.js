@@ -30,7 +30,7 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<LoginPageWithAuth />} />
                     <Route path="/Lobby" element={<LobbyPageWithAuth />} />
-                    <Route path="/GameRoom/:id" element={<GamePageWithAuth />} />
+                    <Route path="/GameRoom" element={<GamePageWithAuth />} />
                     <Route path="*" element={<Navigate to="/lobby" />} />
                 </Routes>
             </Router>
