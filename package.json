@@ -17,9 +17,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "node server",
+    "front": "react-scripts start",
+    "back": "SET NODE_ENV=DEVELOPMENT && nodemon --exec babel-node server.js",
+    "build": "npm-run-all build-back build-front",
+    "build-back": "webpack --config webpack.config.server.js",
+    "build-front": "react-scripts build",
     "test": "react-scripts test",
+    "deploy": "npm run build && flyctl deploy",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
