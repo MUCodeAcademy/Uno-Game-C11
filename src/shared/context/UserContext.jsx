@@ -12,7 +12,7 @@ export function UserProvider(props) {
         [dispatch]
     );
 
-    const clearUser = useContext(() => dispatch({ type: CLEAR_USER })[dispatch]);
+    const clearUser = useCallback(() => dispatch({ type: CLEAR_USER })[dispatch]);
 
     return (
         <UserContext.Provider value={{ user, setUser, clearUser }}>
