@@ -1,3 +1,4 @@
+
 export default function dealCards(deck, playerCount) {
     let hands = Array(playerCount).fill([]);
 
@@ -8,4 +9,5 @@ export default function dealCards(deck, playerCount) {
     }
 
     return { deck, hands };
+
 }
