@@ -1,4 +1,3 @@
-import { userReducer } from "../reducers/userReducer";
 import { UserProvider } from "./UserContext";
 
 export * from "../context/UserContext";
