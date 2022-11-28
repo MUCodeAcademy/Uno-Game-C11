@@ -1,7 +1,11 @@
 import React from "react";
 
 function LoginPage() {
-  return <div>LoginPage</div>;
+    return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+            <div>LoginPage</div>
+        </div>
+    );
 }
 
 export default LoginPage;
