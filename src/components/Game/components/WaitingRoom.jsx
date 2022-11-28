@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useGameConText } from "../../../shared/context/GameContext";
 
 export function WaitingRoom() {
   const [ishost, setIsHost] = useState(true)
+  const { setActiveGame } = useGameConText(null)
 
   function Waiting() {
     if (ishost === true) {
@@ -9,7 +11,7 @@ export function WaitingRoom() {
         <div>
           <div>Press Start When Ready.</div>
           <button onClick={() => {
-            //set game to start
+            setActiveGame(true)
           }}>Start</button>
         </div>
       )
