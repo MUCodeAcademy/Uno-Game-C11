@@ -4,18 +4,20 @@ import LobbyPage from "./components/Lobby/LobbyPage";
 import LoginPage from "./components/Login/LoginPage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useUserContext } from "./shared/context";
+import { auth } from "./firebase.config";
 
 function App() {
-    const { user, clearUser } = useUserContext();
+    const { user, clearUser, setUser } = useUserContext();
+    auth.onAuthStateChanged((activeUser) => setUser(activeUser));
     return (
         <div>
-            {user && (
+            {auth.currentUser && (
                 <>
-                    <div>{user?.displayName}</div>
+                    <div>{auth.currentUser?.displayName}</div>
                     <button
                         onClick={() => {
+                            auth.signOut();
                             clearUser();
-                            user.signOut();
                         }}
                     >
                         Sigh Out
