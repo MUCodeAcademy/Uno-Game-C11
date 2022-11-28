@@ -19,7 +19,7 @@ const buildDeck = () => {
     });
     //4 each of wild and wild draw 4 cards
     for (let i = 0; i < 4; i++) {
-        deck.push({ color: "black", val: "wild" }, { color: null, val: "wildDraw4" });
+        deck.push({ color: "black", val: "wild" }, { color: "black", val: "wildDraw4" });
     }
     return deck;
 };

@@ -1,8 +1,5 @@
 import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import "./App.css";
-import GamePage from "./components/Game/GamePage";
-import LobbyPage from "./components/Lobby/LobbyPage";
-import LoginPage from "./components/Login/LoginPage";
 import { auth } from "./firebase.config";
 import { GamePageWithAuth, LobbyPageWithAuth, LoginPageWithAuth } from "./shared/components/ProtectedRoute";
 import { useUserContext } from "./shared/context";
@@ -30,6 +27,7 @@ function App() {
       </Router>
     </div>
   );
+
 }
 
 export default App;
