@@ -13,6 +13,8 @@ export function GameProvider(props) {
     const [playDeck, setPlayDeck] = useState([]);
     const [discardDeck, setDiscardDeck] = useState([]);
     const [players, setPlayers] = useState([]);
+    //active card will be the displayed card that the next player
+    const [activeCard, setActiveCard] = useState([]);
 
     const setActiveGame = useCallback(
         (activeGame) => {
