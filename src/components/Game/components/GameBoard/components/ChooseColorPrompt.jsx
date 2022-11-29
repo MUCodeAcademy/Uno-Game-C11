@@ -1,7 +1,7 @@
 import React from "react";
 import { CardColor } from "../../../../../shared/functions/cardEnums.js";
 
-const ChooseColorPrompt = (setActiveCard) => {
+const ChooseColorPrompt = ({ setActiveCard }) => {
     let colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
 
     function handleClick(e) {
