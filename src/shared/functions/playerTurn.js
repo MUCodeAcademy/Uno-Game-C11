@@ -5,25 +5,23 @@ export default function playerTurn(players, turn, cardIsSkip, turnIsClockwise) {
   if (turnIsClockwise) {
     if (cardIsSkip) {
       if ((turn = users.at(-1))) {
-        return (whoseTurn = users[1]);
-      }
-      if ((turn = users.at(-2))) {
-        return (whoseTurn = player[0]);
-      } else return (whoseTurn = player[playerIndex + 2]);
-    } else if ((turn = player.at(-1))) {
-      return (whoseTurn = player[0]);
-    } else return (whoseTurn = player[playerIndex + 1]);
-  }
-  if (!turnIsClockwise) {
+        whoseTurn = users[1];
+      } else if ((turn = users.at(-2))) {
+        whoseTurn = players[0];
+      } else return (whoseTurn = players[playerIndex + 2]);
+    } else if ((turn = players.at(-1))) {
+      whoseTurn = players[0];
+    } else whoseTurn = players[playerIndex + 1];
+  } else {
     if (cardIsSkip) {
       if ((turn = users[0])) {
-        return (whoseTurn = player.at(-2));
-      }
-      if ((turn = player[1])) {
-        return (whoseTurn = player.at(-1));
-      } else return (whoseTurn = player[playerIndex + 2]);
-    } else if ((turn = player[0])) {
-      return (whoseTurn = player.at(-1));
-    } else return (whoseTurn = player[playerIndex - 1]);
+        whoseTurn = players.at(-2);
+      } else if ((turn = players[1])) {
+        whoseTurn = players.at(-1);
+      } else whoseTurn = players[playerIndex + 2];
+    } else if ((turn = players[0])) {
+      whoseTurn = players.at(-1);
+    } else whoseTurn = players[playerIndex - 1];
   }
+  return whoseTurn;
 }
