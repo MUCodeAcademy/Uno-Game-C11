@@ -1,4 +1,4 @@
-const CardVal = {
+const CardValue = {
     Skip: "skip",
     Reverse: "reverse",
     DrawTwo: "draw2",
@@ -14,4 +14,4 @@ const CardColor = {
     Black: "black",
 };
 
-export { CardVal, CardColor };
+export { CardValue, CardColor };

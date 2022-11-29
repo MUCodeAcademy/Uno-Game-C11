@@ -7,6 +7,7 @@ import {
     LoginPageWithAuth,
 } from "./shared/components/ProtectedRoute";
 import { useUserContext } from "./shared/context";
+import { GameProvider } from "./shared/context/GameContext";
 
 function App() {
     const { clearUser, setUser } = useUserContext();
@@ -30,7 +31,16 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<LoginPageWithAuth />} />
                     <Route path="/Lobby" element={<LobbyPageWithAuth />} />
-                    <Route path="/GameRoom" element={<GamePageWithAuth />} />
+
+                    <Route
+                        path="/GameRoom"
+                        element={
+                            <GameProvider>
+                                <GamePageWithAuth />
+                            </GameProvider>
+                        }
+                    />
+
                     <Route path="*" element={<Navigate to="/lobby" />} />
                 </Routes>
             </Router>
