@@ -1,10 +1,14 @@
 import React, { useReducer, useContext, useCallback, useState } from "react";
 import { createContext } from "react";
-import { gameReducer, INITIAL_ACTIVE_GAME_STATE, SET_ACTIVE_GAME } from "../reducers/GameReducer";
+import {
+    gameReducer,
+    INITIAL_ACTIVE_GAME_STATE,
+    SET_ACTIVE_GAME,
+} from "../reducers/GameReducer";
 
 const GameContext = createContext(null);
 
-export function useGameConText() {
+export function useGameContext() {
     return useContext(GameContext);
 }
 
@@ -22,5 +26,22 @@ export function GameProvider(props) {
         },
         [dispatch]
     );
-    return <GameContext.Provider value={{ activeGame, setActiveGame, playDeck, setPlayDeck, discardDeck, setDiscardDeck, players, setPlayers }}>{props.children}</GameContext.Provider>;
+    return (
+        <GameContext.Provider
+            value={{
+                activeGame,
+                setActiveGame,
+                playDeck,
+                setPlayDeck,
+                discardDeck,
+                setDiscardDeck,
+                players,
+                setPlayers,
+                activeCard,
+                setActiveCard,
+            }}
+        >
+            {props.children}
+        </GameContext.Provider>
+    );
 }
