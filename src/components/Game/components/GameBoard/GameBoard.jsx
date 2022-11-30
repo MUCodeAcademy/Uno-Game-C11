@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useGameContext } from "../../../../shared/context/GameContext";
 import WaitingRoom from "../WaitingRoom";
-import { Card, PlayPile, PlayerHand } from "./index";
+// import { Card, PlayPile, PlayerHand } from "./index";
+import PlayPile from "./components/PlayPile";
+import PlayerHand from "./components/PlayerHand";
+import Card from "./components/Card";
+import newGame from "../../../../shared/functions/newGame";
+import drawCard from "../../../../shared/functions/drawCard";
 
 function GameBoard() {
     const {

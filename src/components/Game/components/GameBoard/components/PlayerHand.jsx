@@ -1,12 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
 import { CardColor } from "../../../../../shared/functions/cardEnums";
+import endTurn from "../../../../../shared/functions/endTurn";
 import removeCardFromHand from "../../../../../shared/functions/removeCardFromHand";
+import ChooseColorPrompt from "./ChooseColorPrompt";
+import validatePlayedCard from "../../../../../shared/functions/validatePlayedCard";
+import playCard from "../../../../../shared/functions/playCard";
 
 function PlayerHand() {
     const { setPlayers, players, activeCard, setActiveCard } = useGameContext(null);
     let playerIndex = 0; //this will be player identifier from socket
-    let reverseDirection, skipTurn, gameColor, forceDrawCards, playedWild;
+    let reverseDirection, skipTurn, gameColor, forceDrawCards;
+    const [playedWild, setPlayedWild] = useState(false);
     // player = players.indexOf(socketId)
 
     function handleClick(e) {
@@ -17,10 +22,14 @@ function PlayerHand() {
             skipTurn = rtn.skipTurn;
             gameColor = rtn.gameColor;
             forceDrawCards = rtn.forceDrawCards;
-            playedWild = rtn.playedWild;
+            setPlayedWild(rtn.playedWild);
             //change activeCard state's COLOR attribute to gameColor
             setActiveCard((curr) => ({ value: curr.value, color: gameColor }));
             setPlayers(removeCardFromHand(players, playerIndex, card));
+            //TODO add played card to discard state
+            if (!playedWild) {
+                endTurn();
+            }
         }
     }
 
@@ -46,6 +55,7 @@ function PlayerHand() {
 
     return (
         <>
+            {playedWild && <ChooseColorPrompt setPlayedWild={setPlayedWild} />}
             {players[playerIndex].hand.map((card, idx) => (
                 <div value={card} onClick={(e) => handleClick(e)} key={idx}>
                     <div>{card.color}</div>

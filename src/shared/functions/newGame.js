@@ -1,6 +1,7 @@
 import buildDeck from "./buildDeck";
 import dealCards from "./dealCards";
 import shuffleDeck from "./shuffleDeck";
+import { CardColor, CardValue } from "./cardEnums";
 
 //assuming players looks something like this
 

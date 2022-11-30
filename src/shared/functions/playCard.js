@@ -36,7 +36,7 @@ function playCard(clickedCard, gameCard) {
         }
     }
 
-    return { reverseDirection, skipTurn, gameColor, forceforceDrawCards, playedWild };
+    return { reverseDirection, skipTurn, gameColor, forceDrawCards, playedWild };
 }
 
 export default playCard;
