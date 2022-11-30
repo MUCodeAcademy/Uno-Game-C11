@@ -16,6 +16,8 @@ function newGame(players) {
     for (let i = 0; i < players.length; i++) {
         players[i].hand = hands[i];
     }
+
+
     for (let i = newDeck.length - 1; i >= 0; i--) {
         if (
             newDeck[i].color !== CardColor.Black &&
@@ -27,6 +29,7 @@ function newGame(players) {
             break;
         }
     }
+
 
     return { newDeck, players, gameStartCard };
 }
