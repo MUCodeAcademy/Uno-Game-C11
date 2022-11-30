@@ -1,7 +1,9 @@
+import { CardColor, CardValue } from "./cardEnums";
+
 const buildDeck = () => {
     const deck = [];
-    const colors = ["red", "blue", "yellow", "green"];
-    const values = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "skip", "reverse", "draw2"];
+    const colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
+    // const values = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "skip", "reverse", "draw2"];
 
     colors.forEach((c) => {
         //1 each of card 0
@@ -12,14 +14,17 @@ const buildDeck = () => {
             for (let i = 1; i < 10; i++) {
                 deck.push({ color: c, value: i.toString() });
             }
-            deck.push({ color: c, value: "skip" });
-            deck.push({ color: c, value: "reverse" });
-            deck.push({ color: c, value: "draw2" });
+            deck.push({ color: c, value: CardValue.Skip });
+            deck.push({ color: c, value: CardValue.Reverse });
+            deck.push({ color: c, value: CardValue.DrawTwo });
         }
     });
     //4 each of wild and wild draw 4 cards
     for (let i = 0; i < 4; i++) {
-        deck.push({ color: "black", val: "wild" }, { color: "black", val: "wildDraw4" });
+        deck.push(
+            { color: CardColor.Black, value: CardValue.Wild },
+            { color: CardColor.Black, value: CardValue.WildDrawFour }
+        );
     }
     return deck;
 };
