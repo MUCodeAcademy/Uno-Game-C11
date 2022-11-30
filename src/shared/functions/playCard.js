@@ -1,4 +1,4 @@
-import { CardColor, CardVal } from "./cardEnums";
+import { CardColor, CardValue } from "./cardEnums";
 
 function playCard(clickedCard, gameCard) {
     let reverseDirection = false;
@@ -10,7 +10,7 @@ function playCard(clickedCard, gameCard) {
     //assuming validatePlayedCard has already been run and is true (allowed)
 
     if (clickedCard.color === CardColor.Black) {
-        if (clickedCard.value === CardVal.Wild) {
+        if (clickedCard.value === CardValue.Wild) {
             playedWild = true;
         } else {
             //card is wild + 4
@@ -20,11 +20,11 @@ function playCard(clickedCard, gameCard) {
         }
     } else {
         if (clickedCard.color === gameCard.color) {
-            if (clickedCard.value === CardVal.Skip) {
+            if (clickedCard.value === CardValue.Skip) {
                 skipTurn = true;
-            } else if (clickedCard.value === CardVal.Reverse) {
+            } else if (clickedCard.value === CardValue.Reverse) {
                 reverseDirection = true;
-            } else if (clickedCard.value === CardVal.DrawTwo) {
+            } else if (clickedCard.value === CardValue.DrawTwo) {
                 drawCards.draw = true;
                 drawCards.amount = 2;
             }
