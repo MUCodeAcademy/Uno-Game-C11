@@ -7,7 +7,7 @@ import { CardColor, CardValue } from "./cardEnums";
 
 function newGame(players) {
     const deck = shuffleDeck(buildDeck());
-    const gameStartCard = null;
+    let gameStartCard = null;
     let { deck: newDeck, hands } = dealCards(deck, players.length);
 
     for (let i = 0; i < players.length; i++) {
@@ -21,7 +21,7 @@ function newGame(players) {
             newDeck[i].value !== CardValue.Reverse &&
             newDeck[i].value !== CardValue.DrawTwo
         ) {
-            gameStartCard = newDeck.splice(i, 1);
+            gameStartCard = newDeck.splice(i, 1)[0];
             break;
         }
     }

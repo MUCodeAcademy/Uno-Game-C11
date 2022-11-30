@@ -11,7 +11,7 @@ function validatePlayedCard(playedCard, activeCard) {
             allow = true;
         } else {
             //if color doesn't match but value does, allow
-            if ((playedCard.value = activeCard.value)) {
+            if (playedCard.value === activeCard.value) {
                 allow = true;
             }
         }

@@ -4,20 +4,16 @@ import newGame from "../../../shared/functions/newGame";
 
 export function WaitingRoom() {
     const [ishost, setIsHost] = useState(true);
-    const { setActiveGame } = useGameContext(null);
-
-    function handleClick() {
-        setActiveGame(true);
-    }
+    const { setActiveGame } = useGameContext();
 
     function Waiting() {
-        if (ishost === true) {
+        if (ishost) {
             return (
                 <div>
                     <div>Press Start When Ready.</div>
                     <button
                         onClick={() => {
-                            handleClick();
+                            setActiveGame(true);
                         }}
                     >
                         Start
@@ -25,9 +21,7 @@ export function WaitingRoom() {
                 </div>
             );
         }
-        if (ishost === false) {
-            return <div>Waiting for host to start the game.</div>;
-        }
+        return <div>Waiting for host to start the game.</div>;
     }
 
     return (

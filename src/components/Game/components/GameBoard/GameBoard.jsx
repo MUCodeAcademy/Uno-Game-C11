@@ -20,25 +20,16 @@ function GameBoard() {
         discardDeck,
         activeCard,
         setActiveCard,
-    } = useGameContext(null);
-
-    async function initPlayers() {
-        await setPlayers([{ name: "player1", hand: [] }]);
-        try {
-            const { newDeck, players: newPlayers, gameStartCard } = newGame(players);
-            setPlayDeck(newDeck);
-            setActiveCard(gameStartCard);
-            setPlayers(newPlayers);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    } = useGameContext();
 
     useEffect(() => {
         if (activeGame) {
-            initPlayers();
-        } else {
-            return;
+            let currentPlayers = [{ name: "player1", hand: [] }];
+            setPlayers(currentPlayers);
+            const { newDeck, players: newPlayers, gameStartCard } = newGame(currentPlayers);
+            setPlayDeck(newDeck);
+            setActiveCard(gameStartCard);
+            setPlayers(newPlayers);
         }
     }, [activeGame]);
 
