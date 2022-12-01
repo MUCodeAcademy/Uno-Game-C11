@@ -35,6 +35,7 @@ const useSocketHook = (roomID, username) => {
 
     function onNewGame() {
         waitingToPlayers();
+        setTurn(Math.random(Math.floor() * players.length - 1));
         setActiveGame(true);
     }
 

@@ -10,6 +10,7 @@ export function WaitingRoom() {
             return (
                 <div>
                     <div>Press Start When Ready.</div>
+                    //TODO use start game socket hook
                     <button
                         onClick={() => {
                             setActiveGame(true);

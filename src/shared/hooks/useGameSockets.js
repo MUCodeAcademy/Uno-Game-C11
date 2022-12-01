@@ -53,6 +53,7 @@ const useGameSocketHook = (roomID, username) => {
             setActiveCard(activeCard);
             setIsReverse(isReverse);
             setPlayers(players);
+            //TODO create turn function
         });
 
         if (isHost) {
