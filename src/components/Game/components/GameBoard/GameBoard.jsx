@@ -9,22 +9,11 @@ import newGame from "../../../../shared/functions/newGame";
 import drawCard from "../../../../shared/functions/drawCard";
 
 function GameBoard() {
-    const {
-        activeGame,
-        setActiveGame,
-        setPlayers,
-        setPlayDeck,
-        setDiscardDeck,
-        players,
-        playDeck,
-        discardDeck,
-        activeCard,
-        setActiveCard,
-    } = useGameContext();
+    const { activeGame, setActiveGame, setPlayers, setPlayDeck, setDiscardDeck, players, playDeck, discardDeck, activeCard, setActiveCard } = useGameContext();
 
     useEffect(() => {
         if (activeGame) {
-            let currentPlayers = [{ name: "player1", hand: [] }];
+            let currentPlayers = [{ uid: "3a8cb4i5fEbeO33OnZvvJ6SvTjU2", name: "player1", hand: [], isHost: true }];
             setPlayers(currentPlayers);
             const { newDeck, players: newPlayers, gameStartCard } = newGame(currentPlayers);
             setPlayDeck(newDeck);
