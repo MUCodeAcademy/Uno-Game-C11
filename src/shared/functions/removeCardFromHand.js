@@ -4,5 +4,5 @@ export default function removeCardFromHand(players, playerIndex, cardToRemove) {
     });
     players[playerIndex].hand.splice(cardIndex, 1);
 
-    return players;
+    return [...players];
 }
