@@ -1,38 +1,58 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import { useUserContext } from "../context";
 import { useGameContext } from "../context/GameContext";
 
 const useSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
-    //TODO create message context? could leave as local state to each game socket
     const [messages, setMessages] = useState([]);
-    //TODO import player context and modify relevent information
-    const { players, playDeck, activeGame, activeCard, discardDeck } = useGameContext();
+    const { user } = useUserContext();
+    const { players, setPlayers, setDiscardDeck, setActiveGame, activeGame } =
+        useGameContext();
 
-    let activePlayers = [];
-    let waitingPlayers = [];
-    let timeOut;
-    let turn = 0;
+    const waitingUser = [];
 
-    const newGame = () => {
-        activePlayers.push(players);
-        activePlayers.push(waitingPlayers);
-        turn = Math.random(Math.floor() * activePlayers.length);
-        activePlayers[turn].emit(isTurn, "Your turn!");
+    const waitingToPlayers = () => {
+        let usersToMove = [];
+        for (let i = 0; i <= waitingUser.length; i++) {
+            let playerToAdd = waitingUser.pop();
+            usersToMove.push(playerToAdd);
+            setPlayers(usersToMove);
+        }
     };
-    const nextTurn = () => {
-        turn++;
-        activePlayers[turn].emit(isTurn, "Your turn!");
+
+    const playersToWaiting = () => {
+        for (let i = 0; i <= players.length; i++) {
+            let playerToAdd = players.pop();
+            waitingUser.push(playerToAdd);
+            setPlayers();
+        }
     };
-    const reverse = () => {
-        activePlayers.reverse();
-        nextTurn();
-        activePlayers[turn].emit(isTurn, "Your turn!");
+
+    const onConnect = () => {
+        let player = { name: "", uid: "", hand: [], isUser: false };
+        player.name = user.displayname;
+        player.uid = user.uid;
+        //! check for host function here
+        waitingUser.push(player);
     };
-    const skip = () => {
-        nextTurn();
-        nextTurn();
+
+    function onNewGame() {
+        waitingToPlayers();
+        setActiveGame(true);
+    }
+
+    const onDisconnect = (player) => {
+        if (player.isHost) {
+            endGame();
+        }
+        let cardsToDiscard = [];
+        for (let i = 0; i <= player.hand.length; i++) {
+            let card = player.hand.pop();
+            cardsToDiscard.push(card);
+            setDiscardDeck(cardsToDiscard);
+        }
     };
 
     useEffect(() => {
@@ -45,6 +65,8 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on("user join", (username) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
+            isHost();
+            waitingUser.push();
         });
 
         socketRef.current.on("new message", (msg) => {
