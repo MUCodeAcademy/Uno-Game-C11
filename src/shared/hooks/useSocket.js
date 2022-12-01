@@ -32,8 +32,8 @@ const useSocketHook = (roomID, username) => {
 
     const onConnect = () => {
         let player = { name: "", uid: "", hand: [], isUser: false };
-        player.name = user.displayname;
-        player.uid = user.uid;
+        player.name = auth.currentuser?.displayname;
+        player.uid = auth.currentuser?.uid;
         //! check for host function here
         waitingUser.push(player);
     };
@@ -78,7 +78,7 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("start game", () => {
-            setStarted(true);
+            onNewGame();
         });
 
         socketRef.current.on("send cards", (cards) => {
