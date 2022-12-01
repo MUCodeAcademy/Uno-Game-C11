@@ -3,8 +3,7 @@ import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
 
 export function WaitingRoom() {
-    const [ishost, setIsHost] = useState(true);
-    const { setActiveGame } = useGameContext();
+    const { setActiveGame, ishost } = useGameContext();
 
     function Waiting() {
         if (ishost) {
