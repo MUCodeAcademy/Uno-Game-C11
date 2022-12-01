@@ -81,11 +81,7 @@ const useSocketHook = (roomID, username) => {
             onNewGame();
         });
 
-        socketRef.current.on("send cards", (cards) => {
-            setCards(cards);
-        });
-
-        socketRef.current.on("end trun", () => {
+        socketRef.current.on("end turn", () => {
             //don't know yet
         });
 
@@ -102,10 +98,6 @@ const useSocketHook = (roomID, username) => {
 
     function endTurn() {
         socketRef.current.emit("end turn");
-    }
-
-    function sendCards(cards) {
-        socketRef.current.emit("send cards", { cards });
     }
 
     return { messages, sendMessage, started, sendStart, endTurn, sendCards, cards };
