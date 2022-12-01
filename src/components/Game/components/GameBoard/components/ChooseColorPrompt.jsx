@@ -4,7 +4,6 @@ import endTurn from "../../../../../shared/functions/endTurn.js";
 
 const ChooseColorPrompt = ({ setPlayedWild, setActiveCard }) => {
     let colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
-
     function handleClick(e) {
         setActiveCard((curr) => ({ value: curr.value, color: e.target.value }));
         setPlayedWild(false);
@@ -13,11 +12,12 @@ const ChooseColorPrompt = ({ setPlayedWild, setActiveCard }) => {
     return (
         <>
             <div>Pick a color</div>
-            {colors.map((c) => {
+
+            {colors.map((c) => (
                 <button key={c} value={c} onClick={(e) => handleClick(e)}>
                     {c}
-                </button>;
-            })}
+                </button>
+            ))}
         </>
     );
 };
