@@ -9,18 +9,7 @@ import newGame from "../../../../shared/functions/newGame";
 import drawCard from "../../../../shared/functions/drawCard";
 
 function GameBoard() {
-    const {
-        activeGame,
-        setActiveGame,
-        setPlayers,
-        setPlayDeck,
-        setDiscardDeck,
-        players,
-        playDeck,
-        discardDeck,
-        activeCard,
-        setActiveCard,
-    } = useGameContext();
+    const { activeGame, setPlayers, setPlayDeck, players, setActiveCard } = useGameContext();
 
     useEffect(() => {
         if (activeGame) {
@@ -30,6 +19,7 @@ function GameBoard() {
             setPlayDeck(newDeck);
             setActiveCard(gameStartCard);
             setPlayers(newPlayers);
+            // console.log("players set: " + newPlayers[0].name + " " + newPlayers[0].hand.length);
         }
     }, [activeGame]);
 
@@ -39,12 +29,6 @@ function GameBoard() {
         //player played card message
     }, [players]);
 
-    function handleClick() {
-        const { players, playDeck } = drawCard();
-        setPlayDeck(playDeck);
-        setPlayers(players);
-    }
-
     return (
         <>
             <div>GameBoard</div>
@@ -52,7 +36,6 @@ function GameBoard() {
             {activeGame && (
                 <>
                     <PlayPile></PlayPile>
-                    <button onClick={() => handleClick()}>Draw Card</button>
                     <PlayerHand></PlayerHand>
                 </>
             )}

@@ -15,6 +15,7 @@ function playCard(clickedCard, gameCard) {
         } else {
             //card is wild + 4
             playedWild = true;
+            skipTurn = true;
             forceDrawCards.draw = true;
             forceDrawCards.amount = 4;
         }
@@ -27,6 +28,7 @@ function playCard(clickedCard, gameCard) {
             } else if (clickedCard.value === CardValue.DrawTwo) {
                 forceDrawCards.draw = true;
                 forceDrawCards.amount = 2;
+                skipTurn = true;
             }
         }
         //if color doesn't match, val matches (already validated)
