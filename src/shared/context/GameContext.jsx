@@ -14,7 +14,7 @@ export function useGameContext() {
 
 export function GameProvider(props) {
     // const [activeGame, dispatch] = useReducer(gameReducer, INITIAL_ACTIVE_GAME_STATE);
-    const [activeGame, setActiveGame] = useState(false);
+    const [isGameActive, setIsGameActive] = useState(false);
     const [isHost, setIsHost] = useState(false);
     const [playDeck, setPlayDeck] = useState([]);
     const [discardDeck, setDiscardDeck] = useState([]);
@@ -23,6 +23,7 @@ export function GameProvider(props) {
     const [activeCard, setActiveCard] = useState(null);
     const [isReverse, setIsReverse] = useState(false);
     const [shuffling, setShuffling] = useState(false);
+    const [turn, setTurn] = useState(0);
 
     // const setActiveGame = useCallback(
     //     (activeGame) => {
@@ -35,8 +36,8 @@ export function GameProvider(props) {
             value={{
                 isHost,
                 setIsHost,
-                activeGame,
-                setActiveGame,
+                isGameActive,
+                setIsGameActive,
                 playDeck,
                 setPlayDeck,
                 discardDeck,
@@ -49,6 +50,8 @@ export function GameProvider(props) {
                 setIsReverse,
                 shuffling,
                 setShuffling,
+                turn,
+                setTurn,
             }}
         >
             {props.children}

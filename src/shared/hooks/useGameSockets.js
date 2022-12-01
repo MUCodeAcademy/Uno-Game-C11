@@ -4,79 +4,73 @@ import io from "socket.io-client";
 import newGame from "../functions/newGame";
 
 const useGameSocketHook = (roomID, username) => {
-    const socketRef = useRef(null)
-    const [messages, setMessages] = useState([])
-    const [socketIDs, setSocketIDs] = useState([])
-    const [started, setStarted] = useState(false)
-    const [cards, setCards] = useState({})
-    const { setIsHost, isHost, activeGame, setActiveGame, setActiveCard, players, setPlayers, activeCard, playDeck, setPlayDeck, discardDeck, setdiscardDeck } = useGameContext();
+    const socketRef = useRef(null);
+    const [messages, setMessages] = useState([]);
+    const {
+        setIsHost,
+        isHost,
+        isGameActive,
+        setIsGameActive,
+        setActiveCard,
+        players,
+        setPlayers,
+        activeCard,
+        playDeck,
+        setPlayDeck,
+        discardDeck,
+        setDiscardDeck,
+        isReverse,
+        setIsReverse,
+    } = useGameContext();
     useEffect(() => {
         socketRef.current = io("http://localhost:8080", {
             query: {
                 username,
                 roomID,
             },
-        })
+        });
 
         socketRef.current.on("host check", (roomCount) => {
             if (roomCount == 0) {
-                setIsHost(true)
+                setIsHost(true);
             }
-        })
+        });
 
         socketRef.current.on("game active", (gameActive) => {
-            setActiveGame(gameActive)
-        })
+            setActiveGame(gameActive);
+        });
 
-        socketRef.current.on("draw card", (players) => {
-            let deck = playDeck
-            deck.pop()
-            setPlayDeck(deck)
-            setPlayers(players)
+        socketRef.current.on("draw card", () => {
+            let deck = playDeck;
+            let card = deck.pop();
+            players[turn].hand.push(card);
+            setPlayDeck(deck);
+            setPlayers(players);
+        });
 
-        })
-
-        socketRef.current.on("send cards", (cards) => {
-            setCards(cards)
-        })
-
-        socketRef.current.on("end trun", ({ activeCard, isRevers, players, discardDeck }) => {
-            setdiscardDeck(discardDeck)
-            setActiveCard(activeCard)
-            setIsRevers(isRevers)
-            setPlayers(players)
-        })
-
-
+        socketRef.current.on("end trun", ({ activeCard, isReverse, players, discardDeck }) => {
+            setDiscardDeck(discardDeck);
+            setActiveCard(activeCard);
+            setIsReverse(isReverse);
+            setPlayers(players);
+        });
 
         if (isHost) {
-            if (activeGame) {
-                socketRef.current.emit("game active", (activeGame))
-
-            }
-
-            if (activeGame === false) {
-                socketRef.current.emit("game active", (activeGame))
-            }
+            socketRef.current.emit("game active", isGameActive);
         }
 
-        return () => socketRef.current?.disconnect()
-
+        return () => socketRef.current?.disconnect();
     }, [roomID, username, isHost, activeGame]);
 
-    function sendMessage(body) {
-        socketRef.current.emit("new message", { body })
-    }
-
     function endTurn() {
-        socketRef.current.emit("end turn", { players, discardDeck, activeCard, isRevers })
+        socketRef.current.emit("end turn", { players, discardDeck, activeCard, isReverse });
     }
 
     function drawCard() {
-        socketRef.current.emit("darw card", players)
+        socketRef.current.emit("draw card", players);
     }
 
-    return { messages, sendMessage, started, sendStart, endTurn, sendCards, cards };
+    return { started, sendStart, endTurn, sendCards, cards, drawCard };
 };
 
 export default useGameSocketHook;
