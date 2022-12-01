@@ -15,6 +15,7 @@ export function useGameContext() {
 export function GameProvider(props) {
     // const [activeGame, dispatch] = useReducer(gameReducer, INITIAL_ACTIVE_GAME_STATE);
     const [activeGame, setActiveGame] = useState(false);
+    const [isHost, setIsHost] = useState(false);
     const [playDeck, setPlayDeck] = useState([]);
     const [discardDeck, setDiscardDeck] = useState([]);
     const [players, setPlayers] = useState([]);
@@ -32,6 +33,8 @@ export function GameProvider(props) {
     return (
         <GameContext.Provider
             value={{
+                isHost,
+                setIsHost,
                 activeGame,
                 setActiveGame,
                 playDeck,
