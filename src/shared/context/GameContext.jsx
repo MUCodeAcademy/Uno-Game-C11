@@ -20,6 +20,8 @@ export function GameProvider(props) {
     const [players, setPlayers] = useState([]);
     //active card will be the displayed card that the next player
     const [activeCard, setActiveCard] = useState(null);
+    const [isReverse, setIsReverse] = useState(false);
+    const [shuffling, setShuffling] = useState(false);
 
     // const setActiveGame = useCallback(
     //     (activeGame) => {
@@ -40,6 +42,10 @@ export function GameProvider(props) {
                 setPlayers,
                 activeCard,
                 setActiveCard,
+                isReverse,
+                setIsReverse,
+                shuffling,
+                setShuffling,
             }}
         >
             {props.children}
