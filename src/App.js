@@ -1,11 +1,7 @@
 import { Navigate, BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { auth } from "./firebase.config";
-import {
-    GamePageWithAuth,
-    LobbyPageWithAuth,
-    LoginPageWithAuth,
-} from "./shared/components/ProtectedRoute";
+import { GamePageWithAuth, LobbyPageWithAuth, LoginPageWithAuth } from "./shared/components/ProtectedRoute";
 import { useUserContext } from "./shared/context";
 import { GameProvider } from "./shared/context/GameContext";
 
@@ -33,7 +29,7 @@ function App() {
                     <Route path="/Lobby" element={<LobbyPageWithAuth />} />
 
                     <Route
-                        path="/GameRoom"
+                        path="/GameRoom/:roomID"
                         element={
                             <GameProvider>
                                 <GamePageWithAuth />
