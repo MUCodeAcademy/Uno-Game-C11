@@ -4,7 +4,7 @@ function playCard(clickedCard, gameCard) {
     let reverseDirection = false;
     let skipTurn = false;
     let gameColor = gameCard.color;
-    let forceDrawCards = { draw: false, amount: 0 };
+    let drawCards = { draw: false, amount: 0 };
     let playedWild = false;
 
     //assuming validatePlayedCard has already been run and is true (allowed)
@@ -15,8 +15,8 @@ function playCard(clickedCard, gameCard) {
         } else {
             //card is wild + 4
             playedWild = true;
-            forceDrawCards.draw = true;
-            forceDrawCards.amount = 4;
+            drawCards.draw = true;
+            drawCards.amount = 4;
         }
     } else {
         if (clickedCard.color === gameCard.color) {
@@ -25,8 +25,8 @@ function playCard(clickedCard, gameCard) {
             } else if (clickedCard.value === CardValue.Reverse) {
                 reverseDirection = true;
             } else if (clickedCard.value === CardValue.DrawTwo) {
-                forceDrawCards.draw = true;
-                forceDrawCards.amount = 2;
+                drawCards.draw = true;
+                drawCards.amount = 2;
             }
         }
         //if color doesn't match, val matches (already validated)
@@ -36,7 +36,7 @@ function playCard(clickedCard, gameCard) {
         }
     }
 
-    return { reverseDirection, skipTurn, gameColor, forceDrawCards, playedWild };
+    return { reverseDirection, skipTurn, gameColor, drawCards, playedWild };
 }
 
 export default playCard;

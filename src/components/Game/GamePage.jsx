@@ -1,5 +1,4 @@
 import React from "react";
-import { useGameContext } from "../../shared/context/GameContext";
 import GameBoard from "./components/GameBoard/GameBoard";
 
 function GamePage() {

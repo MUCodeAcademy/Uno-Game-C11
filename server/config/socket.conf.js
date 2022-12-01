@@ -16,9 +16,8 @@ function socketConfig(io) {
             io.to(roomID).emit("send cards", cards)
         })
 
-        socket.on("end turn", ({ activeCard, isRevers, players, discardDeck }) => {
-            io.to(roomID).emit("end turn", { activeCard, isRevers, players, discardDeck })
-
+        socket.on("end turn", () => {
+            io.to(roomID).emit("end turn")
         })
 
         socket.on("start game", (start) => {
@@ -28,22 +27,6 @@ function socketConfig(io) {
         socket.on("disconnect", () => {
             io.to(roomID).emit("user left", { username })
         });
-
-        //game socket
-
-        io.to(socket.id).emit("host check", roomCount)
-
-        socket.on("game active", (activeGame) => {
-            io.socket.broadcast.to(roomID).emit('game active', activeGame)
-        })
-
-        socket.on("darw card", (players) => {
-            io.to(roomID).emit('darw card', players)
-        })
-
-
     })
-
-
 }
 module.exports = socketConfig
