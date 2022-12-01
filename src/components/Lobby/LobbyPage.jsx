@@ -7,7 +7,7 @@ function LobbyPage() {
     return (
         <div>
             LobbyPage
-            <button onClick={() => navigate("/GameRoom")}>To Game Room</button>
+            <button onClick={() => navigate("/GameRoom/static")}>Join static room</button>
         </div>
     );
 }

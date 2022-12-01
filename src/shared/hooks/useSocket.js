@@ -1,67 +1,90 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import { useUserContext } from "../context";
+import { useGameContext } from "../context/GameContext";
 
 const useSocketHook = (roomID, username) => {
-    const socketRef = useRef(null)
-    const [messages, setMessages] = useState([])
-    const [started, setStarted] = useState(false)
-    const [cards, setCards] = useState({})
+    const socketRef = useRef(null);
+    const [messages, setMessages] = useState([]);
+    const { user } = useUserContext();
+    const { players, setPlayers, setDiscardDeck, setActiveGame, activeGame } =
+        useGameContext();
+
+    const waitingUsers = [];
+
+    const waitingToPlayers = () => {
+        setPlayers([...waitingUsers]);
+        waitingUsers = [];
+    };
+
+    const playersToWaiting = () => {
+        waitingUsers = [...players];
+        setPlayers([]);
+    };
+
+    const onConnect = () => {
+        let player = { name: "", uid: "", hand: [], isHost: false };
+        player.name = auth.currentuser?.displayname;
+        player.uid = auth.currentuser?.uid;
+        if (waitingUsers.length === 0) {
+            player.isHost = true;
+        }
+        waitingUsers.push(player);
+    };
+
+    function onNewGame() {
+        waitingToPlayers();
+        setActiveGame(true);
+    }
+
+    const onDisconnect = (player) => {
+        if (player.isHost) {
+            endGame();
+            // set all game state to initial values
+        }
+        let cardsToDiscard = [...player.hand];
+        setDiscardDeck((curr) => [...curr, cardsToDiscard]);
+    };
+
     useEffect(() => {
         socketRef.current = io("http://localhost:8080", {
             query: {
                 username,
                 roomID,
             },
-        })
+        });
 
-        socketRef.current.on("user join", (username) => {
+        socketRef.current.on("user connect", (username) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
+            onConnect();
         });
 
         socketRef.current.on("new message", (msg) => {
-            setMessages((curr) => [...curr, msg])
-        })
+            setMessages((curr) => [...curr, msg]);
+        });
 
-
-        socketRef.current.on("user left", (username) => {
-            setMessages((curr) => [...curr, { body: `${username} has connected` }])
-        })
+        socketRef.current.on("user disconnect", (username) => {
+            setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
+            onDisconnect();
+        });
 
         socketRef.current.on("start game", () => {
-            setStarted(true)
-        })
+            onNewGame();
+        });
 
-        socketRef.current.on("send cards", (cards) => {
-            setCards(cards)
-        })
-
-        socketRef.current.on("end trun", () => {
-            //don't know yet
-        })
-
-
-        return () => socketRef.current?.disconnect()
-
+        return () => socketRef.current?.disconnect();
     }, [roomID, username]);
 
     function sendMessage(body) {
-        socketRef.current.emit("new message", { body })
+        socketRef.current.emit("new message", { body });
     }
 
     function sendStart() {
-        socketRef.current.emit("start game")
+        socketRef.current.emit("start game");
     }
 
-    function endTurn() {
-        socketRef.current.emit("end turn")
-    }
-
-    function sendCards(cards) {
-        socketRef.current.emit("send cards", { cards })
-    }
-
-    return { messages, sendMessage, started, sendStart, endTurn, sendCards, cards };
+    return { messages, sendMessage, started, sendStart };
 };
 
 export default useSocketHook;
