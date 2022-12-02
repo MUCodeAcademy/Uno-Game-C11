@@ -29,6 +29,7 @@ const useSocketHook = (roomID, username) => {
 
     const playersToWaiting = () => {
         waitingUsers = [...players];
+        waitingUsers.forEach(() => (players.hand = []));
         setPlayers([]);
     };
 
@@ -51,8 +52,8 @@ const useSocketHook = (roomID, username) => {
     const onDisconnect = (player) => {
         if (player.isHost) {
             endGame();
-            // set all game state to initial values
         }
+        // set all game state to initial values
         let cardsToDiscard = [...player.hand];
         setDiscardDeck((curr) => [...curr, cardsToDiscard]);
     };
@@ -84,8 +85,28 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("end game", () => {
+            //search for is host in array
+            if (players.find(players.isHost)) {
+                setMessages((curr) => [
+                    ...curr,
+                    {
+                        body: "Game has ended due to host disconnect, all players will now return to waiting area",
+                    },
+                ]);
+                playersToWaiting();
+                useGameContext(initialState);
+            } else if ("stalemate") {
+                //how to handle stalemate
+            }
+            //send game winner message
             playersToWaiting();
             useGameContext(initialState);
+            setMessages((curr) => [
+                ...curr,
+                {
+                    body: ``,
+                },
+            ]);
         });
 
         return () => socketRef.current?.disconnect();
@@ -100,10 +121,6 @@ const useSocketHook = (roomID, username) => {
     }
 
     function endGame() {
-        setMessages((curr) => [
-            ...curr,
-            { body: "Game has ended, all players will now return to waiting area" },
-        ]);
         socketRef.current.emit("end game");
     }
 
