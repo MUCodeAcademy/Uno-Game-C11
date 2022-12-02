@@ -4,13 +4,12 @@ import { auth } from "../../../firebase.config";
 import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
 import useSocketHook from "../../../shared/hooks/useSocket";
-
 import ChatRoom from "../shared/Chat/ChatRoom";
 
 export function WaitingRoom() {
     const { setActiveGame, isHost } = useGameContext();
     const { id } = useParams();
-    const { sendStart } = useSocketHook(id, auth.currentUser?.displayName);
+    const { sendStart, messages, sendMessage } = useSocketHook(id, auth.currentUser?.displayName);
     function Waiting() {
         if (isHost) {
             return (
@@ -32,7 +31,7 @@ export function WaitingRoom() {
 
     return (
         <div>
-            <div><ChatRoom /></div>
+            <div><ChatRoom messages={messages} sendMessage={sendMessage} /></div>
             <div>
                 <Waiting />
             </div>

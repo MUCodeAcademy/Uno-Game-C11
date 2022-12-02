@@ -4,11 +4,11 @@ import { auth } from "../../../../firebase.config";
 import useSocketHook from "../../../../shared/hooks/useSocket";
 import ChatMessageDisplay from "./ChatMessageDisplay";
 
-export function ChatRoom() {
+export function ChatRoom({ messages, sendMessage }) {
   const { id } = useParams();
   const bottomRef = useRef(null)
   const [body, setBody] = useState("");
-  const { sendMessage, messages } = useSocketHook(id, auth.currentUser?.displayName);
+
   useEffect(() => {
     bottomRef.current?.scrollTo({
       top: bottomRef.current.scrollHeight,
