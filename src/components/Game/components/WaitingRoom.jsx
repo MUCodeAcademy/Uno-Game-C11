@@ -1,16 +1,21 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import { auth } from "../../../firebase.config";
 import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
-import useSocketHook from "../../../shared/hooks/useSocket";
-
 import ChatRoom from "../shared/Chat/ChatRoom";
 
-export function WaitingRoom() {
-    const { setActiveGame, isHost } = useGameContext();
-    const { id } = useParams();
-    const { sendStart } = useSocketHook(id, auth.currentUser?.displayName);
+export function WaitingRoom({ startGame, messages, sendMessage }) {
+    const { isHost, players, setPlayers, setPlayDeck, setActiveCard } = useGameContext();
+
+    function handleClick() {
+        let { newDeck, players: newPlayers, gameStartCard } = newGame(players);
+        //!is this the set players that is working?
+
+        setPlayers(newPlayers);
+        setPlayDeck(newDeck);
+        setActiveCard(gameStartCard);
+        startGame(newDeck, newPlayers, gameStartCard);
+    }
+
     function Waiting() {
         if (isHost) {
             return (
@@ -18,7 +23,7 @@ export function WaitingRoom() {
                     <div>Press Start When Ready.</div>
                     <button
                         onClick={() => {
-                            sendStart()
+                            handleClick();
                         }}
                     >
                         Start
@@ -32,7 +37,9 @@ export function WaitingRoom() {
 
     return (
         <div>
-            <div><ChatRoom /></div>
+            <div>
+                <ChatRoom messages={messages} sendMessage={sendMessage} />
+            </div>
             <div>
                 <Waiting />
             </div>

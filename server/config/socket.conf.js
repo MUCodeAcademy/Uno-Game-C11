@@ -1,7 +1,7 @@
 function socketConfig(io) {
     io.on("connection", (socket) => {
         const { roomID, username } = socket.handshake.query;
-        let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size)
+        let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
         socket.join(roomID);
 
         io.to(roomID).emit("user connect", { username });
@@ -12,12 +12,12 @@ function socketConfig(io) {
             io.to(roomID).emit("new message", { username, body });
         });
 
-        socket.on("end turn", ({ activeCard, isReverse, players, discardDeck }) => {
-            io.to(roomID).emit("end turn", { activeCard, isReverse, players, discardDeck });
+        socket.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn }) => {
+            io.to(roomID).emit("end turn", { players, discardDeck, activeCard, isReverse, turn });
         });
 
-        socket.on("start game", (start) => {
-            io.to(roomID).emit("start game", start);
+        socket.on("start game", ({ players, playDeck, activeCard }) => {
+            io.to(roomID).emit("start game", { players, playDeck, activeCard });
         });
 
         socket.on("disconnect", () => {

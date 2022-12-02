@@ -6,39 +6,30 @@ import PlayPile from "./components/PlayPile";
 import PlayerHand from "./components/PlayerHand";
 import Card from "./components/Card";
 import newGame from "../../../../shared/functions/newGame";
+import { useParams } from "react-router-dom";
+import { auth } from "../../../../firebase.config";
 import useSocketHook from "../../../../shared/hooks/useSocket";
 
-function GameBoard() {
-  const {
-    activeGame,
-    isGameActive,
-    setPlayers,
-    setPlayDeck,
-    players,
-    setActiveCard,
-  } = useGameContext();
+function GameBoard({ endTurn, drawCard, endGame }) {
+    const { isGameActive, setPlayers, setPlayDeck, players, setActiveCard } = useGameContext();
+    const { roomID } = useParams();
 
-  const { newDeck, players: newPlayers, gameStartCard } = newGame(players);
-  const { startGame } = useSocketHook();
+    const { newDeck, players: newPlayers, gameStartCard } = newGame(players);
 
-  useEffect(() => {
-    if (isGameActive) {
-      startGame(newPlayers, newDeck, gameStartCard);
-    }
-  }, [isGameActive]);
+    // useEffect(() => {
+    //     if (isGameActive) {
+    //         startGame(newPlayers, newDeck, gameStartCard);
+    //     }
+    // }, [isGameActive]);
 
-  return (
-    <>
-      <div>GameBoard</div>
-      {!activeGame && <WaitingRoom></WaitingRoom>}
-      {activeGame && (
+    return (
         <>
-          <PlayPile></PlayPile>
-          <PlayerHand></PlayerHand>
+            <div>GameBoard</div>
+
+            <PlayPile></PlayPile>
+            <PlayerHand endTurn={endTurn} drawCard={drawCard} endGame={endGame}></PlayerHand>
         </>
-      )}
-    </>
-  );
+    );
 }
 
 export default GameBoard;

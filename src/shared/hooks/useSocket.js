@@ -19,6 +19,7 @@ const useSocketHook = (roomID, username) => {
         activeCard,
         playDeck,
         setPlayDeck,
+        setShuffling,
         discardDeck,
         setDiscardDeck,
         isReverse,
@@ -28,18 +29,17 @@ const useSocketHook = (roomID, username) => {
     } = useGameContext();
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
+    const [waitingUsers, setWaitingUsers] = useState([]);
 
-    const initialState = {
-        isGameActive: false,
-        playDeck: [],
-        discardDeck: [],
-        activeCard: {},
-        isReverse: false,
-        shuffling: false,
-        turn: 0,
+    const initialState = () => {
+        setIsGameActive(false);
+        setPlayDeck([]);
+        setDiscardDeck([]);
+        setActiveCard(null);
+        setIsReverse(false);
+        setShuffling(false);
+        setTurn(0);
     };
-
-    let waitingUsers = [];
 
     const waitingToPlayers = () => {
         setPlayers([...waitingUsers]);
@@ -59,13 +59,15 @@ const useSocketHook = (roomID, username) => {
         if (waitingUsers.length === 0) {
             player.isHost = true;
         }
-        waitingUsers.push(player);
+
+        // waitingUsers.push(player);
+        setPlayers((curr) => [...curr, player]);
     };
 
     function onNewGame() {
         waitingToPlayers();
         setTurn(Math.random(Math.floor() * players.length - 1));
-        setIsGameActive(true);
+        // setIsGameActive(true);
     }
 
     const onDisconnect = (player) => {
@@ -89,7 +91,7 @@ const useSocketHook = (roomID, username) => {
             console.log(roomCount);
             if (roomCount == null) {
                 setIsHost(true);
-                players[0].isHost = true;
+                // players[0].isHost = true;
             }
         });
 
@@ -105,30 +107,29 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on(
-            "end turn",
-            ({ activeCard, isReverse, players, discardDeck, turn }) => {
-                if (checkForWin(players, turn)) {
-                    endGame(players);
-                }
-                setDiscardDeck(discardDeck);
-                setActiveCard(activeCard);
-                setIsReverse(isReverse);
-                setPlayers(players);
-                setTurn(nextTurn(turn, isReverse, players, activeCard));
+        socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn }) => {
+            if (checkForWin(players, turn)) {
+                endGame(players);
             }
-        );
+            setDiscardDeck(discardDeck);
+            setActiveCard(activeCard);
+            setIsReverse(isReverse);
+            setPlayers(players);
+            setTurn(nextTurn(turn, isReverse, players, activeCard));
+        });
 
         socketRef.current.on("user connect", ({ username }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
             onConnect();
         });
 
-        socketRef.current.on("start game", (players, deck, startCard) => {
+        socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
             setPlayers(players);
-            setPlayDeck(deck);
-            setActiveCard(startCard);
+            setPlayDeck(playDeck);
+            setActiveCard(activeCard);
             setTurn(0);
+            setIsGameActive(true);
+            //! onNewGame();
         });
 
         socketRef.current.on("new message", (msg) => {
@@ -138,11 +139,6 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on("user disconnect", ({ username }) => {
             setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
             onDisconnect();
-        });
-
-        socketRef.current.on("start game", () => {
-            onNewGame();
-            setIsGameActive(true);
         });
 
         socketRef.current.on("end game", () => {
@@ -155,7 +151,7 @@ const useSocketHook = (roomID, username) => {
                     },
                 ]);
                 playersToWaiting();
-                // useGameContext(initialState);
+                initialState();
             } else if ("stalemate") {
                 setMessages((curr) => [
                     ...curr,
@@ -164,7 +160,7 @@ const useSocketHook = (roomID, username) => {
                     },
                 ]);
                 playersToWaiting();
-                // useGameContext(initialState);
+                initialState();
             }
             //send game winner message
             setMessages((curr) => [
@@ -174,7 +170,7 @@ const useSocketHook = (roomID, username) => {
                 },
             ]);
             playersToWaiting();
-            // useGameContext(initialState);
+            initialState();
         });
 
         return () => socketRef.current?.disconnect();
@@ -184,36 +180,30 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("new message", { body });
     }
 
-    function startGame(players, turn, playDeck) {
-        if (isHost) {
-            socketRef.current.emit("start game", {
-                players,
-                turn,
-                playDeck,
-            });
-        }
+    function startGame(newDeck, newPlayers, gameStartCard) {
+        socketRef.current.emit("start game", { players: newPlayers, playDeck: newDeck, activeCard: gameStartCard });
     }
 
     function endGame() {
         socketRef.current.emit("end game");
     }
 
-    function endTurn() {
+    function endTurn(players, discardDeck, activeCard, isReverse, turn) {
         socketRef.current.emit("end turn", {
             players,
             discardDeck,
             activeCard,
             isReverse,
             turn,
-            activeCard,
         });
     }
 
     function drawCard() {
+        //TODO pass in value
         socketRef.current.emit("draw card", players);
     }
 
-    return { messages, sendMessage, endTurn, drawCard };
+    return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
 };
 
 export default useSocketHook;

@@ -1,4 +1,4 @@
-export default function removeCardFromHand(players, playerIndex, cardToRemove) {
+export function removeCardFromHand(players, playerIndex, cardToRemove) {
     const cardIndex = players[playerIndex].hand.findIndex((card) => {
         return JSON.stringify(card) === JSON.stringify(cardToRemove);
     });
@@ -6,3 +6,5 @@ export default function removeCardFromHand(players, playerIndex, cardToRemove) {
 
     return [...players];
 }
+
+export default removeCardFromHand;

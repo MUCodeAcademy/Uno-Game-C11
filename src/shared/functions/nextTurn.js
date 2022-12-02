@@ -1,6 +1,6 @@
 import { CardValue } from "./cardEnums";
 
-export default function nextTurn(turn, isReverse, players, activeCard) {
+export function nextTurn(turn, isReverse, players, activeCard) {
     if (isReverse) {
         if (activeCard.value === CardValue.Skip) {
             turn = turn - 2;
@@ -20,3 +20,5 @@ export default function nextTurn(turn, isReverse, players, activeCard) {
 
     return turn;
 }
+
+export default nextTurn;

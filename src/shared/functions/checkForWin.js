@@ -1,4 +1,4 @@
-function checkForWin(players, playerIndex) {
+export function checkForWin(players, playerIndex) {
     if (players[playerIndex].hand.length === 0) {
         return true;
     }

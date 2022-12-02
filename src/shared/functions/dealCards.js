@@ -1,4 +1,4 @@
-export default function dealCards(deck, playerCount) {
+export function dealCards(deck, playerCount) {
     let hands = Array(playerCount);
 
     for (let j = 0; j < hands.length; j++) {
@@ -12,3 +12,5 @@ export default function dealCards(deck, playerCount) {
 
     return { deck, hands };
 }
+
+export default dealCards;
