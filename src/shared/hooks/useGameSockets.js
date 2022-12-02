@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import checkForWin from "../functions/checkForWin";
 import newGame from "../functions/newGame";
+import nextTurn from "../functions/nextTurn";
 
 const useGameSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
-    const [messages, setMessages] = useState([]);
     const {
         setIsHost,
         isHost,
@@ -21,6 +22,8 @@ const useGameSocketHook = (roomID, username) => {
         setDiscardDeck,
         isReverse,
         setIsReverse,
+        turn,
+        setTurn,
     } = useGameContext();
     useEffect(() => {
         socketRef.current = io("http://localhost:8080", {
@@ -48,13 +51,19 @@ const useGameSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on("end trun", ({ activeCard, isReverse, players, discardDeck }) => {
-            setDiscardDeck(discardDeck);
-            setActiveCard(activeCard);
-            setIsReverse(isReverse);
-            setPlayers(players);
-            //TODO create turn function
-        });
+        socketRef.current.on(
+            "end turn",
+            ({ activeCard, isReverse, players, discardDeck, turn, activeCard }) => {
+                if (checkForWin(players, turn)) {
+                    endGame(players);
+                }
+                setDiscardDeck(discardDeck);
+                setActiveCard(activeCard);
+                setIsReverse(isReverse);
+                setPlayers(players);
+                setTurn(nextTurn(turn, isReverse, players, activeCard));
+            }
+        );
 
         if (isHost) {
             socketRef.current.emit("game active", isGameActive);
@@ -64,7 +73,14 @@ const useGameSocketHook = (roomID, username) => {
     }, [roomID, username, isHost, activeGame]);
 
     function endTurn() {
-        socketRef.current.emit("end turn", { players, discardDeck, activeCard, isReverse });
+        socketRef.current.emit("end turn", {
+            players,
+            discardDeck,
+            activeCard,
+            isReverse,
+            turn,
+            activeCard,
+        });
     }
 
     function drawCard() {

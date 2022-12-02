@@ -9,6 +9,7 @@ const useSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
     const { user } = useUserContext();
+
     const {
         setIsHost,
         isHost,
@@ -27,6 +28,7 @@ const useSocketHook = (roomID, username) => {
     } = useGameContext();
 
     let waitingUsers = [];
+
 
     const waitingToPlayers = () => {
         setPlayers([...waitingUsers]);
@@ -58,7 +60,6 @@ const useSocketHook = (roomID, username) => {
     const onDisconnect = (player) => {
         if (player.isHost) {
             endGame();
-            // set all game state to initial values
         }
         let cardsToDiscard = [...player.hand];
         setDiscardDeck((curr) => [...curr, cardsToDiscard]);
