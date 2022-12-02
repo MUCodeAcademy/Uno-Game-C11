@@ -86,7 +86,7 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on("end game", () => {
             //search for is host in array
-            if (players.find(players.isHost)) {
+            if (!players.find(players.isHost === true)) {
                 setMessages((curr) => [
                     ...curr,
                     {
