@@ -8,19 +8,6 @@ import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
 const useSocketHook = (roomID, username) => {
-    const socketRef = useRef(null);
-    const [messages, setMessages] = useState([]);
-
-    const initialState = {
-        isGameActive: false,
-        playDeck: [],
-        discardDeck: [],
-        activeCard: {},
-        isReverse: false,
-        shuffling: false,
-        turn: 0,
-    };
-
     const {
         setIsHost,
         isHost,
@@ -39,6 +26,18 @@ const useSocketHook = (roomID, username) => {
         turn,
         setTurn,
     } = useGameContext();
+    const socketRef = useRef(null);
+    const [messages, setMessages] = useState([]);
+
+    const initialState = {
+        isGameActive: false,
+        playDeck: [],
+        discardDeck: [],
+        activeCard: {},
+        isReverse: false,
+        shuffling: false,
+        turn: 0,
+    };
 
     let waitingUsers = [];
 
@@ -156,7 +155,7 @@ const useSocketHook = (roomID, username) => {
                     },
                 ]);
                 playersToWaiting();
-                useGameContext(initialState);
+                // useGameContext(initialState);
             } else if ("stalemate") {
                 setMessages((curr) => [
                     ...curr,
@@ -165,7 +164,7 @@ const useSocketHook = (roomID, username) => {
                     },
                 ]);
                 playersToWaiting();
-                useGameContext(initialState);
+                // useGameContext(initialState);
             }
             //send game winner message
             setMessages((curr) => [
@@ -175,7 +174,7 @@ const useSocketHook = (roomID, username) => {
                 },
             ]);
             playersToWaiting();
-            useGameContext(initialState);
+            // useGameContext(initialState);
         });
 
         return () => socketRef.current?.disconnect();
