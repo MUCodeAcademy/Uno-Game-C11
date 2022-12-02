@@ -8,7 +8,20 @@ import { useGameContext } from "../context/GameContext";
 const useSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
-    const { user } = useUserContext();
+
+    const initialState = {
+        isGameActive: false,
+        playDeck: [],
+        discardDeck: [],
+        activeCard: {},
+        isReverse: false,
+        shuffling: false,
+        turn: 0,
+    };
+
+    const { players, setPlayers, setDiscardDeck, setActiveGame, activeGame } =
+        useGameContext();
+
 
     const {
         setIsHost,
@@ -37,6 +50,7 @@ const useSocketHook = (roomID, username) => {
 
     const playersToWaiting = () => {
         waitingUsers = [...players];
+        waitingUsers.forEach(() => (players.hand = []));
         setPlayers([]);
     };
 
@@ -121,6 +135,38 @@ const useSocketHook = (roomID, username) => {
             setIsGameActive(true)
         });
 
+        socketRef.current.on("end game", () => {
+            //search for is host in array
+            if (!players.find(players.isHost === true)) {
+                setMessages((curr) => [
+                    ...curr,
+                    {
+                        body: "Game has ended due to host disconnect, all players will now return to waiting area",
+                    },
+                ]);
+                playersToWaiting();
+                useGameContext(initialState);
+            } else if ("stalemate") {
+                setMessages((curr) => [
+                    ...curr,
+                    {
+                        body: "Stalemate. Get better.",
+                    },
+                ]);
+                playersToWaiting();
+                useGameContext(initialState);
+            }
+            //send game winner message
+            setMessages((curr) => [
+                ...curr,
+                {
+                    body: `${players[turn].name} has won!`,
+                },
+            ]);
+            playersToWaiting();
+            useGameContext(initialState);
+        });
+
         return () => socketRef.current?.disconnect();
     }, [roomID, username, isGameActive]);
 
@@ -132,7 +178,14 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("start game");
     }
 
+
+    function endGame() {
+        socketRef.current.emit("end game");
+    }
+
+   
     return { messages, sendMessage, sendStart };
+
 };
 
 export default useSocketHook;
