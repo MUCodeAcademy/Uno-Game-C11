@@ -53,7 +53,6 @@ const useSocketHook = (roomID, username) => {
         if (player.isHost) {
             endGame();
         }
-        // set all game state to initial values
         let cardsToDiscard = [...player.hand];
         setDiscardDeck((curr) => [...curr, cardsToDiscard]);
     };
@@ -96,17 +95,24 @@ const useSocketHook = (roomID, username) => {
                 playersToWaiting();
                 useGameContext(initialState);
             } else if ("stalemate") {
-                //how to handle stalemate
+                setMessages((curr) => [
+                    ...curr,
+                    {
+                        body: "Stalemate. Get better.",
+                    },
+                ]);
+                playersToWaiting();
+                useGameContext(initialState);
             }
             //send game winner message
-            playersToWaiting();
-            useGameContext(initialState);
             setMessages((curr) => [
                 ...curr,
                 {
-                    body: ``,
+                    body: `${players[turn].name} has won!`,
                 },
             ]);
+            playersToWaiting();
+            useGameContext(initialState);
         });
 
         return () => socketRef.current?.disconnect();
