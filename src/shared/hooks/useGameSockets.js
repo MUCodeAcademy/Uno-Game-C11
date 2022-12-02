@@ -6,7 +6,6 @@ import nextTurn from "../functions/nextTurn";
 
 const useGameSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
-    const [messages, setMessages] = useState([]);
     const {
         setIsHost,
         isHost,
@@ -51,15 +50,18 @@ const useGameSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on("end trun", ({ activeCard, isReverse, players, discardDeck }) => {
-            setDiscardDeck(discardDeck);
-            setActiveCard(activeCard);
-            setIsReverse(isReverse);
-            setPlayers(players);
-            const { turn, isTurn } = nextTurn(turn, isReverse, players);
-            setTurn(turn);
-            setPlayers(isTurn);
-        });
+        socketRef.current.on(
+            "end trun",
+            ({ activeCard, isReverse, players, discardDeck, turn }) => {
+                setDiscardDeck(discardDeck);
+                setActiveCard(activeCard);
+                setIsReverse(isReverse);
+                // setPlayers(players);
+                const { turn: newTurn, players: isTurn } = nextTurn(turn, isReverse, players);
+                setTurn(newTurn);
+                setPlayers(isTurn);
+            }
+        );
 
         if (isHost) {
             socketRef.current.emit("game active", isGameActive);
@@ -69,7 +71,13 @@ const useGameSocketHook = (roomID, username) => {
     }, [roomID, username, isHost, activeGame]);
 
     function endTurn() {
-        socketRef.current.emit("end turn", { players, discardDeck, activeCard, isReverse });
+        socketRef.current.emit("end turn", {
+            players,
+            discardDeck,
+            activeCard,
+            isReverse,
+            turn,
+        });
     }
 
     function drawCard() {
