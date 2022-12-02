@@ -6,6 +6,7 @@ const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
     function handleClick(e) {
         setActiveCard((curr) => ({ value: curr.value, color: e.target.value }));
         setPlayedWild(false);
+        //TODO: fix end turn
         endTurn();
     }
     return (

@@ -40,7 +40,7 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
                 const newDiscardDeck = [...discardDeck, card];
                 setPlayedWild(card.color === CardColor.Black);
                 //if wild played, wait for color picker prompt before ending turn
-                if (!card.color === CardColor.Black) {
+                if (card.color !== CardColor.Black) {
                     endTurn(newPlayers, newDiscardDeck, newActiveCard, newIsReverse, turn);
                 }
             }

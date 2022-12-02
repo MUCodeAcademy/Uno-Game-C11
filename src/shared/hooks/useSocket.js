@@ -7,6 +7,11 @@ import { useGameContext } from "../context/GameContext";
 import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
+//TODO: draw card
+//TODO: force draw 2/4
+//TODO: handle wild
+//TODO: check for win
+
 const useSocketHook = (roomID, username) => {
     const {
         setIsHost,
@@ -52,10 +57,10 @@ const useSocketHook = (roomID, username) => {
         setPlayers([]);
     };
 
-    const onConnect = () => {
+    const onConnect = (newPlayerName, newPlayerUID) => {
         let player = { name: "", uid: "", hand: [], isHost: false };
-        player.name = auth.currentUser?.displayName;
-        player.uid = auth.currentUser?.uid;
+        player.name = newPlayerName;
+        player.uid = newPlayerUID;
         if (waitingUsers.length === 0) {
             player.isHost = true;
         }
@@ -83,6 +88,7 @@ const useSocketHook = (roomID, username) => {
             query: {
                 username,
                 roomID,
+                uid: auth.currentUser?.uid,
             },
         });
 
@@ -118,12 +124,13 @@ const useSocketHook = (roomID, username) => {
             setTurn(nextTurn(turn, isReverse, players, activeCard));
         });
 
-        socketRef.current.on("user connect", ({ username }) => {
+        socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
-            onConnect();
+            onConnect(username, uid);
         });
 
         socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
+            console.log(players);
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
@@ -174,7 +181,7 @@ const useSocketHook = (roomID, username) => {
         });
 
         return () => socketRef.current?.disconnect();
-    }, [roomID, username, isGameActive]);
+    }, [roomID, username]);
 
     function sendMessage(body) {
         socketRef.current.emit("new message", { body });
