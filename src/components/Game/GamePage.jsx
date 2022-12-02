@@ -1,44 +1,24 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { auth } from "../../firebase.config";
 import { useUserContext } from "../../shared/context";
 import { useGameContext } from "../../shared/context/GameContext";
 import useSocketHook from "../../shared/hooks/useSocket";
 import GameBoard from "./components/GameBoard/GameBoard";
+import WaitingRoom from "./components/WaitingRoom";
 
 function GamePage() {
     const { roomID } = useParams();
     const { user } = useUserContext();
     const { players } = useGameContext();
 
-    const { started, messages, sendMessage } = useSocketHook(roomID, user.displayName);
+    const { started, messages, sendMessage } = useSocketHook(roomID, auth.currentUser?.displayName);
     //! need to render everyone except current player's hand count
 
     return (
         <>
             <div>{`Room name: ${roomID}`}</div>
-
-            <div>
-                {players && (
-                    <div>
-                        {players
-                            .filter((player) => player.uid !== user.uid)
-                            .map((p) => {
-                                return (
-                                    <div key={p.uid}>
-                                        <div>{p.name}</div>
-                                        <div>{`Cards: ${p.hand.length}`}</div>
-                                    </div>
-                                );
-                            })}
-                    </div>
-                )}
-            </div>
-            <div style={{ overflowY: "scroll", height: "300px", width: "300px", border: "1px solid black" }}>
-                {messages.map((m, idx) => {
-                    return <div key={idx}>{m}</div>;
-                })}
-            </div>
-            <GameBoard></GameBoard>
+            <div><WaitingRoom /></div>
         </>
     );
 }
