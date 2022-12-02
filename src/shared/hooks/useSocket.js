@@ -19,10 +19,6 @@ const useSocketHook = (roomID, username) => {
         turn: 0,
     };
 
-    const { players, setPlayers, setDiscardDeck, setActiveGame, activeGame } =
-        useGameContext();
-
-
     const {
         setIsHost,
         isHost,
@@ -38,10 +34,11 @@ const useSocketHook = (roomID, username) => {
         setDiscardDeck,
         isReverse,
         setIsReverse,
+        turn,
+        setTurn,
     } = useGameContext();
 
     let waitingUsers = [];
-
 
     const waitingToPlayers = () => {
         setPlayers([...waitingUsers]);
@@ -60,7 +57,6 @@ const useSocketHook = (roomID, username) => {
         player.uid = auth.currentUser?.uid;
         if (waitingUsers.length === 0) {
             player.isHost = true;
-
         }
         waitingUsers.push(player);
     };
@@ -85,14 +81,14 @@ const useSocketHook = (roomID, username) => {
                 username,
                 roomID,
             },
-        })
+        });
 
-        socketRef.current.on("host check", roomCount => {
+        socketRef.current.on("host check", (roomCount) => {
             console.log("jwrgv");
             console.log(roomCount);
             if (roomCount == null) {
                 setIsHost(true);
-                players[0].isHost = true
+                players[0].isHost = true;
             }
         });
 
@@ -108,13 +104,19 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on("end trun", ({ activeCard, isReverse, players, discardDeck }) => {
-            setDiscardDeck(discardDeck);
-            setActiveCard(activeCard);
-            setIsReverse(isReverse);
-            setPlayers(players);
-            //TODO create turn function
-        });
+        socketRef.current.on(
+            "end turn",
+            ({ activeCard, isReverse, players, discardDeck, turn, activeCard }) => {
+                if (checkForWin(players, turn)) {
+                    endGame(players);
+                }
+                setDiscardDeck(discardDeck);
+                setActiveCard(activeCard);
+                setIsReverse(isReverse);
+                setPlayers(players);
+                setTurn(nextTurn(turn, isReverse, players, activeCard));
+            }
+        );
 
         socketRef.current.on("user connect", ({ username }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
@@ -132,7 +134,7 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on("start game", () => {
             onNewGame();
-            setIsGameActive(true)
+            setIsGameActive(true);
         });
 
         socketRef.current.on("end game", () => {
@@ -178,14 +180,26 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("start game");
     }
 
-
     function endGame() {
         socketRef.current.emit("end game");
     }
 
-   
-    return { messages, sendMessage, sendStart };
+    function endTurn() {
+        socketRef.current.emit("end turn", {
+            players,
+            discardDeck,
+            activeCard,
+            isReverse,
+            turn,
+            activeCard,
+        });
+    }
 
+    function drawCard() {
+        socketRef.current.emit("draw card", players);
+    }
+
+    return { messages, sendMessage, started, sendStart, endTurn, sendCards, cards, drawCard };
 };
 
 export default useSocketHook;
