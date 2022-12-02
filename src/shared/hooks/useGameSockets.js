@@ -6,22 +6,8 @@ import newGame from "../functions/newGame";
 const useGameSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
-    const {
-        setIsHost,
-        isHost,
-        isGameActive,
-        setIsGameActive,
-        setActiveCard,
-        players,
-        setPlayers,
-        activeCard,
-        playDeck,
-        setPlayDeck,
-        discardDeck,
-        setDiscardDeck,
-        isReverse,
-        setIsReverse,
-    } = useGameContext();
+    const { setIsHost, isHost, isGameActive, setIsGameActive, setActiveCard, players, setPlayers, activeCard, playDeck, setPlayDeck, discardDeck, setDiscardDeck, isReverse, setIsReverse } =
+        useGameContext();
     useEffect(() => {
         socketRef.current = io("http://localhost:8080", {
             query: {
@@ -48,7 +34,7 @@ const useGameSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on("end trun", ({ activeCard, isReverse, players, discardDeck }) => {
+        socketRef.current.on("end turn", ({ activeCard, isReverse, players, discardDeck }) => {
             setDiscardDeck(discardDeck);
             setActiveCard(activeCard);
             setIsReverse(isReverse);
