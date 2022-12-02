@@ -1,20 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
-import { removeCardFromHand, validatePlayedCard, playCard, shuffleDeck, CardValue, CardColor } from "../../../../../shared/functions";
+import {
+    removeCardFromHand,
+    validatePlayedCard,
+    playCard,
+    shuffleDeck,
+    CardValue,
+    CardColor,
+} from "../../../../../shared/functions";
 
 // import removeCardFromHand from "../../../../../shared/functions/removeCardFromHand";
 // import validatePlayedCard from "../../../../../shared/functions/validatePlayedCard";
 // import playCard from "../../../../../shared/functions/playCard";
 // import shuffleDeck from "../../../../../shared/functions/shuffleDeck";
 import ChooseColorPrompt from "./ChooseColorPrompt";
-import useGameSocketHook from "../../../../../shared/hooks/useGameSockets";
 import { useParams } from "react-router-dom";
 import { auth } from "../../../../../firebase.config";
+import useSocketHook from "../../../../../shared/hooks/useSocket";
 
 function PlayerHand() {
-    const { setPlayers, players, activeCard, setActiveCard, activeGame, playDeck, setPlayDeck, discardDeck, setDiscardDeck, reshuffling, setReshuffling, turn, setIsReverse } = useGameContext();
+    const {
+        setPlayers,
+        players,
+        activeCard,
+        setActiveCard,
+        activeGame,
+        playDeck,
+        setPlayDeck,
+        discardDeck,
+        setDiscardDeck,
+        reshuffling,
+        setReshuffling,
+        turn,
+        setIsReverse,
+    } = useGameContext();
     const { roomID } = useParams();
-    const { endTurn, drawCard, endGame } = useGameSocketHook(roomID, auth.currentUser?.displayName);
+    const { endTurn, drawCard, endGame } = useSocketHook(
+        roomID,
+        auth.currentUser?.displayName
+    );
     const [playedWild, setPlayedWild] = useState(false);
 
     let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
@@ -110,7 +134,13 @@ function PlayerHand() {
     return (
         <>
             <button onClick={() => handleDrawClick()}>Draw Card</button>
-            {playedWild && <ChooseColorPrompt setPlayedWild={setPlayedWild} setActiveCard={setActiveCard} endTurn={endTurn} />}
+            {playedWild && (
+                <ChooseColorPrompt
+                    setPlayedWild={setPlayedWild}
+                    setActiveCard={setActiveCard}
+                    endTurn={endTurn}
+                />
+            )}
             <div style={{ display: "flex", flexFlow: "row wrap" }}>
                 {activeGame &&
                     players[playerIndex] &&

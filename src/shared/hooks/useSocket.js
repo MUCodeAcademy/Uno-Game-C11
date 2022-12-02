@@ -4,6 +4,8 @@ import io from "socket.io-client";
 import { auth } from "../../firebase.config";
 import { useUserContext } from "../context";
 import { useGameContext } from "../context/GameContext";
+import checkForWin from "../functions/checkForWin";
+import nextTurn from "../functions/nextTurn";
 
 const useSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
@@ -64,7 +66,7 @@ const useSocketHook = (roomID, username) => {
     function onNewGame() {
         waitingToPlayers();
         setTurn(Math.random(Math.floor() * players.length - 1));
-        setActiveGame(true);
+        setIsGameActive(true);
     }
 
     const onDisconnect = (player) => {
@@ -106,7 +108,7 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on(
             "end turn",
-            ({ activeCard, isReverse, players, discardDeck, turn, activeCard }) => {
+            ({ activeCard, isReverse, players, discardDeck, turn }) => {
                 if (checkForWin(players, turn)) {
                     endGame(players);
                 }
@@ -212,7 +214,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("draw card", players);
     }
 
-    return { messages, sendMessage, started, sendStart, endTurn, sendCards, cards, drawCard };
+    return { messages, sendMessage, endTurn, drawCard };
 };
 
 export default useSocketHook;
