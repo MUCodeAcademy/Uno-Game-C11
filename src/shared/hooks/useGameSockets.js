@@ -7,6 +7,10 @@ import nextTurn from "../functions/nextTurn";
 
 const useGameSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
+
+   
+  
+
     const {
         setIsHost,
         isHost,
@@ -25,6 +29,7 @@ const useGameSocketHook = (roomID, username) => {
         turn,
         setTurn,
     } = useGameContext();
+
     useEffect(() => {
         socketRef.current = io("http://localhost:8080", {
             query: {
