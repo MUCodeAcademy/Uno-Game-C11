@@ -123,6 +123,13 @@ const useSocketHook = (roomID, username) => {
             onConnect();
         });
 
+        socketRef.current.on("start game", (players, deck, startCard) => {
+            setPlayers(players);
+            setPlayDeck(deck);
+            setActiveCard(startCard);
+            setTurn(0);
+        });
+
         socketRef.current.on("new message", (msg) => {
             setMessages((curr) => [...curr, msg]);
         });
@@ -176,8 +183,14 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("new message", { body });
     }
 
-    function sendStart() {
-        socketRef.current.emit("start game");
+    function startGame(players, turn, playDeck) {
+        if (isHost) {
+            socketRef.current.emit("start game", {
+                players,
+                turn,
+                playDeck,
+            });
+        }
     }
 
     function endGame() {
