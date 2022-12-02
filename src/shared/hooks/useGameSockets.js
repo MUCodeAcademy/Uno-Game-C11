@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import checkForWin from "../functions/checkForWin";
 import newGame from "../functions/newGame";
 import nextTurn from "../functions/nextTurn";
 
@@ -51,8 +52,11 @@ const useGameSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on(
-            "end trun",
+            "end turn",
             ({ activeCard, isReverse, players, discardDeck, turn, activeCard }) => {
+                if (checkForWin(players, turn)) {
+                    endGame(players);
+                }
                 setDiscardDeck(discardDeck);
                 setActiveCard(activeCard);
                 setIsReverse(isReverse);
