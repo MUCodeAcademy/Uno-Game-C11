@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import newGame from "../functions/newGame";
+import nextTurn from "../functions/nextTurn";
 
 const useGameSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
@@ -21,6 +22,8 @@ const useGameSocketHook = (roomID, username) => {
         setDiscardDeck,
         isReverse,
         setIsReverse,
+        turn,
+        setTurn,
     } = useGameContext();
     useEffect(() => {
         socketRef.current = io("http://localhost:8080", {
@@ -53,7 +56,9 @@ const useGameSocketHook = (roomID, username) => {
             setActiveCard(activeCard);
             setIsReverse(isReverse);
             setPlayers(players);
-            //TODO create turn function
+            const { turn, isTurn } = nextTurn(turn, isReverse, players);
+            setTurn(turn);
+            setPlayers(isTurn);
         });
 
         if (isHost) {
