@@ -7,7 +7,16 @@ import { useGameContext } from "../context/GameContext";
 const useSocketHook = (roomID, username) => {
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
-    const { user } = useUserContext();
+    const initialState = {
+        isGameActive: false,
+        playDeck: [],
+        discardDeck: [],
+        activeCard: {},
+        isReverse: false,
+        shuffling: false,
+        turn: 0,
+    };
+
     const { players, setPlayers, setDiscardDeck, setActiveGame, activeGame } =
         useGameContext();
 
@@ -74,6 +83,11 @@ const useSocketHook = (roomID, username) => {
             onNewGame();
         });
 
+        socketRef.current.on("end game", () => {
+            playersToWaiting();
+            useGameContext(initialState);
+        });
+
         return () => socketRef.current?.disconnect();
     }, [roomID, username]);
 
@@ -83,6 +97,14 @@ const useSocketHook = (roomID, username) => {
 
     function sendStart() {
         socketRef.current.emit("start game");
+    }
+
+    function endGame() {
+        setMessages((curr) => [
+            ...curr,
+            { body: "Game has ended, all players will now return to waiting area" },
+        ]);
+        socketRef.current.emit("end game");
     }
 
     return { messages, sendMessage, started, sendStart };
