@@ -52,14 +52,12 @@ const useGameSocketHook = (roomID, username) => {
 
         socketRef.current.on(
             "end trun",
-            ({ activeCard, isReverse, players, discardDeck, turn }) => {
+            ({ activeCard, isReverse, players, discardDeck, turn, activeCard }) => {
                 setDiscardDeck(discardDeck);
                 setActiveCard(activeCard);
                 setIsReverse(isReverse);
-                // setPlayers(players);
-                const { turn: newTurn, players: isTurn } = nextTurn(turn, isReverse, players);
-                setTurn(newTurn);
-                setPlayers(isTurn);
+                setPlayers(players);
+                setTurn(nextTurn(turn, isReverse, players, activeCard));
             }
         );
 
@@ -77,6 +75,7 @@ const useGameSocketHook = (roomID, username) => {
             activeCard,
             isReverse,
             turn,
+            activeCard,
         });
     }
 
