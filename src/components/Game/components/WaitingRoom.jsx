@@ -1,19 +1,24 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { auth } from "../../../firebase.config";
 import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
+import useSocketHook from "../../../shared/hooks/useSocket";
+
+import ChatRoom from "../shared/Chat/ChatRoom";
 
 export function WaitingRoom() {
-    const { setActiveGame, ishost } = useGameContext();
-
+    const { setActiveGame, isHost } = useGameContext();
+    const { id } = useParams();
+    const { sendStart } = useSocketHook(id, auth.currentUser?.displayName);
     function Waiting() {
-        if (ishost) {
+        if (isHost) {
             return (
                 <div>
                     <div>Press Start When Ready.</div>
-                    //TODO use start game socket hook
                     <button
                         onClick={() => {
-                            setActiveGame(true);
+                            sendStart()
                         }}
                     >
                         Start
@@ -21,12 +26,13 @@ export function WaitingRoom() {
                 </div>
             );
         }
+
         return <div>Waiting for host to start the game.</div>;
     }
 
     return (
         <div>
-            <div>chatRoom here</div>
+            <div><ChatRoom /></div>
             <div>
                 <Waiting />
             </div>
