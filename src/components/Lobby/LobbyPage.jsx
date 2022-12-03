@@ -1,7 +1,7 @@
 import React from "react";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function LobbyPage() {
+export function LobbyPage() {
     const navigate = useNavigate();
 
     return (
