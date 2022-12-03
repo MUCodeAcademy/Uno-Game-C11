@@ -1,7 +1,7 @@
 import React from "react";
 import { CardColor } from "../../../../../shared/functions/cardEnums.js";
 
-const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
+export function ChooseColorPrompt({ setPlayedWild, setActiveCard, endTurn }) {
     let colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
     function handleClick(e) {
         setActiveCard((curr) => ({ value: curr.value, color: e.target.value }));
@@ -19,6 +19,6 @@ const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
             ))}
         </>
     );
-};
+}
 
 export default ChooseColorPrompt;

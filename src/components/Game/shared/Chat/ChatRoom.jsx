@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { auth } from "../../../../firebase.config";
 import ChatMessageDisplay from "./ChatMessageDisplay";
 
 export function ChatRoom({ messages, sendMessage }) {
-    const { id } = useParams();
     const bottomRef = useRef(null);
     const [body, setBody] = useState("");
 
@@ -17,7 +15,15 @@ export function ChatRoom({ messages, sendMessage }) {
 
     return (
         <div>
-            <div ref={bottomRef} style={{ width: "300px", height: "400px", border: "1px solid back", overflowY: "scroll" }}>
+            <div
+                ref={bottomRef}
+                style={{
+                    width: "300px",
+                    height: "400px",
+                    border: "1px solid back",
+                    overflowY: "scroll",
+                }}
+            >
                 {messages.map((v, idx) => (
                     <ChatMessageDisplay key={idx} {...v} />
                 ))}

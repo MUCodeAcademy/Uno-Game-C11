@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
-import { removeCardFromHand, validatePlayedCard, playCard, shuffleDeck, CardValue, CardColor } from "../../../../../shared/functions";
-
-// import removeCardFromHand from "../../../../../shared/functions/removeCardFromHand";
-// import validatePlayedCard from "../../../../../shared/functions/validatePlayedCard";
-// import playCard from "../../../../../shared/functions/playCard";
-// import shuffleDeck from "../../../../../shared/functions/shuffleDeck";
+import {
+    removeCardFromHand,
+    validatePlayedCard,
+    CardValue,
+    CardColor,
+} from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
 
-function PlayerHand({ endTurn, drawCard, endGame }) {
-    const { setPlayers, players, activeCard, setActiveCard, isGameActive, playDeck, setPlayDeck, discardDeck, setDiscardDeck, reshuffling, setReshuffling, turn, setIsReverse } = useGameContext();
+export function PlayerHand({ endTurn, drawCard, endGame }) {
+    const {
+        players,
+        activeCard,
+        setActiveCard,
+        isGameActive,
+        playDeck,
+        discardDeck,
+        setReshuffling,
+        turn,
+    } = useGameContext();
 
     const [playedWild, setPlayedWild] = useState(false);
 
@@ -106,7 +115,13 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
     return (
         <>
             <button onClick={() => handleDrawClick()}>Draw Card</button>
-            {playedWild && <ChooseColorPrompt setPlayedWild={setPlayedWild} setActiveCard={setActiveCard} endTurn={endTurn} />}
+            {playedWild && (
+                <ChooseColorPrompt
+                    setPlayedWild={setPlayedWild}
+                    setActiveCard={setActiveCard}
+                    endTurn={endTurn}
+                />
+            )}
             <div style={{ display: "flex", flexFlow: "row wrap" }}>
                 {isGameActive &&
                     players[playerIndex] &&

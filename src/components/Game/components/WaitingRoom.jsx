@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
 import ChatRoom from "../shared/Chat/ChatRoom";

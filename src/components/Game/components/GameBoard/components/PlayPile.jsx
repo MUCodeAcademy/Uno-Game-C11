@@ -1,7 +1,7 @@
 import React from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
 
-function PlayPile() {
+export function PlayPile() {
     const { activeCard } = useGameContext();
     return (
         <>
