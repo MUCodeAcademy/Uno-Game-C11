@@ -29,11 +29,11 @@ export function gameReducer(state, action) {
             const host = state.isHost === false ? true : false;
             return { ...state, isHost: host };
         case SET_PLAY_DECK:
-            return action.payload;
+            return [...state, action.payload];
         case SET_DISCARD_DECK:
-            return action.payload;
+            return [...state, action.payload];
         case SET_PLAYERS:
-            return action.payload;
+            return [...state, action.payload];
         case SET_ACTIVE_CARD:
             return action.payload;
         case SET_IS_REVERSE:
