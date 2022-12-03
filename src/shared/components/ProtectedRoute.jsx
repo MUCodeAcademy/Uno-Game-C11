@@ -5,7 +5,7 @@ import LobbyPage from "../../components/Lobby/LobbyPage";
 import LoginPage from "../../components/Login/LoginPage";
 import { useUserContext } from "../context";
 
-const withAuthentication = (WrappedComponent, requiresUser) => {
+export function withAuthentication(WrappedComponent, requiresUser) {
     return (props) => {
         const { user } = useUserContext();
         const redirectTo = useMemo(() => (requiresUser ? "/login" : "/lobby"), []);
@@ -20,7 +20,7 @@ const withAuthentication = (WrappedComponent, requiresUser) => {
 
         return <Navigate to={redirectTo} />;
     };
-};
+}
 
 export const LobbyPageWithAuth = withAuthentication(LobbyPage, true);
 export const GamePageWithAuth = withAuthentication(GamePage, true);

@@ -1,10 +1,5 @@
-import React, { useReducer, useContext, useCallback, useState } from "react";
+import React, { useContext, useState } from "react";
 import { createContext } from "react";
-import {
-    gameReducer,
-    INITIAL_ACTIVE_GAME_STATE,
-    SET_ACTIVE_GAME,
-} from "../reducers/GameReducer";
 
 const GameContext = createContext();
 

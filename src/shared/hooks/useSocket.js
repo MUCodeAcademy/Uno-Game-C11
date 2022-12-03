@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { auth } from "../../firebase.config";
-import { useUserContext } from "../context";
 import { useGameContext } from "../context/GameContext";
 import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
-const useSocketHook = (roomID, username) => {
+export function useSocketHook(roomID, username) {
     const {
         setIsHost,
         isHost,
@@ -16,13 +14,10 @@ const useSocketHook = (roomID, username) => {
         setActiveCard,
         players,
         setPlayers,
-        activeCard,
         playDeck,
         setPlayDeck,
         setShuffling,
-        discardDeck,
         setDiscardDeck,
-        isReverse,
         setIsReverse,
         turn,
         setTurn,
@@ -107,16 +102,19 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn }) => {
-            if (checkForWin(players, turn)) {
-                endGame(players);
+        socketRef.current.on(
+            "end turn",
+            ({ players, discardDeck, activeCard, isReverse, turn }) => {
+                if (checkForWin(players, turn)) {
+                    endGame(players);
+                }
+                setDiscardDeck(discardDeck);
+                setActiveCard(activeCard);
+                setIsReverse(isReverse);
+                setPlayers(players);
+                setTurn(nextTurn(turn, isReverse, players, activeCard));
             }
-            setDiscardDeck(discardDeck);
-            setActiveCard(activeCard);
-            setIsReverse(isReverse);
-            setPlayers(players);
-            setTurn(nextTurn(turn, isReverse, players, activeCard));
-        });
+        );
 
         socketRef.current.on("user connect", ({ username }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
@@ -181,7 +179,11 @@ const useSocketHook = (roomID, username) => {
     }
 
     function startGame(newDeck, newPlayers, gameStartCard) {
-        socketRef.current.emit("start game", { players: newPlayers, playDeck: newDeck, activeCard: gameStartCard });
+        socketRef.current.emit("start game", {
+            players: newPlayers,
+            playDeck: newDeck,
+            activeCard: gameStartCard,
+        });
     }
 
     function endGame() {
@@ -204,6 +206,6 @@ const useSocketHook = (roomID, username) => {
     }
 
     return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
-};
+}
 
 export default useSocketHook;
