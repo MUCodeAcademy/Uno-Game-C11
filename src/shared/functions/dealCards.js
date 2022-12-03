@@ -7,7 +7,6 @@ export function dealCards(deck, playerCount) {
             arr.push(deck.pop());
         }
         hands[j] = arr;
-        // console.log(hands);
     }
 
     return { deck, hands };

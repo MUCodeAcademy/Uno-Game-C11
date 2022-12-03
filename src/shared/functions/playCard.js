@@ -1,6 +1,6 @@
 // import { CardColor, CardValue } from "./cardEnums";
 
-// function playCard(playedCard, activeCard) {
+// export function playCard(playedCard, activeCard) {
 //     let reverseDirection = false;
 //     let skipTurn = false;
 //     let playedWild = false;

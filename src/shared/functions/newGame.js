@@ -6,7 +6,6 @@ import { CardColor, CardValue } from "./cardEnums";
 //assuming players looks something like this
 
 export function newGame(players) {
-    // const { started, sendStart, endTurn, sendCards, cards, drawCard } = useSocketHook();
     const deck = shuffleDeck(buildDeck());
     let gameStartCard = null;
     let { deck: newDeck, hands } = dealCards(deck, players.length);
@@ -16,7 +15,12 @@ export function newGame(players) {
     }
 
     for (let i = newDeck.length - 1; i >= 0; i--) {
-        if (newDeck[i].color !== CardColor.Black && newDeck[i].value !== CardValue.Skip && newDeck[i].value !== CardValue.Reverse && newDeck[i].value !== CardValue.DrawTwo) {
+        if (
+            newDeck[i].color !== CardColor.Black &&
+            newDeck[i].value !== CardValue.Skip &&
+            newDeck[i].value !== CardValue.Reverse &&
+            newDeck[i].value !== CardValue.DrawTwo
+        ) {
             gameStartCard = newDeck.splice(i, 1)[0];
             break;
         }
