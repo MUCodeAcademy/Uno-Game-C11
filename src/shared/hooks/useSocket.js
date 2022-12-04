@@ -93,8 +93,6 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("host check", (roomCount) => {
-            console.log("jwrgv");
-            console.log(roomCount);
             if (roomCount == null) {
                 setIsHost(true);
                 // players[0].isHost = true;
@@ -195,7 +193,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("end game");
     }
 
-    function endTurn(players, discardDeck, activeCard, isReverse, turn) {
+    function endTurn(players, discardDeck, activeCard, isReverse, turn, playedWild) {
         socketRef.current.emit("end turn", {
             players,
             discardDeck,

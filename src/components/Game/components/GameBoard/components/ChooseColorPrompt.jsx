@@ -1,18 +1,17 @@
 import React from "react";
 import { CardColor } from "../../../../../shared/functions/cardEnums.js";
 
-const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
+const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn, newPlayers, newDiscardDeck, newActiveCard, newIsReverse, turn }) => {
     let colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
     function handleClick(e) {
-        setActiveCard((curr) => ({ value: curr.value, color: e.target.value }));
+        newActiveCard.current = { value: newActiveCard.current.value, color: e.target.value };
+        setActiveCard(newActiveCard.current);
         setPlayedWild(false);
-        //TODO: fix end turn
-        endTurn();
+        endTurn(newPlayers.current, newDiscardDeck.current, newActiveCard.current, newIsReverse.current, turn);
     }
     return (
         <>
             <div>Pick a color</div>
-
             {colors.map((c) => (
                 <button key={c} value={c} onClick={(e) => handleClick(e)}>
                     {c}
