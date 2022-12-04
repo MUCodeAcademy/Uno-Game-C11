@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { auth } from "../../../../firebase.config";
+import { Button } from "../../../../shared/styled/components/Button";
+import { ChatTextBox } from "../../../../shared/styled/components/ChatTextBox";
 import ChatMessageDisplay from "./ChatMessageDisplay";
 
 export function ChatRoom({ messages, sendMessage }) {
@@ -16,16 +18,33 @@ export function ChatRoom({ messages, sendMessage }) {
     }, [messages]);
 
     return (
-        <div>
-            <div ref={bottomRef} style={{ width: "300px", height: "400px", border: "1px solid back", overflowY: "scroll" }}>
+        <div style={{ border: "1px solid black" }}>
+            <div
+                ref={bottomRef}
+                style={{
+                    width: "300px",
+                    height: "400px",
+                    border: "1px solid back",
+                    overflowY: "scroll",
+                }}
+            >
                 {messages.map((v, idx) => (
                     <ChatMessageDisplay key={idx} {...v} />
                 ))}
             </div>
-            <form>
+            <form
+                style={{
+                    border: "1px solid black",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                }}
+            >
                 <label htmlFor="msg"></label>
-                <textarea value={body} onChange={(e) => setBody(e.target.value)}></textarea>
-                <button
+                <ChatTextBox
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                ></ChatTextBox>
+                <Button
                     disabled={body.length === 0}
                     onClick={() => {
                         sendMessage(body);
@@ -33,7 +52,7 @@ export function ChatRoom({ messages, sendMessage }) {
                     }}
                 >
                     Send
-                </button>
+                </Button>
             </form>
         </div>
     );
