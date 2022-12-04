@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
 import ChatRoom from "../shared/Chat/ChatRoom";
+import { Button } from "../../../shared/styled/components/Button";
 
 export function WaitingRoom({ startGame, messages, sendMessage }) {
     const { isHost, players, setPlayers, setPlayDeck, setActiveCard } = useGameContext();
@@ -18,13 +19,13 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
             return (
                 <div>
                     <div>Press Start When Ready.</div>
-                    <button
+                    <Button
                         onClick={() => {
                             handleClick();
                         }}
                     >
                         Start
-                    </button>
+                    </Button>
                 </div>
             );
         }
@@ -33,7 +34,7 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
     }
 
     return (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div>
                 <ChatRoom messages={messages} sendMessage={sendMessage} />
             </div>

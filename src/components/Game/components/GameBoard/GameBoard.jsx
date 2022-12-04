@@ -15,21 +15,29 @@ function GameBoard({ endTurn, drawCard, endGame }) {
 
     return (
         <>
-            <div>GameBoard</div>
+            <div>
+                <div style={{ margin: "0px 50px 0px 0px" }}>
+                    <div>Other players</div>
+                    <div style={{ display: "flex", border: "1px solid black" }}>
+                        {otherPlayers &&
+                            otherPlayers.map((player) => (
+                                <div key={player.uid} style={{ border: "1px solid red" }}>
+                                    <div>{player.name}</div>
+                                    <div>{player.hand.length} cards</div>
+                                </div>
+                            ))}
+                    </div>
 
-            <div>Other players</div>
-            <div style={{ display: "flex", border: "1px solid black" }}>
-                {otherPlayers &&
-                    otherPlayers.map((player) => (
-                        <div key={player.uid} style={{ border: "1px solid red" }}>
-                            <div>{player.name}</div>
-                            <div>{player.hand.length} cards</div>
-                        </div>
-                    ))}
+                    <PlayPile></PlayPile>
+                </div>
+                <div style={{ margin: "50px 0px 0px 0px" }}>
+                    <PlayerHand
+                        endTurn={endTurn}
+                        drawCard={drawCard}
+                        endGame={endGame}
+                    ></PlayerHand>
+                </div>
             </div>
-
-            <PlayPile></PlayPile>
-            <PlayerHand endTurn={endTurn} drawCard={drawCard} endGame={endGame}></PlayerHand>
         </>
     );
 }
