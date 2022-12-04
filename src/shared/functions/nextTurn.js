@@ -1,24 +1,19 @@
+import { act } from "react-dom/test-utils";
 import { CardValue } from "./cardEnums";
 
 export function nextTurn(turn, isReverse, players, activeCard) {
-    if (isReverse) {
-        if (activeCard.value === CardValue.Skip) {
-            turn = turn - 2;
-        }
-        turn = turn - 1;
-        if (turn < 0) {
-            turn = players.length - 1;
-        }
+    let change = 1;
+    if (activeCard.value === CardValue.Skip || activeCard.value === CardValue.WildDrawFour || activeCard.value === CardValue.DrawTwo) {
+        change = 2;
     }
-    if (activeCard.value === CardValue.Skip) {
-        turn = turn + 2;
+    change = change * isReverse ? -1 : 1;
+    if (turn + change >= 0 && turn + change < players.length) {
+        return turn + change;
     }
-    turn = turn + 1;
-    if (turn > players.length - 1) {
-        turn = 0;
+    if (turn + change < 0) {
+        return turn + change + players.length;
     }
-
-    return turn;
+    return turn + change - players.length;
 }
 
 export default nextTurn;

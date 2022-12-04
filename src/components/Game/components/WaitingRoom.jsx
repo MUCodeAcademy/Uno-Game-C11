@@ -8,11 +8,8 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
 
     function handleClick() {
         let { newDeck, players: newPlayers, gameStartCard } = newGame(players);
+        console.log(players.length);
         //!is this the set players that is working?
-
-        setPlayers(newPlayers);
-        setPlayDeck(newDeck);
-        setActiveCard(gameStartCard);
         startGame(newDeck, newPlayers, gameStartCard);
     }
 

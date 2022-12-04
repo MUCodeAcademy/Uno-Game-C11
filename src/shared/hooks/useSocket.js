@@ -5,7 +5,12 @@ import { useGameContext } from "../context/GameContext";
 import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
-export function useSocketHook(roomID, username) {
+//TODO: draw card
+//TODO: force draw 2/4
+//TODO: handle wild
+//TODO: check for win
+
+const useSocketHook = (roomID, username) => {
     const {
         setIsHost,
         isHost,
@@ -47,10 +52,10 @@ export function useSocketHook(roomID, username) {
         setPlayers([]);
     };
 
-    const onConnect = () => {
+    const onConnect = (newPlayerName, newPlayerUID) => {
         let player = { name: "", uid: "", hand: [], isHost: false };
-        player.name = auth.currentUser?.displayName;
-        player.uid = auth.currentUser?.uid;
+        player.name = newPlayerName;
+        player.uid = newPlayerUID;
         if (waitingUsers.length === 0) {
             player.isHost = true;
         }
@@ -78,12 +83,11 @@ export function useSocketHook(roomID, username) {
             query: {
                 username,
                 roomID,
+                uid: auth.currentUser?.uid,
             },
         });
 
         socketRef.current.on("host check", (roomCount) => {
-            console.log("jwrgv");
-            console.log(roomCount);
             if (roomCount == null) {
                 setIsHost(true);
                 // players[0].isHost = true;
@@ -116,12 +120,13 @@ export function useSocketHook(roomID, username) {
             }
         );
 
-        socketRef.current.on("user connect", ({ username }) => {
+        socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
-            onConnect();
+            onConnect(username, uid);
         });
 
         socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
+            console.log(players);
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
@@ -172,7 +177,7 @@ export function useSocketHook(roomID, username) {
         });
 
         return () => socketRef.current?.disconnect();
-    }, [roomID, username, isGameActive]);
+    }, [roomID, username]);
 
     function sendMessage(body) {
         socketRef.current.emit("new message", { body });
@@ -190,7 +195,7 @@ export function useSocketHook(roomID, username) {
         socketRef.current.emit("end game");
     }
 
-    function endTurn(players, discardDeck, activeCard, isReverse, turn) {
+    function endTurn(players, discardDeck, activeCard, isReverse, turn, playedWild) {
         socketRef.current.emit("end turn", {
             players,
             discardDeck,
@@ -206,6 +211,6 @@ export function useSocketHook(roomID, username) {
     }
 
     return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
-}
+};
 
 export default useSocketHook;
