@@ -20,23 +20,6 @@ import { theme } from "../../../../../shared/styled/themes/Theme";
 
 function PlayerHand({ endTurn, drawCard, endGame }) {
     const {
-        setPlayers,
-        players,
-        activeCard,
-        setActiveCard,
-        isGameActive,
-        playDeck,
-        setPlayDeck,
-        discardDeck,
-        setDiscardDeck,
-        reshuffling,
-        setReshuffling,
-        turn,
-        setIsReverse,
-    } = useGameContext();
-
-    const [playedWild, setPlayedWild] = useState(false);
-    const {
         players,
         activeCard,
         setActiveCard,
