@@ -11,11 +11,9 @@ import { useUserContext } from "./shared/context";
 import { GameProvider } from "./shared/context/GameContext";
 
 function App() {
-    const { clearUser, setUser } = useUserContext();
-    auth.onAuthStateChanged((activeUser) => setUser(activeUser));
     return (
         <div>
-            {auth.currentUser && (
+            {/* {auth.currentUser && (
                 <>
                     <div>{auth.currentUser?.displayName}</div>
                     <button
@@ -27,7 +25,7 @@ function App() {
                         Sign Out
                     </button>
                 </>
-            )}
+            )} */}
             <Router>
                 <Menu></Menu>
                 <Routes>
