@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
 import { removeCardFromHand, validatePlayedCard, playCard, shuffleDeck, CardValue, CardColor } from "../../../../../shared/functions";
-
-// import removeCardFromHand from "../../../../../shared/functions/removeCardFromHand";
-// import validatePlayedCard from "../../../../../shared/functions/validatePlayedCard";
-// import playCard from "../../../../../shared/functions/playCard";
-// import shuffleDeck from "../../../../../shared/functions/shuffleDeck";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
 
 function PlayerHand({ endTurn, drawCard, endGame }) {
-    const { setPlayers, players, activeCard, setActiveCard, isGameActive, playDeck, setPlayDeck, discardDeck, setDiscardDeck, reshuffling, setReshuffling, turn, setIsReverse } = useGameContext();
-
+    const { players, activeCard, setActiveCard, isGameActive, playDeck, discardDeck, setReshuffling, turn } = useGameContext();
     const [playedWild, setPlayedWild] = useState(false);
+    //! this wasn't working because playerhand is rerendering and setting these back to undefined
+    const newPlayers = useRef();
+    const newDiscardDeck = useRef();
+    const newIsReverse = useRef();
+    const newActiveCard = useRef();
 
     let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
     function handleDrawClick() {
@@ -32,16 +31,14 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
     function handlePlayCardClick(card) {
         if (turn === playerIndex && !playedWild) {
             if (validatePlayedCard(card, activeCard)) {
-                //! do we even need playcard function?
-                //! card has been validated as a legal play already
-                const newPlayers = removeCardFromHand(players, playerIndex, card);
-                const newActiveCard = card;
-                const newIsReverse = card.value === CardValue.Reverse;
-                const newDiscardDeck = [...discardDeck, card];
+                newPlayers.current = removeCardFromHand(players, playerIndex, card);
+                newActiveCard.current = card;
+                newIsReverse.current = card.value === CardValue.Reverse;
+                newDiscardDeck.current = [...discardDeck, card];
                 setPlayedWild(card.color === CardColor.Black);
                 //if wild played, wait for color picker prompt before ending turn
                 if (card.color !== CardColor.Black) {
-                    endTurn(newPlayers, newDiscardDeck, newActiveCard, newIsReverse, turn);
+                    endTurn(newPlayers.current, newDiscardDeck.current, newActiveCard.current, newIsReverse.current, turn);
                 }
             }
         }
@@ -106,7 +103,19 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
     return (
         <>
             <button onClick={() => handleDrawClick()}>Draw Card</button>
-            {playedWild && <ChooseColorPrompt setPlayedWild={setPlayedWild} setActiveCard={setActiveCard} endTurn={endTurn} />}
+            {playedWild && (
+                <ChooseColorPrompt
+                    setPlayedWild={setPlayedWild}
+                    setActiveCard={setActiveCard}
+                    endTurn={endTurn}
+                    newPlayers={newPlayers}
+                    newDiscardDeck={newDiscardDeck}
+                    newActiveCard={newActiveCard}
+                    newIsReverse={newIsReverse}
+                    turn={turn}
+                />
+            )}
+
             <div style={{ display: "flex", flexFlow: "row wrap" }}>
                 {isGameActive &&
                     players[playerIndex] &&
