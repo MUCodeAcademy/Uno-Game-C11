@@ -1,31 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useGameContext } from "../../../../shared/context/GameContext";
 import WaitingRoom from "../WaitingRoom";
 // import { Card, PlayPile, PlayerHand } from "./index";
 import PlayPile from "./components/PlayPile";
 import PlayerHand from "./components/PlayerHand";
-import Card from "./components/Card";
-import newGame from "../../../../shared/functions/newGame";
-import { useParams } from "react-router-dom";
 import { auth } from "../../../../firebase.config";
-import useSocketHook from "../../../../shared/hooks/useSocket";
 
 function GameBoard({ endTurn, drawCard, endGame }) {
-    const { isGameActive, setPlayers, setPlayDeck, players, setActiveCard } = useGameContext();
-    const { roomID } = useParams();
+    const { players } = useGameContext();
 
-    const { newDeck, players: newPlayers, gameStartCard } = newGame(players);
-
-    // useEffect(() => {
-    //     if (isGameActive) {
-    //         startGame(newPlayers, newDeck, gameStartCard);
-    //     }
-    // }, [isGameActive]);
+    const otherPlayers = useMemo(() => {
+        return players.filter((player) => player.uid !== auth.currentUser.uid);
+    }, [players]);
 
     return (
         <>
             <div>
                 <div style={{ margin: "0px 50px 0px 0px" }}>
+                    <div>Other players</div>
+                    <div style={{ display: "flex", border: "1px solid black" }}>
+                        {otherPlayers &&
+                            otherPlayers.map((player) => (
+                                <div key={player.uid} style={{ border: "1px solid red" }}>
+                                    <div>{player.name}</div>
+                                    <div>{player.hand.length} cards</div>
+                                </div>
+                            ))}
+                    </div>
+
                     <PlayPile></PlayPile>
                 </div>
                 <div style={{ margin: "50px 0px 0px 0px" }}>

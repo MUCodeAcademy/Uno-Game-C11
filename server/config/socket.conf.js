@@ -1,10 +1,10 @@
 function socketConfig(io) {
     io.on("connection", (socket) => {
-        const { roomID, username } = socket.handshake.query;
+        const { roomID, username, uid } = socket.handshake.query;
         let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
         socket.join(roomID);
 
-        io.to(roomID).emit("user connect", { username });
+        io.to(roomID).emit("user connect", { username, uid });
 
         io.to(socket.id).emit("host check", roomCount);
 

@@ -1,7 +1,6 @@
 import { CardColor } from "./cardEnums";
 
 export function validatePlayedCard(playedCard, activeCard) {
-    debugger;
     let allow = false;
     //if wild, allow
     if (playedCard.color === CardColor.Black) {

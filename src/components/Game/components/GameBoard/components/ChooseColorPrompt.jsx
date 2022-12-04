@@ -3,12 +3,28 @@ import { CardColor } from "../../../../../shared/functions/cardEnums.js";
 import { Button } from "../../../../../shared/styled/components/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 
-const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
+const ChooseColorPrompt = ({
+    setPlayedWild,
+    setActiveCard,
+    endTurn,
+    newPlayers,
+    newDiscardDeck,
+    newActiveCard,
+    newIsReverse,
+    turn,
+}) => {
     let colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
     function handleClick(e) {
-        setActiveCard((curr) => ({ value: curr.value, color: e.target.value }));
+        newActiveCard.current = { value: newActiveCard.current.value, color: e.target.value };
+        setActiveCard(newActiveCard.current);
         setPlayedWild(false);
-        endTurn();
+        endTurn(
+            newPlayers.current,
+            newDiscardDeck.current,
+            newActiveCard.current,
+            newIsReverse.current,
+            turn
+        );
     }
     return (
         <>
