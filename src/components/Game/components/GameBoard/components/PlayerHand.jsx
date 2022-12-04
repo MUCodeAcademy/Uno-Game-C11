@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
-import { removeCardFromHand, validatePlayedCard, playCard, shuffleDeck, CardValue, CardColor } from "../../../../../shared/functions";
+import {
+    removeCardFromHand,
+    validatePlayedCard,
+    playCard,
+    shuffleDeck,
+    CardValue,
+    CardColor,
+} from "../../../../../shared/functions";
 
 // import removeCardFromHand from "../../../../../shared/functions/removeCardFromHand";
 // import validatePlayedCard from "../../../../../shared/functions/validatePlayedCard";
@@ -8,9 +15,25 @@ import { removeCardFromHand, validatePlayedCard, playCard, shuffleDeck, CardValu
 // import shuffleDeck from "../../../../../shared/functions/shuffleDeck";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
+import { Button } from "../../../../../shared/styled/components/Button";
+import { theme } from "../../../../../shared/styled/themes/Theme";
 
 function PlayerHand({ endTurn, drawCard, endGame }) {
-    const { setPlayers, players, activeCard, setActiveCard, isGameActive, playDeck, setPlayDeck, discardDeck, setDiscardDeck, reshuffling, setReshuffling, turn, setIsReverse } = useGameContext();
+    const {
+        setPlayers,
+        players,
+        activeCard,
+        setActiveCard,
+        isGameActive,
+        playDeck,
+        setPlayDeck,
+        discardDeck,
+        setDiscardDeck,
+        reshuffling,
+        setReshuffling,
+        turn,
+        setIsReverse,
+    } = useGameContext();
 
     const [playedWild, setPlayedWild] = useState(false);
 
@@ -104,10 +127,22 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
     }, [playDeck?.length]);
 
     return (
-        <>
-            <button onClick={() => handleDrawClick()}>Draw Card</button>
-            {playedWild && <ChooseColorPrompt setPlayedWild={setPlayedWild} setActiveCard={setActiveCard} endTurn={endTurn} />}
-            <div style={{ display: "flex", flexFlow: "row wrap" }}>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyItems: "center",
+            }}
+        >
+            {playedWild && (
+                <ChooseColorPrompt
+                    setPlayedWild={setPlayedWild}
+                    setActiveCard={setActiveCard}
+                    endTurn={endTurn}
+                />
+            )}
+            <div style={{ display: "flex" }}>
                 {isGameActive &&
                     players[playerIndex] &&
                     players[playerIndex].hand.map((card, idx) => (
@@ -115,18 +150,28 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
                             style={{
                                 height: "50px",
                                 width: "50px",
-                                border: "1px solid black",
+                                margin: "0px 0px 0px 50px",
                             }}
                             value={card}
                             onClick={() => handlePlayCardClick(card)}
                             key={idx}
                         >
-                            <div>{card.color}</div>
-                            <div>{card.value}</div>
+                            <img
+                                src={require(`./cards/${card.color}_${card.value}.png`)}
+                                style={{ maxHeight: "200px" }}
+                            ></img>
                         </div>
                     ))}
             </div>
-        </>
+            <div style={{ margin: "150px 0px 0px 0px" }}>
+                {turn === playerIndex && (
+                    <h4 style={{ color: theme.palette.secondary.main }}>It's your turn!</h4>
+                )}
+            </div>
+            <div>
+                <Button onClick={() => handleDrawClick()}>Draw Card</Button>
+            </div>
+        </div>
     );
 }
 

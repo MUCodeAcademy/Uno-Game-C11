@@ -19,9 +19,9 @@ function GamePage() {
     //! need to render everyone except current player's hand count
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div>
             <h4>{`Room name: ${roomID}`}</h4>
-            <div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 {!isGameActive && (
                     <WaitingRoom
                         startGame={startGame}
@@ -29,6 +29,8 @@ function GamePage() {
                         sendMessage={sendMessage}
                     />
                 )}
+            </div>
+            <div>
                 {isGameActive && (
                     <GameBoard endTurn={endTurn} drawCard={drawCard} endGame={endGame} />
                 )}

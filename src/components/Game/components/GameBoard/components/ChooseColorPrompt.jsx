@@ -1,5 +1,7 @@
 import React from "react";
 import { CardColor } from "../../../../../shared/functions/cardEnums.js";
+import { Button } from "../../../../../shared/styled/components/Button";
+import { theme } from "../../../../../shared/styled/themes/Theme";
 
 const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
     let colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
@@ -10,12 +12,12 @@ const ChooseColorPrompt = ({ setPlayedWild, setActiveCard, endTurn }) => {
     }
     return (
         <>
-            <div>Pick a color</div>
+            <div style={{ backgroundColor: theme.palette.background.paper }}>Pick a color</div>
 
             {colors.map((c) => (
-                <button key={c} value={c} onClick={(e) => handleClick(e)}>
+                <Button key={c} value={c} onClick={(e) => handleClick(e)}>
                     {c}
-                </button>
+                </Button>
             ))}
         </>
     );

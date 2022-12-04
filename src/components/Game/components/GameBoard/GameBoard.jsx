@@ -24,10 +24,18 @@ function GameBoard({ endTurn, drawCard, endGame }) {
 
     return (
         <>
-            <div>GameBoard</div>
-
-            <PlayPile></PlayPile>
-            <PlayerHand endTurn={endTurn} drawCard={drawCard} endGame={endGame}></PlayerHand>
+            <div>
+                <div style={{ margin: "0px 50px 0px 0px" }}>
+                    <PlayPile></PlayPile>
+                </div>
+                <div style={{ margin: "50px 0px 0px 0px" }}>
+                    <PlayerHand
+                        endTurn={endTurn}
+                        drawCard={drawCard}
+                        endGame={endGame}
+                    ></PlayerHand>
+                </div>
+            </div>
         </>
     );
 }

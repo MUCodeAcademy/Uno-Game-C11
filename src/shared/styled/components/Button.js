@@ -3,6 +3,7 @@ import { ButtonUnstyled } from "@mui/base";
 
 export const Button = styled(ButtonUnstyled)(({ theme }) => ({
     maxWidth: "100px",
+    maxHeight: "auto",
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.secondary.main,
     border: "2px solid black",
