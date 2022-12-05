@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { auth } from "../../firebase.config";
 import { useGameContext } from "../context/GameContext";
-import { checkForEndGame } from "../functions";
+import { checkForEndGame, reshuffleDeck } from "../functions";
 
 import { CardValue } from "../functions";
 import nextTurn from "../functions/nextTurn";
@@ -100,34 +100,56 @@ const useSocketHook = (roomID, username) => {
             setIsGameActive(gameActive);
         });
 
-        socketRef.current.on("draw card", ({ players, playDeck, turn, draws }) => {
-            let cards = playDeck.splice(0, draws);
-            players[turn].hand = [...players[turn].hand, ...cards];
-            setPlayDeck(playDeck);
-            setPlayers(players);
-        });
+        socketRef.current.on(
+            "draw card",
+            ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
+                if (playDeck.length === 0) {
+                    if (discardDeck.length + playDeck < draws) {
+                        endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
+                    } else {
+                        players[turn].hand = [...players[turn].hand, ...cards];
+                        setPlayDeck(reshuffleDeck(activeCard, discardDeck));
+                        setPlayers(players);
+                    }
+                }
+                let cards = playDeck.splice(0, draws);
+                players[turn].hand = [...players[turn].hand, ...cards];
+                setPlayDeck(playDeck);
+                setPlayers(players);
+            }
+        );
 
-        socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
-            const message = checkForEndGame(players, playDeck, discardDeck);
-            //message will be null if end game conditions are not met
-            if (message) {
-                endGame(message);
+        socketRef.current.on(
+            "end turn",
+            ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
+                const message = checkForEndGame(players, playDeck, discardDeck);
+                //message will be null if end game conditions are not met
+                if (message) {
+                    endGame(message);
+                }
+                setDiscardDeck(discardDeck);
+                setActiveCard(activeCard);
+                setIsReverse(isReverse);
+                setPlayers(players);
+                const { next, skipped } = nextTurn(turn, isReverse, players, activeCard);
+                if (
+                    activeCard.value === CardValue.DrawTwo ||
+                    activeCard.value === CardValue.WildDrawFour ||
+                    activeCard.value === CardValue.Skip
+                ) {
+                    setTurn(skipped);
+                } else {
+                    setTurn(next);
+                }
+                if (
+                    activeCard.value === CardValue.DrawTwo ||
+                    activeCard.value === CardValue.WildDrawFour
+                ) {
+                    const draw = activeCard.value === CardValue.DrawTwo ? 2 : 4;
+                    drawCard(players, playDeck, next, draw, isReverse);
+                }
             }
-            setDiscardDeck(discardDeck);
-            setActiveCard(activeCard);
-            setIsReverse(isReverse);
-            setPlayers(players);
-            const { next, skipped } = nextTurn(turn, isReverse, players, activeCard);
-            if (activeCard.value === CardValue.DrawTwo || activeCard.value === CardValue.WildDrawFour || activeCard.value === CardValue.Skip) {
-                setTurn(skipped);
-            } else {
-                setTurn(next);
-            }
-            if (activeCard.value === CardValue.DrawTwo || activeCard.value === CardValue.WildDrawFour) {
-                const draw = activeCard.value === CardValue.DrawTwo ? 2 : 4;
-                drawCard(players, playDeck, next, draw, isReverse);
-            }
-        });
+        );
 
         socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
@@ -157,13 +179,6 @@ const useSocketHook = (roomID, username) => {
             playersToWaiting();
             initialState();
             setIsGameActive(false);
-        });
-
-        socketRef.current.on("reshuffle", ({ playDeck, turn }) => {
-            setDiscardDeck([]);
-            setPlayDeck(playDeck);
-            setTurn(turn);
-            setShuffling(false);
         });
 
         return () => socketRef.current?.disconnect();
@@ -204,11 +219,10 @@ const useSocketHook = (roomID, username) => {
             playDeck,
             turn,
             draws,
+            activeCard,
+            discardDeck,
+            isReverse,
         });
-    }
-
-    function reshuffle(playDeck, turn) {
-        socketRef.current.emit("reshuffle", { playDeck, turn });
     }
 
     return {
@@ -218,7 +232,6 @@ const useSocketHook = (roomID, username) => {
         endTurn,
         drawCard,
         startGame,
-        reshuffle,
     };
 };
 
