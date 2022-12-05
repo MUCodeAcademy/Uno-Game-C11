@@ -1,6 +1,6 @@
 import { CardColor, CardValue } from "./cardEnums";
 
-const buildDeck = () => {
+export const buildDeck = () => {
     const deck = [];
     const colors = [CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green];
     // const values = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "skip", "reverse", "draw2"];
@@ -21,10 +21,7 @@ const buildDeck = () => {
     });
     //4 each of wild and wild draw 4 cards
     for (let i = 0; i < 4; i++) {
-        deck.push(
-            { color: CardColor.Black, value: CardValue.Wild },
-            { color: CardColor.Black, value: CardValue.WildDrawFour }
-        );
+        deck.push({ color: CardColor.Black, value: CardValue.Wild }, { color: CardColor.Black, value: CardValue.WildDrawFour });
     }
     return deck;
 };

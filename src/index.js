@@ -4,14 +4,18 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import StateProvider from "./shared/context";
+import { ThemeProvider } from "@emotion/react";
+import { theme } from "./shared/styled/themes/Theme";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <React.StrictMode>
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
         <StateProvider>
             <App />
         </StateProvider>
-    </React.StrictMode>
+    </ThemeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

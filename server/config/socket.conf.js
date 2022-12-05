@@ -1,32 +1,48 @@
 function socketConfig(io) {
+  io.on("connection", (socket) => {
+    const { roomID, username, uid } = socket.handshake.query;
+    let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
+    socket.join(roomID);
 
-    io.on("connection", (socket) => {
-        const { roomID, username } = socket.handshake.query;
-        let roomCount = io.sockets.adapter.rooms.get(roomID)?.size
+    io.to(roomID).emit("user connect", { username, uid });
 
-        socket.join(roomID)
+    io.to(socket.id).emit("host check", roomCount);
 
-        io.to(roomID).emit("user join", { username })
+    socket.on("new message", ({ body }) => {
+      io.to(roomID).emit("new message", { username, body });
+    });
 
-        socket.on("new message", ({ body }) => {
-            io.to(roomID).emit("new message", { username, body });
+    socket.on(
+      "end turn",
+      ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
+        io.to(roomID).emit("end turn", {
+          players,
+          discardDeck,
+          activeCard,
+          isReverse,
+          turn,
+          playDeck,
         });
+      }
+    );
 
-        socket.on("send cards", (cards) => {
-            io.to(roomID).emit("send cards", cards)
-        })
+    socket.on("start game", ({ players, playDeck, activeCard }) => {
+      io.to(roomID).emit("start game", { players, playDeck, activeCard });
+    });
 
-        socket.on("end turn", () => {
-            io.to(roomID).emit("end turn")
-        })
+    socket.on("disconnect", () => {
+      io.to(roomID).emit("user disconnect", { username });
+    });
 
-        socket.on("start game", (start) => {
-            io.to(roomID).emit("start game", start)
-        })
+    socket.on("game active", (activeGame) => {
+      io.socket.broadcast.to(roomID).emit("game active", activeGame);
+    });
 
-        socket.on("disconnect", () => {
-            io.to(roomID).emit("user left", { username })
-        });
-    })
+    socket.on("draw card", ({ players, playDeck, turn, draws }) => {
+      io.to(roomID).emit("draw card", { players, playDeck, turn, draws });
+    });
+  });
+
+  //game socket
 }
-module.exports = socketConfig
+module.exports = socketConfig;

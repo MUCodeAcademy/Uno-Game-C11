@@ -1,42 +1,33 @@
-import { CardColor, CardValue } from "./cardEnums";
+// import { CardColor, CardValue } from "./cardEnums";
 
-function playCard(clickedCard, gameCard) {
-    let reverseDirection = false;
-    let skipTurn = false;
-    let gameColor = gameCard.color;
-    let drawCards = { draw: false, amount: 0 };
-    let playedWild = false;
+// function playCard(playedCard, activeCard) {
+//     let reverseDirection = false;
+//     let skipTurn = false;
+//     let playedWild = false;
 
-    //assuming validatePlayedCard has already been run and is true (allowed)
+//     //assuming validatePlayedCard has already been run and is true (allowed)
 
-    if (clickedCard.color === CardColor.Black) {
-        if (clickedCard.value === CardValue.Wild) {
-            playedWild = true;
-        } else {
-            //card is wild + 4
-            playedWild = true;
-            drawCards.draw = true;
-            drawCards.amount = 4;
-        }
-    } else {
-        if (clickedCard.color === gameCard.color) {
-            if (clickedCard.value === CardValue.Skip) {
-                skipTurn = true;
-            } else if (clickedCard.value === CardValue.Reverse) {
-                reverseDirection = true;
-            } else if (clickedCard.value === CardValue.DrawTwo) {
-                drawCards.draw = true;
-                drawCards.amount = 2;
-            }
-        }
-        //if color doesn't match, val matches (already validated)
-        else {
-            //it's a number card, change game color
-            gameColor = clickedCard.color;
-        }
-    }
+//     if (playedCard.color === CardColor.Black) {
+//         if (playedCard.value === CardValue.Wild) {
+//             playedWild = true;
+//         } else {
+//             //card is wild + 4
+//             playedWild = true;
+//             skipTurn = true;
+//         }
+//     } else {
+//         if (playedCard.color === activeCard.color) {
+//             if (playedCard.value === CardValue.Skip) {
+//                 skipTurn = true;
+//             } else if (playedCard.value === CardValue.Reverse) {
+//                 reverseDirection = true;
+//             } else if (playedCard.value === CardValue.DrawTwo) {
+//                 skipTurn = true;
+//             }
+//         }
+//     }
 
-    return { reverseDirection, skipTurn, gameColor, drawCards, playedWild };
-}
+//     return { reverseDirection, playedWild };
+// }
 
-export default playCard;
+// export default playCard;

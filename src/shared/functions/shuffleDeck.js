@@ -1,4 +1,4 @@
-function shuffleDeck(deck) {
+export function shuffleDeck(deck) {
     let currentIndex = deck.length;
     let randomIndex;
 

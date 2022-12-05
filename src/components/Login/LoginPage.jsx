@@ -3,6 +3,8 @@ import { auth } from "../../firebase.config";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../shared/context";
+import { ButtonUnstyled } from "@mui/base";
+import { Button } from "../../shared/styled/components/Button";
 
 const provider = new GoogleAuthProvider();
 
@@ -23,10 +25,9 @@ function LoginPage() {
     }
 
     return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <div>LoginPage</div>
-            <button onClick={() => signIn()}>Sign in with Google</button>
-            {!user && <div>No current user</div>}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            {!user && <div>Sign in to play!</div>}
+            <Button onClick={() => signIn()}>Sign in with Google</Button>
             {user && <div>Signed in as {user.displayName}</div>}
         </div>
     );
