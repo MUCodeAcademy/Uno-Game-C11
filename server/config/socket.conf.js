@@ -12,8 +12,16 @@ function socketConfig(io) {
       io.to(roomID).emit("new message", { username, body });
     });
 
-        socket.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
-            io.to(roomID).emit("end turn", { players, discardDeck, activeCard, isReverse, turn,playDeck });
+    socket.on(
+      "end turn",
+      ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
+        io.to(roomID).emit("end turn", {
+          players,
+          discardDeck,
+          activeCard,
+          isReverse,
+          turn,
+          playDeck,
         });
       }
     );
@@ -30,13 +38,12 @@ function socketConfig(io) {
       io.socket.broadcast.to(roomID).emit("game active", activeGame);
     });
 
-        socket.on("draw card", ({players, playDeck, turn, draws}) => {
-            console.log(draws);
-            io.to(roomID).emit("draw card", ({players, playDeck, turn, draws}));
-        });
+    socket.on("draw card", ({ players, playDeck, turn, draws }) => {
+      console.log(draws);
+      io.to(roomID).emit("draw card", { players, playDeck, turn, draws });
     });
   });
-
-  //game socket
 }
+
+//game socket
 module.exports = socketConfig;
