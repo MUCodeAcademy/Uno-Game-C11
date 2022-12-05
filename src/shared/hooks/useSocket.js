@@ -192,6 +192,11 @@ const useSocketHook = (roomID, username) => {
             }
         });
 
+        socketRef.current.on("reshuffle", ({ playDeck, turn }) => {
+            setPlayDeck(playDeck);
+            setTurn(turn);
+        });
+
         return () => socketRef.current?.disconnect();
     }, [roomID, username]);
 
@@ -230,6 +235,8 @@ const useSocketHook = (roomID, username) => {
     function drawCard(players, playDeck, turn, draws) {
         socketRef.current.emit("draw card", { players, playDeck, turn, draws });
     }
+
+    function shuffle(playDeck, turn) {}
 
     return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
 };
