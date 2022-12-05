@@ -24,7 +24,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         isGameActive,
         playDeck,
         discardDeck,
-        setReshuffling,
+        setShuffling,
         turn,
     } = useGameContext();
     const [playedWild, setPlayedWild] = useState(false);
@@ -40,6 +40,15 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         if (turn === playerIndex && !playedWild) {
             drawCard(players, playDeck, turn);
         }
+        console.log(
+            "player hand",
+            players[playerIndex].hand.length,
+            "deck",
+            playDeck.length,
+            "discard deck",
+            discardDeck.length
+        );
+
         // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
         //     players,
         //     playerIndex,
@@ -74,9 +83,9 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
 
     useEffect(() => {
         //TODO build shuffle socket and then implement here or close to here or whatever you feel like doing
-        if (playDeck?.length === 0) {
+        if (playDeck?.length === 1) {
             if (discardDeck.length > 0) {
-                setReshuffling(true);
+                setShuffling(true);
                 //shuffle needs to
                 reshuffle(reshuffleDeck(playDeck, discardDeck, activeCard));
                 //  setPlayDeck(shuffleDeck(discardDeck))
@@ -145,7 +154,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                             key={idx}
                         >
                             <img
-                                src={require(`./cards/${card.color}_${card.value}.png`)}
+                                src={require(`./cards/${card?.color}_${card?.value}.png`)}
                                 style={{ maxHeight: "200px" }}
                             ></img>
                         </div>
