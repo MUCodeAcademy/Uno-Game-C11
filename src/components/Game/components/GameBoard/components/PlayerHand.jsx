@@ -15,7 +15,6 @@ import { Button } from "../../../../../shared/styled/components/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 import Card from "./Card";
 
-
 function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const {
         players,
@@ -26,7 +25,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         discardDeck,
         setShuffling,
         isReverse,
-        discardDeck,
         turn,
     } = useGameContext();
     const [playedWild, setPlayedWild] = useState(false);
@@ -35,10 +33,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const newDiscardDeck = useRef();
     const newIsReverse = useRef();
     const newActiveCard = useRef();
-
-    const isPlayersTurn = useMemo(() => {
-        return turn === playerIndex;
-    });
 
     let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
     function handleDrawClick() {
@@ -55,6 +49,9 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         // setPlayers(newPlayers);
     }
 
+    const isPlayersTurn = useMemo(() => {
+        return turn === playerIndex;
+    });
     function handlePlayCardClick(card) {
         if (turn === playerIndex && !playedWild) {
             if (validatePlayedCard(card, activeCard)) {
@@ -88,7 +85,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 //shuffle needs to
                 reshuffle(reshuffleDeck(playDeck, discardDeck, activeCard));
                 //  setPlayDeck(shuffleDeck(discardDeck))
-
             } else {
                 //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
                 endGame(false, "Stalemate");
@@ -161,8 +157,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                             ></img>
                         </div>
                     ))}
-
-
             </div>
             <div style={{ margin: "150px 0px 0px 0px" }}>
                 {turn === playerIndex && (
@@ -171,7 +165,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
             </div>
             <div>
                 <Button onClick={() => handleDrawClick()}>Draw Card</Button>
-
             </div>
         </div>
     );
