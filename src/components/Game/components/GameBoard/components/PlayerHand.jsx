@@ -7,6 +7,7 @@ import {
     shuffleDeck,
     CardValue,
     CardColor,
+    needsReshuffle,
 } from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
@@ -75,6 +76,7 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
             if (discardDeck.length > 0) {
                 setReshuffling(true);
                 //shuffle needs to
+
                 //  setPlayDeck(shuffleDeck(discardDeck))
                 //  setDiscardDeck([])
                 //  setReshuffling(false)
