@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { auth } from "../../firebase.config";
-import { useUserContext } from "../context";
 import { useGameContext } from "../context/GameContext";
+import { checkForEndGame } from "../functions";
+
 import { CardValue } from "../functions";
-import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
 //TODO: check for win
+
 
 const useSocketHook = (roomID, username) => {
     const {
@@ -108,12 +108,15 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
+
         socketRef.current.on(
             "end turn",
             ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
-                if (checkForWin(players, turn)) {
-                    endGame(players);
-                }
+                 const message = checkForEndGame(players, playDeck, discardDeck);
+            //message will be null if end game conditions are not met
+            if (message) {
+                endGame(message);
+            }
                 setDiscardDeck(discardDeck);
                 setActiveCard(activeCard);
                 setIsReverse(isReverse);
@@ -136,7 +139,7 @@ const useSocketHook = (roomID, username) => {
                     drawCard(players, playDeck, next, draw, isReverse);
                 }
             }
-        );
+        });
 
         socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
@@ -161,39 +164,11 @@ const useSocketHook = (roomID, username) => {
             onDisconnect();
         });
 
-        socketRef.current.on("end game", ({ players, playDeck, discardDeck }) => {
-            //search for is host in array
-            if (checkForWin(players).length) {
-                setMessages((curr) => [
-                    ...curr,
-                    {
-                        body: `${checkForWin(players)} has won!`,
-                    },
-                ]);
-                playersToWaiting();
-                initialState();
-                setIsGameActive(false);
-            } else if (!playDeck && !discardDeck) {
-                setMessages((curr) => [
-                    ...curr,
-                    {
-                        body: "Stalemate. Get better.",
-                    },
-                ]);
-                playersToWaiting();
-                initialState();
-                setIsGameActive(false);
-            } else if (!players.find((p) => p.isHost)) {
-                setMessages((curr) => [
-                    ...curr,
-                    {
-                        body: "Game has ended due to host disconnect, all players will now return to waiting area",
-                    },
-                ]);
-                playersToWaiting();
-                initialState();
-                setIsGameActive(false);
-            }
+        socketRef.current.on("end game", ({ message }) => {
+            setMessages((curr) => [...curr, { body: message }]);
+            playersToWaiting();
+            initialState();
+            setIsGameActive(false);
         });
 
         socketRef.current.on("reshuffle", ({ playDeck, turn }) => {
@@ -218,11 +193,9 @@ const useSocketHook = (roomID, username) => {
         });
     }
 
-    function endGame(players, playDeck, discardDeck) {
+    function endGame(message) {
         socketRef.current.emit("end game", {
-            players,
-            playDeck,
-            discardDeck,
+            message,
         });
     }
 
