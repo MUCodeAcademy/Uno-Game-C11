@@ -8,13 +8,15 @@ import {
     CardValue,
     CardColor,
     needsReshuffle,
+    reshuffle,
+    reshuffleDeck,
 } from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
 import { Button } from "../../../../../shared/styled/components/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 
-function PlayerHand({ endTurn, drawCard, endGame }) {
+function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const {
         players,
         activeCard,
@@ -76,10 +78,8 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
             if (discardDeck.length > 0) {
                 setReshuffling(true);
                 //shuffle needs to
-
+                reshuffle(reshuffleDeck(playDeck, discardDeck, activeCard));
                 //  setPlayDeck(shuffleDeck(discardDeck))
-                //  setDiscardDeck([])
-                //  setReshuffling(false)
             } else {
                 //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
                 endGame(false, "Stalemate");

@@ -1,4 +1,4 @@
-export function reshuffle(playDeck, discardDeck, activeCard) {
+export function reshuffleDeck(playDeck, discardDeck, activeCard) {
     let curIdx = discardDeck.length;
     let rdmIdx;
 
@@ -9,7 +9,10 @@ export function reshuffle(playDeck, discardDeck, activeCard) {
     }
 
     //remove activeCard from reshuffled play deck
-    playDeck = playDeck.find(activeCard);
+    let idx = playDeck.find(activeCard);
+    playDeck.splice(idx);
 
     return playDeck;
 }
+
+export default reshuffleDeck;

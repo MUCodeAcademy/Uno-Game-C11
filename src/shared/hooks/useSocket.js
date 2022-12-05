@@ -82,7 +82,7 @@ const useSocketHook = (roomID, username) => {
     };
 
     useEffect(() => {
-        socketRef.current = io("10.200.224.166:8080", {
+        socketRef.current = io("10.200.224.31:8080", {
             query: {
                 username,
                 roomID,
@@ -196,6 +196,7 @@ const useSocketHook = (roomID, username) => {
             setDiscardDeck([]);
             setPlayDeck(playDeck);
             setTurn(turn);
+            setShuffling(false);
         });
 
         return () => socketRef.current?.disconnect();
@@ -237,11 +238,11 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("draw card", { players, playDeck, turn, draws });
     }
 
-    function shuffle(playDeck, turn) {
+    function reshuffle(playDeck, turn) {
         socketRef.current.emit("reshuffle", { playDeck, turn });
     }
 
-    return { messages, sendMessage, endGame, endTurn, drawCard, startGame, shuffle };
+    return { messages, sendMessage, endGame, endTurn, drawCard, startGame, reshuffle };
 };
 
 export default useSocketHook;
