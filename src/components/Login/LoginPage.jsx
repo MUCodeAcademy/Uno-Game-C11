@@ -16,7 +16,7 @@ function LoginPage() {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
-            console.log(user);
+            // console.log(user);
             setUser(user);
         } catch (err) {
             console.error(err);

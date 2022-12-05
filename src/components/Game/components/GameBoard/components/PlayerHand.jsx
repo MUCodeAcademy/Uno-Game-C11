@@ -31,17 +31,25 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
 
   const [playedWild, setPlayedWild] = useState(false);
   //! this wasn't working because playerhand is rerendering and setting these back to undefined
-  const newPlayers = useRef();
-  const newDiscardDeck = useRef();
-  const newIsReverse = useRef();
-  const newActiveCard = useRef();
+  const newPlayers = useRef(players);
+  const newDiscardDeck = useRef(discardDeck);
+  const newIsReverse = useRef(isReverse);
+  const newActiveCard = useRef(activeCard);
 
   let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
 
   function handleDrawClick() {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
     if (turn === playerIndex && !playedWild) {
-      drawCard(players, playDeck, turn, 1);
+      drawCard(
+        players,
+        playDeck,
+        turn,
+        1,
+        newActiveCard.current,
+        newDiscardDeck.current,
+        newIsReverse.current
+      );
     }
     // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
     //     players,
@@ -51,12 +59,19 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     // setPlayDeck(newPlayDeck);
     // setPlayers(newPlayers);
   }
+  // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
+  //     players,
+  //     playerIndex,
+  //     playDeck
+  // );
+  // setPlayDeck(newPlayDeck);
+  // setPlayers(newPlayers);
 
   const isPlayersTurn = useMemo(() => {
     return turn === playerIndex;
   });
   function handlePlayCardClick(card) {
-    console.log(card);
+    // console.log(discardDeck);
     if (turn === playerIndex && !playedWild) {
       if (validatePlayedCard(card, activeCard)) {
         newPlayers.current = removeCardFromHand(players, playerIndex, card);
@@ -80,40 +95,19 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     }
   }
 
-  useEffect(() => {
-    //TODO build shuffle socket and then implement here or close to here or whatever you feel like doing
+  // useEffect(() => {
+  //     //TODO build shuffle socket and then implement here or close to here or whatever you feel like doing
 
-    if (playDeck?.length === 0) {
-      if (discardDeck.length > 0) {
-      } else {
-        //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
-        endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
-        // endGame(false, "Stalemate");
-        //? may want to send either loser or winner
-        //? loser:
-        // let loser = "";
-        // let mostCards = 0;
-        // players.forEach((player) => {
-        //     if (player.hand.length > mostCards) {
-        //         mostCards = player.hand.length;
-        //         loser = player.name;
-        //     }
-        // });
-        // endGame(false, `Stalemate: ${loser} had the fewest cards (${mostCards}).`);
-        // //? winner:
-        // let winner = "";
-        // let fewestCards = 108;
-        // players.forEach((player) => {
-        //     if (player.hand.length < fewestCards) {
-        //         fewestCards = player.hand.length;
-        //         winner = player.name;
-        //     }
-        // });
-        // endGame(false, `Stalemate: ${winner} had the fewest cards (${fewestCards}).`);
-      }
-    }
-  }, [playDeck?.length]);
-  console.log(turn);
+  //     if (playDeck?.length === 0) {
+  //         if (discardDeck.length > 0) {
+  //         } else {
+  //             //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
+  //             endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
+
+  //         }
+  //     }
+  // }, [playDeck?.length]);
+  // console.log(turn);
 
   return (
     <div
@@ -158,29 +152,27 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
             />
           ))}
       </div>
-      {isPlayersTurn && (
-        <>
-          <div>
-            <h4 style={{ color: theme.palette.secondary.main }}>
-              It's your turn!
-            </h4>
-          </div>
+      <div>
+        {isPlayersTurn && (
+          <h4 style={{ color: theme.palette.secondary.main }}>
+            It's your turn!
+          </h4>
+        )}
+      </div>
 
-          <div>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                handleDrawClick();
-              }}
-            >
-              Draw Card
-            </Button>
-            {/* <Button onClick={() => handleDrawClick()}>Draw Card</Button> */}
-          </div>
-        </>
-      )}
+      <div>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            handleDrawClick();
+          }}
+        >
+          Draw Card
+        </Button>
+        {/* <Button onClick={() => handleDrawClick()}>Draw Card</Button> */}
+      </div>
     </div>
   );
 }
