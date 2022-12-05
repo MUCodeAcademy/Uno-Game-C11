@@ -1,6 +1,8 @@
 import { CardColor } from "./cardEnums";
 
 export function validatePlayedCard(playedCard, activeCard) {
+  console.log(activeCard);
+  console.log(playedCard);
   let allow = false;
   //if wild, allow
   if (playedCard.color === CardColor.Black) {
@@ -11,10 +13,11 @@ export function validatePlayedCard(playedCard, activeCard) {
       allow = true;
     } else {
       //if color doesn't match but value does, allow
-      if ((playedCard.value = activeCard.value)) {
+      if (playedCard.value === activeCard.value) {
         allow = true;
       }
     }
   }
+  console.log(allow);
   return allow;
 }
