@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
 import {
     removeCardFromHand,
@@ -7,14 +7,14 @@ import {
     shuffleDeck,
     CardValue,
     CardColor,
-    needsReshuffle,
-    reshuffle,
     reshuffleDeck,
 } from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
 import { Button } from "../../../../../shared/styled/components/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
+import Card from "./Card";
+
 
 function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const {
@@ -25,6 +25,8 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         playDeck,
         discardDeck,
         setShuffling,
+        isReverse,
+        discardDeck,
         turn,
     } = useGameContext();
     const [playedWild, setPlayedWild] = useState(false);
@@ -34,52 +36,59 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const newIsReverse = useRef();
     const newActiveCard = useRef();
 
-  let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
-  function handleDrawClick() {
-    //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
-    if (turn === playerIndex && !playedWild) {
-      drawCard(players, playDeck, turn, 1);
-    }
-    // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
-    //     players,
-    //     playerIndex,
-    //     playDeck
-    // );
-    // setPlayDeck(newPlayDeck);
-    // setPlayers(newPlayers);
-  }
+    const isPlayersTurn = useMemo(() => {
+        return turn === playerIndex;
+    });
 
-  function handlePlayCardClick(card) {
-    if (turn === playerIndex && !playedWild) {
-      if (validatePlayedCard(card, activeCard)) {
-        newPlayers.current = removeCardFromHand(players, playerIndex, card);
-        newActiveCard.current = card;
-        newIsReverse.current =
-          card.value === CardValue.Reverse ? !isReverse : isReverse;
-        newDiscardDeck.current = [...discardDeck, card];
-        setPlayedWild(card.color === CardColor.Black);
-        //if wild played, wait for color picker prompt before ending turn
-        if (card.color !== CardColor.Black) {
-          endTurn(
-            newPlayers.current,
-            newDiscardDeck.current,
-            newActiveCard.current,
-            newIsReverse.current,
-            turn,
-            playDeck
-          );
+    let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
+    function handleDrawClick() {
+        //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
+        if (turn === playerIndex && !playedWild) {
+            drawCard(players, playDeck, turn, 1);
         }
-      }
+        // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
+        //     players,
+        //     playerIndex,
+        //     playDeck
+        // );
+        // setPlayDeck(newPlayDeck);
+        // setPlayers(newPlayers);
+    }
+
+    function handlePlayCardClick(card) {
+        if (turn === playerIndex && !playedWild) {
+            if (validatePlayedCard(card, activeCard)) {
+                newPlayers.current = removeCardFromHand(players, playerIndex, card);
+                newActiveCard.current = card;
+                newIsReverse.current =
+                    card.value === CardValue.Reverse ? !isReverse : isReverse;
+                newDiscardDeck.current = [...discardDeck, card];
+                setPlayedWild(card.color === CardColor.Black);
+                //if wild played, wait for color picker prompt before ending turn
+                if (card.color !== CardColor.Black) {
+                    endTurn(
+                        newPlayers.current,
+                        newDiscardDeck.current,
+                        newActiveCard.current,
+                        newIsReverse.current,
+                        turn,
+                        playDeck
+                    );
+                }
+            }
+        }
     }
 
     useEffect(() => {
         //TODO build shuffle socket and then implement here or close to here or whatever you feel like doing
-        if (playDeck?.length === 1) {
+
+        if (playDeck?.length === 0) {
             if (discardDeck.length > 0) {
                 setShuffling(true);
                 //shuffle needs to
                 reshuffle(reshuffleDeck(playDeck, discardDeck, activeCard));
                 //  setPlayDeck(shuffleDeck(discardDeck))
+
             } else {
                 //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
                 endGame(false, "Stalemate");
@@ -95,19 +104,20 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 // });
                 // endGame(false, `Stalemate: ${loser} had the fewest cards (${mostCards}).`);
 
-        // //? winner:
-        // let winner = "";
-        // let fewestCards = 108;
-        // players.forEach((player) => {
-        //     if (player.hand.length < fewestCards) {
-        //         fewestCards = player.hand.length;
-        //         winner = player.name;
-        //     }
-        // });
-        // endGame(false, `Stalemate: ${winner} had the fewest cards (${fewestCards}).`);
-      }
-    }
-  }, [playDeck?.length]);
+                // //? winner:
+                // let winner = "";
+                // let fewestCards = 108;
+                // players.forEach((player) => {
+                //     if (player.hand.length < fewestCards) {
+                //         fewestCards = player.hand.length;
+                //         winner = player.name;
+                //     }
+                // });
+                // endGame(false, `Stalemate: ${winner} had the fewest cards (${fewestCards}).`);
+            }
+        }
+    }, [playDeck?.length]);
+    console.log(turn);
 
     return (
         <div
@@ -122,6 +132,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 <ChooseColorPrompt
                     setPlayedWild={setPlayedWild}
                     setActiveCard={setActiveCard}
+                    playDeck={playDeck}
                     endTurn={endTurn}
                     newPlayers={newPlayers}
                     newDiscardDeck={newDiscardDeck}
@@ -150,21 +161,20 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                             ></img>
                         </div>
                     ))}
+
+
             </div>
-          ))}
-      </div>
-      <div style={{ margin: "150px 0px 0px 0px" }}>
-        {turn === playerIndex && (
-          <h4 style={{ color: theme.palette.secondary.main }}>
-            It's your turn!
-          </h4>
-        )}
-      </div>
-      <div>
-        <Button onClick={() => handleDrawClick()}>Draw Card</Button>
-      </div>
-    </div>
-  );
+            <div style={{ margin: "150px 0px 0px 0px" }}>
+                {turn === playerIndex && (
+                    <h4 style={{ color: theme.palette.secondary.main }}>It's your turn!</h4>
+                )}
+            </div>
+            <div>
+                <Button onClick={() => handleDrawClick()}>Draw Card</Button>
+
+            </div>
+        </div>
+    );
 }
 
 export default PlayerHand;
