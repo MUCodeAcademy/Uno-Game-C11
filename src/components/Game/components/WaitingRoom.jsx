@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { useGameContext } from "../../../shared/context/GameContext";
 import newGame from "../../../shared/functions/newGame";
 import ChatRoom from "../shared/Chat/ChatRoom";
-import { Button } from "../../../shared/styled/components/Button";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 export function WaitingRoom({ startGame, messages, sendMessage }) {
-  const { isHost, players, setPlayers, setPlayDeck, setActiveCard } =
-    useGameContext();
+  const { isHost, players } = useGameContext();
 
   function handleClick() {
     let { newDeck, players: newPlayers, gameStartCard } = newGame(players);
-    console.log(players.length);
-    //!is this the set players that is working?
     startGame(newDeck, newPlayers, gameStartCard);
   }
 
@@ -19,8 +17,13 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
     if (isHost) {
       return (
         <div>
-          <div>Press Start When Ready.</div>
+          <Typography variant="h6" textAlign="center">
+            Press Start When Ready
+          </Typography>
           <Button
+            fullWidth
+            variant="contained"
+            color="primary"
             onClick={() => {
               handleClick();
             }}
@@ -31,7 +34,13 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
       );
     }
 
-    return <div>Waiting for host to start the game.</div>;
+    return (
+      <div>
+        <Typography variant="h6" textAlign="center">
+          Waiting For Host To Start Game
+        </Typography>
+      </div>
+    );
   }
 
   return (
