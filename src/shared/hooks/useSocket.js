@@ -8,7 +8,6 @@ import { CardValue } from "../functions";
 import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
-//TODO: force draw 2/4
 //TODO: check for win
 
 const useSocketHook = (roomID, username) => {
