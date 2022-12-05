@@ -9,3 +9,4 @@ export * from "./playCard";
 export * from "./removeCardFromHand";
 export * from "./shuffleDeck";
 export * from "./validatePlayedCard";
+export * from "./reshuffleDeck";

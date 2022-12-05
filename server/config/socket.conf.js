@@ -41,9 +41,10 @@ function socketConfig(io) {
 
         socket.on("draw card", ({ players, playDeck, turn, draws }) => {
             io.to(roomID).emit("draw card", { players, playDeck, turn, draws });
+
+        socket.on("reshuffle", ({ playDeck, turn }) => {
+            io.to(roomID).emit("reshuffle", { playDeck, turn });
         });
     });
-
-    //game socket
 }
 module.exports = socketConfig;
