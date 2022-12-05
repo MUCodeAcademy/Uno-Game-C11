@@ -69,24 +69,6 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
         }
     }
 
-    // useEffect(() => {
-    //     //if player turn and a draw card was played, auto draw cards & end turn
-    //     if (turn === playerIndex) {
-    //         if (activeCard.value === CardValue.DrawTwo) {
-    //             drawCard();
-    //             drawCard();
-    //             endTurn();
-    //         }
-    //         if (activeCard.validatePlayedCard === CardValue.WildDrawFour) {
-    //             drawCard();
-    //             drawCard();
-    //             drawCard();
-    //             drawCard();
-    //             endTurn();
-    //         }
-    //     }
-    // }, [turn]);
-
     useEffect(() => {
         //TODO build shuffle socket and then implement here or close to here or whatever you feel like doing
         if (playDeck?.length === 0) {
