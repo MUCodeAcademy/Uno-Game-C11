@@ -36,6 +36,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         return turn === playerIndex;
     });
     function handlePlayCardClick(card) {
+        console.log(card);
         if (turn === playerIndex && !playedWild) {
             if (validatePlayedCard(card, activeCard)) {
                 newPlayers.current = removeCardFromHand(players, playerIndex, card);

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 export function Card({ isTurn, card, handlePlayCardClick }) {
     return (
-        <Div isTurn={isTurn} value={card} onClick={handlePlayCardClick}>
+        <Div isTurn={isTurn} value={card} onClick={() => handlePlayCardClick(card)}>
             <Img src={require(`./cards/${card.color}_${card.value}.png`)} />
         </Div>
     );
