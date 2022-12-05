@@ -14,7 +14,9 @@ function LobbyPage() {
     const navigate = useNavigate();
     const { roomID } = useParams();
     const socketRef = useRef(null);
-    const [room, setRoom] = useState("hi")
+    const [room, setRoom] = useState([])
+    const [roomNum, setRoomNum] = useState("")
+    let x = "hi"
     useEffect(() => {
         socketRef.current = io("localhost:8080", {
             query: {
@@ -22,17 +24,16 @@ function LobbyPage() {
                 roomID: roomID,
                 uid: auth.currentUser?.uid,
             },
-        });
+        })
         socketRef.current.on("rooms", (rooms) => {
-            console.log("skgb")
             setRoom(rooms)
+            console.log(room);
         })
 
 
 
     }, [])
-
-    console.log(room)
+    console.log(room);
     return (
         <>
             <div>
@@ -40,7 +41,7 @@ function LobbyPage() {
                 <Button onClick={() => { navigate("/GameRoom/static") }
                 }>Join static room</Button>
             </div>
-            <div>{room?.map((rooms) => <li key={rooms}>{rooms}</li>)}</div>
+            <div>{Array.from(room)?.map((rooms) => <li key={rooms}>{rooms}</li>)}</div>
             <div
                 style={{
                     display: "flex",
@@ -85,10 +86,10 @@ function LobbyPage() {
                     <h4>Create your own game</h4>
                     <div>
                         <label htmlFor="roomname">Room name</label>
-                        <Input label="roomname"></Input>
+                        <Input label="roomname" value={roomNum} onChange={(e) => setRoomNum(e.target.value)}></Input>
                     </div>
                     <div>
-                        <Button>Create Room</Button>
+                        <Button onClick={() => navigate(`/GameRoom/${roomNum}`)} >Create Room</Button>
                     </div>
                 </div>
             </div>
