@@ -8,17 +8,13 @@ import { theme } from "../../../../../shared/styled/themes/Theme";
 import Card from "./Card";
 
 function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
-    const { players, activeCard, setActiveCard, isGameActive, playDeck, setShuffling, isReverse, discardDeck, turn } = useGameContext();
+    const { players, activeCard, setActiveCard, isGameActive, playDeck, discardDeck, setShuffling, isReverse, turn } = useGameContext();
     const [playedWild, setPlayedWild] = useState(false);
     //! this wasn't working because playerhand is rerendering and setting these back to undefined
     const newPlayers = useRef();
     const newDiscardDeck = useRef();
     const newIsReverse = useRef();
     const newActiveCard = useRef();
-
-    const isPlayersTurn = useMemo(() => {
-        return turn === playerIndex;
-    });
 
     let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
 
@@ -36,6 +32,9 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
         // setPlayers(newPlayers);
     }
 
+    const isPlayersTurn = useMemo(() => {
+        return turn === playerIndex;
+    });
     function handlePlayCardClick(card) {
         if (turn === playerIndex && !playedWild) {
             if (validatePlayedCard(card, activeCard)) {

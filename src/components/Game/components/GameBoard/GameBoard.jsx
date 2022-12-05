@@ -8,7 +8,7 @@ import { auth } from "../../../../firebase.config";
 import styled from "@emotion/styled";
 
 function GameBoard({ endTurn, drawCard, endGame, reshuffle }) {
-    const { players } = useGameContext();
+    const { players, turn } = useGameContext();
 
     const activePlayer = useMemo(() => {
         return players[turn];
