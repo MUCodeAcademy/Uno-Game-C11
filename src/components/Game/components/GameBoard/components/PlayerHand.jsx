@@ -35,7 +35,7 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
   function handleDrawClick() {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
     if (turn === playerIndex && !playedWild) {
-      drawCard(players, playDeck, turn);
+      drawCard(players, playDeck, turn, 1);
     }
     // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
     //     players,

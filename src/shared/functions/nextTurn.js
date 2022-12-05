@@ -1,8 +1,8 @@
 export function nextTurn(turn, isReverse, players, activeCard) {
-  let plusOne = isReverse ? turn - 1 : turn + 1;
-  let next = checkOverflow(plusOne, players.length);
-  let skipped = checkOverflow(nextTurn + plusOne, players.length);
-
+  let plusOne = isReverse ? -1 : 1;
+  let next = checkOverflow(turn + plusOne, players.length);
+  let skipped = checkOverflow(turn + plusOne * 2, players.length);
+  console.log(next, skipped);
   return { next, skipped };
 }
 

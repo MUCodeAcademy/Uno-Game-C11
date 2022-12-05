@@ -83,7 +83,7 @@ const useSocketHook = (roomID, username) => {
   };
 
   useEffect(() => {
-    socketRef.current = io("10.200.224.166:8080", {
+    socketRef.current = io("10.200.224.31:8080", {
       query: {
         username,
         roomID,
@@ -104,7 +104,7 @@ const useSocketHook = (roomID, username) => {
 
     socketRef.current.on("draw card", ({ players, playDeck, turn, draws }) => {
       let cards = playDeck.splice(0, draws);
-      players[turn].hand = [...player[turn].hands, cards];
+      players[turn].hand = [...players[turn].hand, ...cards];
       setPlayDeck(playDeck);
       setPlayers(players);
     });
@@ -119,12 +119,11 @@ const useSocketHook = (roomID, username) => {
         setActiveCard(activeCard);
         setIsReverse(isReverse);
         setPlayers(players);
-        let { next, skipped } = nextTurn(
+        const { next, skipped } = nextTurn(
           turn,
           isReverse,
           players,
-          activeCard,
-          skippedTurn
+          activeCard
         );
         if (
           activeCard.value === CardValue.DrawTwo ||
@@ -139,8 +138,8 @@ const useSocketHook = (roomID, username) => {
           activeCard.value === CardValue.DrawTwo ||
           activeCard.value === CardValue.WildDrawFour
         ) {
-          draw = activeCard.value === CardValue.DrawTwo ? 2 : 4;
-          drawCard(players, playDeck, skipped, draw, isReverse);
+          const draw = activeCard.value === CardValue.DrawTwo ? 2 : 4;
+          drawCard(players, playDeck, next, draw, isReverse);
         }
       }
     );
@@ -253,7 +252,6 @@ const useSocketHook = (roomID, username) => {
       playDeck,
       turn,
       draws,
-      isReverse,
     });
   }
 
