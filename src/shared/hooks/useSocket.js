@@ -4,10 +4,10 @@ import io from "socket.io-client";
 import { auth } from "../../firebase.config";
 import { useUserContext } from "../context";
 import { useGameContext } from "../context/GameContext";
+import { CardValue } from "../functions";
 import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
-//TODO: force draw 2/4
 //TODO: check for win
 
 const useSocketHook = (roomID, username) => {
@@ -82,7 +82,7 @@ const useSocketHook = (roomID, username) => {
   };
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:8080", {
+    socketRef.current = io("10.200.224.31:8080", {
       query: {
         username,
         roomID,
@@ -102,16 +102,10 @@ const useSocketHook = (roomID, username) => {
     });
 
     socketRef.current.on("draw card", ({ players, playDeck, turn, draws }) => {
-      let card = playDeck.pop();
-      players[turn].hand.push(card);
+      let cards = playDeck.splice(0, draws);
+      players[turn].hand = [...players[turn].hand, ...cards];
       setPlayDeck(playDeck);
       setPlayers(players);
-      if (draws === "2") {
-        let card2 = playDeck.pop();
-        players[turn].hand.push(card2);
-        setPlayDeck(playDeck);
-        setPlayers(players);
-      }
     });
 
     socketRef.current.on(
@@ -124,12 +118,27 @@ const useSocketHook = (roomID, username) => {
         setActiveCard(activeCard);
         setIsReverse(isReverse);
         setPlayers(players);
-        let turns = nextTurn(turn, isReverse, players, activeCard);
-        setTurn(nextTurn(turn, isReverse, players, activeCard));
-        let draw;
-        if (activeCard.value === "draw2") {
-          draw = "2";
-          drawCard(players, playDeck, turns, draw);
+        const { next, skipped } = nextTurn(
+          turn,
+          isReverse,
+          players,
+          activeCard
+        );
+        if (
+          activeCard.value === CardValue.DrawTwo ||
+          activeCard.value === CardValue.WildDrawFour ||
+          activeCard.value === CardValue.Skip
+        ) {
+          setTurn(skipped);
+        } else {
+          setTurn(next);
+        }
+        if (
+          activeCard.value === CardValue.DrawTwo ||
+          activeCard.value === CardValue.WildDrawFour
+        ) {
+          const draw = activeCard.value === CardValue.DrawTwo ? 2 : 4;
+          drawCard(players, playDeck, next, draw, isReverse);
         }
       }
     );
@@ -224,8 +233,7 @@ const useSocketHook = (roomID, username) => {
     activeCard,
     isReverse,
     turn,
-    playDeck,
-    playedWild
+    playDeck
   ) {
     socketRef.current.emit("end turn", {
       players,
@@ -234,12 +242,16 @@ const useSocketHook = (roomID, username) => {
       isReverse,
       turn,
       playDeck,
-      playedWild,
     });
   }
 
   function drawCard(players, playDeck, turn, draws) {
-    socketRef.current.emit("draw card", { players, playDeck, turn, draws });
+    socketRef.current.emit("draw card", {
+      players,
+      playDeck,
+      turn,
+      draws,
+    });
   }
 
   return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
