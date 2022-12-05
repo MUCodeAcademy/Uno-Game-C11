@@ -1,34 +1,42 @@
 import React from "react";
 import { auth } from "../../firebase.config";
 import { useUserContext } from "../context";
-import { Button } from "../styled/components/Button";
+import Button from "@mui/material/Button";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { MenuLink } from "../styled/components/MenuLink";
-import { Nav } from "../styled/components/Nav";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
 
 function Menu() {
   const { clearUser, setUser } = useUserContext();
   auth.onAuthStateChanged((activeUser) => setUser(activeUser));
   return (
-    <>
-      <Nav>
-        <MenuLink to="/lobby">Game Finder</MenuLink>
-        <MenuLink>Profile</MenuLink>
-        <MenuLink to={"/about"}>About</MenuLink>
-        {auth.currentUser && (
-          <div>
-            <div>{auth.currentUser?.displayName}</div>
+    <AppBar position="static">
+      <Toolbar sx={{ justifyContent: "space-evenly" }}>
+        {!auth?.currentUser && (
+          <>
+            <MenuLink to={"/about"}>About</MenuLink>
+            <MenuLink to="/login">Login</MenuLink>
+          </>
+        )}
+        {auth?.currentUser && (
+          <>
+            <MenuLink to="/lobby">Game Finder</MenuLink>
+            <MenuLink>Profile</MenuLink>
             <Button
+              color="secondary"
               onClick={() => {
                 clearUser();
                 auth.signOut();
               }}
             >
-              Sign Out
+              {auth.currentUser?.displayName}
+              <LogoutIcon sx={{ paddingLeft: "5px" }} />
             </Button>
-          </div>
+          </>
         )}
-      </Nav>
-    </>
+      </Toolbar>
+    </AppBar>
   );
 }
 
