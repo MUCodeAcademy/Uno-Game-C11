@@ -30,7 +30,7 @@ function App() {
                 <Menu></Menu>
                 <Routes>
                     <Route path="/login" element={<LoginPageWithAuth />} />
-                    <Route path="/Lobby" element={<LobbyPageWithAuth />} />
+                    <Route path="/Lobby/:roomID" element={<LobbyPageWithAuth />} />
 
                     <Route
                         path="/GameRoom/:roomID"
@@ -41,7 +41,7 @@ function App() {
                         }
                     />
 
-                    <Route path="*" element={<Navigate to="/lobby" />} />
+                    <Route path="*" element={<Navigate to="/lobby/:roomID" />} />
                 </Routes>
             </Router>
         </div>
