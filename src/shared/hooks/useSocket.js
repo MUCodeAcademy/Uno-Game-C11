@@ -7,9 +7,7 @@ import { useGameContext } from "../context/GameContext";
 import checkForWin from "../functions/checkForWin";
 import nextTurn from "../functions/nextTurn";
 
-//TODO: draw card
 //TODO: force draw 2/4
-//TODO: handle wild
 //TODO: check for win
 
 const useSocketHook = (roomID, username) => {
@@ -210,7 +208,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("end game");
     }
 
-    function endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck) {
+    function endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck, playedWild) {
         socketRef.current.emit("end turn", {
             players,
             discardDeck,
@@ -223,7 +221,6 @@ const useSocketHook = (roomID, username) => {
     }
 
     function drawCard(players, playDeck, turn, draws) {
-        //TODO pass in value
         socketRef.current.emit("draw card", { players, playDeck, turn, draws });
     }
 
