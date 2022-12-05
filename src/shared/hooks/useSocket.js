@@ -57,6 +57,7 @@ const useSocketHook = (roomID, username) => {
         setPlayers([]);
     };
 
+
     const onConnect = (newPlayerName, newPlayerUID) => {
         let player = { name: "", uid: "", hand: [], isHost: false };
         player.name = newPlayerName;
@@ -103,15 +104,20 @@ const useSocketHook = (roomID, username) => {
             setIsGameActive(gameActive);
         });
 
-        socketRef.current.on("draw card", () => {
-            let deck = playDeck;
-            let card = deck.pop();
-            players[turn].hand.push(card);
-            setPlayDeck(deck);
+        socketRef.current.on("draw card", ({players, playDeck, turn, draws}) => {
+            let card = playDeck.pop();
+            players[turn].hand.push(card)
+            setPlayDeck(playDeck);
             setPlayers(players);
+            if(draws === "2" ){
+                let card2 = playDeck.pop();
+                players[turn].hand.push(card2)
+                setPlayDeck(playDeck);
+                setPlayers(players);
+            }
         });
 
-        socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn }) => {
+        socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
             if (checkForWin(players, turn)) {
                 endGame(players);
             }
@@ -119,7 +125,13 @@ const useSocketHook = (roomID, username) => {
             setActiveCard(activeCard);
             setIsReverse(isReverse);
             setPlayers(players);
+            let turns = nextTurn(turn, isReverse, players, activeCard)
             setTurn(nextTurn(turn, isReverse, players, activeCard));
+            let draw
+            if(activeCard.value === "draw2"){
+                draw = "2"
+                drawCard(players, playDeck, turns, draw)
+            }
         });
 
         socketRef.current.on("user connect", ({ username, uid }) => {
@@ -128,7 +140,6 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
-            console.log(players);
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
@@ -193,19 +204,20 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("end game");
     }
 
-    function endTurn(players, discardDeck, activeCard, isReverse, turn, playedWild) {
+    function endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck) {
         socketRef.current.emit("end turn", {
             players,
             discardDeck,
             activeCard,
             isReverse,
             turn,
+            playDeck
         });
     }
 
-    function drawCard() {
+    function drawCard(players, playDeck ,turn, draws) {
         //TODO pass in value
-        socketRef.current.emit("draw card", players);
+        socketRef.current.emit("draw card", {players, playDeck, turn, draws});
     }
 
     return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
