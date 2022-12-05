@@ -12,6 +12,7 @@ const ChooseColorPrompt = ({
   newActiveCard,
   newIsReverse,
   turn,
+  playDeck,
 }) => {
   let colors = [
     CardColor.Red,
@@ -31,7 +32,8 @@ const ChooseColorPrompt = ({
       newDiscardDeck.current,
       newActiveCard.current,
       newIsReverse.current,
-      turn
+      turn,
+      playDeck
     );
   }
   return (
