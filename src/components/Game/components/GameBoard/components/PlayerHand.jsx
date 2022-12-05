@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
+
 import { removeCardFromHand, validatePlayedCard, playCard, shuffleDeck, CardValue, CardColor, reshuffleDeck } from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
@@ -9,6 +10,7 @@ import Card from "./Card";
 
 function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const { players, activeCard, setActiveCard, isGameActive, playDeck, discardDeck, setShuffling, isReverse, turn } = useGameContext();
+
     const [playedWild, setPlayedWild] = useState(false);
     //! this wasn't working because playerhand is rerendering and setting these back to undefined
     const newPlayers = useRef();
@@ -63,7 +65,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 //  setPlayDeck(shuffleDeck(discardDeck))
             } else {
                 //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
-                endGame(false, "Stalemate");
+                // endGame(false, "Stalemate");
                 //? may want to send either loser or winner
                 //? loser:
                 // let loser = "";
@@ -75,7 +77,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 //     }
                 // });
                 // endGame(false, `Stalemate: ${loser} had the fewest cards (${mostCards}).`);
-
                 // //? winner:
                 // let winner = "";
                 // let fewestCards = 108;
@@ -117,6 +118,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 {isGameActive && players[playerIndex] && players[playerIndex].hand.map((card, idx) => <Card key={idx} isTurn={isPlayersTurn} card={card} handlePlayCardClick={handlePlayCardClick} />)}
             </div>
             <div style={{ margin: "150px 0px 0px 0px" }}>{isPlayersTurn && <h4 style={{ color: theme.palette.secondary.main }}>It's your turn!</h4>}</div>
+
             <div>
                 <Button onClick={() => handleDrawClick()}>Draw Card</Button>
             </div>

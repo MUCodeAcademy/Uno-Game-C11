@@ -12,22 +12,23 @@ function socketConfig(io) {
             io.to(roomID).emit("new message", { username, body });
         });
 
-        socket.on(
-            "end turn",
-            ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
-                io.to(roomID).emit("end turn", {
-                    players,
-                    discardDeck,
-                    activeCard,
-                    isReverse,
-                    turn,
-                    playDeck,
-                });
-            }
-        );
+        socket.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
+            io.to(roomID).emit("end turn", {
+                players,
+                discardDeck,
+                activeCard,
+                isReverse,
+                turn,
+                playDeck,
+            });
+        });
 
         socket.on("start game", ({ players, playDeck, activeCard }) => {
             io.to(roomID).emit("start game", { players, playDeck, activeCard });
+        });
+
+        socket.on("end game", ({ message }) => {
+            io.to(roomID).emit("end game", { message });
         });
 
         socket.on("disconnect", () => {
@@ -40,13 +41,10 @@ function socketConfig(io) {
 
         socket.on("draw card", ({ players, playDeck, turn, draws }) => {
             io.to(roomID).emit("draw card", { players, playDeck, turn, draws });
-        });
 
         socket.on("reshuffle", ({ playDeck, turn }) => {
             io.to(roomID).emit("reshuffle", { playDeck, turn });
         });
     });
-
-    //game socket
 }
 module.exports = socketConfig;
