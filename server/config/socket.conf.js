@@ -39,11 +39,10 @@ function socketConfig(io) {
     });
 
     socket.on("draw card", ({ players, playDeck, turn, draws }) => {
-      console.log(draws);
       io.to(roomID).emit("draw card", { players, playDeck, turn, draws });
     });
   });
-}
 
-//game socket
+  //game socket
+}
 module.exports = socketConfig;
