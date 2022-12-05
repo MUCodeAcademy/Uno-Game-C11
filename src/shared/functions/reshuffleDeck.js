@@ -10,7 +10,9 @@ export function reshuffleDeck(playDeck, discardDeck, activeCard) {
     }
 
     //remove activeCard from reshuffled play deck
-    let idx = playDeck.find(activeCard);
+    let idx = playDeck.findIndex(
+        (e) => e === activeCard.CardColor && e === activeCard.CardValue
+    );
     playDeck.splice(idx);
 
     return playDeck;
