@@ -45,14 +45,14 @@ const useSocketHook = (roomID, username) => {
     };
 
     const waitingToPlayers = () => {
-        setPlayers([...waitingUsers]);
-        waitingUsers = [];
+        // setPlayers([...waitingUsers]);
+        // waitingUsers = [];
     };
 
     const playersToWaiting = () => {
-        waitingUsers = [...players];
-        waitingUsers.forEach(() => (players.hand = []));
-        setPlayers([]);
+        // waitingUsers = [...players];
+        // waitingUsers.forEach(() => (players.hand = []));
+        // setPlayers([]);
     };
 
     const onConnect = (newPlayerName, newPlayerUID) => {
@@ -82,7 +82,7 @@ const useSocketHook = (roomID, username) => {
     };
 
     useEffect(() => {
-        socketRef.current = io("http://localhost:8080", {
+        socketRef.current = io("10.200.224.166:8080", {
             query: {
                 username,
                 roomID,
