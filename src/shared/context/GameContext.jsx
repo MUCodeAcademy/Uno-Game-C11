@@ -15,7 +15,7 @@ import React, { useContext, useState, createContext, useCallback } from "react";
 
 const GameContext = createContext(null);
 
-export function useGameConText() {
+export function useGameContext() {
   return useContext(GameContext);
 }
 
