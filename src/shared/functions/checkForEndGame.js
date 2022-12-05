@@ -1,7 +1,8 @@
 export function checkForEndGame(players, playDeck, discardDeck) {
     //WIN
-    const winner = players.filter((p) => p.hand.length === 0);
-    if (winner.length > 0) {
+    // const winner = players.filter((p) => p.hand.length === 0);
+    const winner = players.find((p) => p.hand.length === 0);
+    if (winner) {
         return `${winner.name} has won!`;
     }
 

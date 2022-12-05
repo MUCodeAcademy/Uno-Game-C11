@@ -65,6 +65,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 //  setPlayDeck(shuffleDeck(discardDeck))
             } else {
                 //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
+                endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
                 // endGame(false, "Stalemate");
                 //? may want to send either loser or winner
                 //? loser:
