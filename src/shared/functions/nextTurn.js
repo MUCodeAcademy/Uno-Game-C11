@@ -2,6 +2,7 @@ import { CardValue } from "./cardEnums";
 
 export function nextTurn(turn, isReverse, players, activeCard) {
   let change = 1;
+  console.log(activeCard.value);
   if (
     activeCard.value === CardValue.Skip ||
     activeCard.value === CardValue.WildDrawFour ||

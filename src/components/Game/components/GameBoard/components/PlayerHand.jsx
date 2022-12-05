@@ -63,8 +63,7 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
             newActiveCard.current,
             newIsReverse.current,
             turn,
-            playDeck,
-            false
+            playDeck
           );
         }
       }

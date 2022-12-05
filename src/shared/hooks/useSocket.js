@@ -125,7 +125,7 @@ const useSocketHook = (roomID, username) => {
         setIsReverse(isReverse);
         setPlayers(players);
         let turns = nextTurn(turn, isReverse, players, activeCard);
-        setTurn(nextTurn(turn, isReverse, players, activeCard, isSkip));
+        setTurn(nextTurn(turn, isReverse, players, activeCard));
         let draw;
         if (activeCard.value === "draw2") {
           draw = "2";
