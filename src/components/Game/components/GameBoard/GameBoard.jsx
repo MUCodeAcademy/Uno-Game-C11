@@ -9,6 +9,7 @@ import styled from "@emotion/styled";
 import ChatRoom from "../../shared/Chat/ChatRoom";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 function GameBoard({
   endTurn,
@@ -27,20 +28,18 @@ function GameBoard({
   return (
     <>
       <Grid display={"flex"} justifyContent="center" container spacing={1}>
-        <Grid item xs={12} className="chat-btn-container" textAlign={"right"}>
-          <Button
-            variant="contained"
-            className="chat-button"
-            size="small"
-            onClick={() => setShowChat((curr) => !curr)}
-          >
-            {!showChat ? "Show" : "Hide"} Chat
-          </Button>
-        </Grid>
-        <Grid margin={1} item xs={11} md={8} marginRight={1} padding={1}>
-          <div style={{ margin: "0px 50px 0px 0px" }}>
-            <div>Players</div>
-            <div style={{ display: "flex", border: "1px solid black" }}>
+        <Grid margin={1} item xs={10} md={8} marginRight={1} padding={1}>
+          <div>
+            <Typography variant="h5" textAlign={"center"}>
+              Players
+            </Typography>
+            <div
+              style={{
+                display: "flex",
+                border: "1px solid black",
+                padding: "5px",
+              }}
+            >
               {players &&
                 players.map((player) => (
                   <Div
@@ -52,8 +51,9 @@ function GameBoard({
                   </Div>
                 ))}
             </div>
-
-            <PlayPile></PlayPile>
+            <div style={{ marginTop: "10px" }}>
+              <PlayPile></PlayPile>
+            </div>
           </div>
           <div style={{ margin: "50px 0px 0px 0px" }}>
             <PlayerHand
@@ -64,8 +64,29 @@ function GameBoard({
             ></PlayerHand>
           </div>
         </Grid>
-        <Grid item md={3} className={`chat ${showChat ? "show-chat" : ""}`}>
+        <Grid
+          marginTop="40px"
+          item
+          md={3}
+          className={`chat ${showChat ? "show-chat" : ""}`}
+        >
           <ChatRoom messages={messages} sendMessage={sendMessage} />
+        </Grid>
+        <Grid
+          marginTop="44px"
+          item
+          xs={1}
+          className="chat-btn-container"
+          textAlign={"right"}
+        >
+          <Button
+            variant="contained"
+            className="chat-button"
+            size="small"
+            onClick={() => setShowChat((curr) => !curr)}
+          >
+            {!showChat ? "Show" : "Hide"} Chat
+          </Button>
         </Grid>
       </Grid>
     </>

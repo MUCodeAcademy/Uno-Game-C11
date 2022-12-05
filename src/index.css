@@ -8,7 +8,7 @@
   .chat {
     position: absolute;
     right: -400px;
-    top: 135px;
+    top: 161px;
   }
   .chat-button {
     display: inline-flex !important;
