@@ -103,6 +103,8 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on(
             "draw card",
             ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
+                console.log(discardDeck);
+                let cards = playDeck.splice(0, draws);
                 if (playDeck.length === 0) {
                     if (discardDeck.length + playDeck < draws) {
                         endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
@@ -112,7 +114,6 @@ const useSocketHook = (roomID, username) => {
                         setPlayers(players);
                     }
                 }
-                let cards = playDeck.splice(0, draws);
                 players[turn].hand = [...players[turn].hand, ...cards];
                 setPlayDeck(playDeck);
                 setPlayers(players);
@@ -213,7 +214,7 @@ const useSocketHook = (roomID, username) => {
         });
     }
 
-    function drawCard(players, playDeck, turn, draws) {
+    function drawCard(players, playDeck, turn, draws, activeCard, discardDeck, isReverse) {
         socketRef.current.emit("draw card", {
             players,
             playDeck,
