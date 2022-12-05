@@ -1,12 +1,7 @@
-import { InputUnstyled } from "@mui/base";
-import { Card, FormControl } from "@mui/material";
 import Container from "@mui/material/Container";
-
-import Stack from "@mui/material/Stack";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { Button } from "../../shared/styled/components/Button";
 import Button from "@mui/material/Button";
-import { Input } from "../../shared/styled/components/Input";
 import { theme } from "../../shared/styled/themes/Theme";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
