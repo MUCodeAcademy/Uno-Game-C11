@@ -111,16 +111,19 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
         });
 
-        socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn }) => {
-            if (checkForWin(players, turn)) {
-                endGame(players);
+        socketRef.current.on(
+            "end turn",
+            ({ players, discardDeck, activeCard, isReverse, turn }) => {
+                if (checkForWin(players, turn)) {
+                    endGame(players);
+                }
+                setDiscardDeck(discardDeck);
+                setActiveCard(activeCard);
+                setIsReverse(isReverse);
+                setPlayers(players);
+                setTurn(nextTurn(turn, isReverse, players, activeCard));
             }
-            setDiscardDeck(discardDeck);
-            setActiveCard(activeCard);
-            setIsReverse(isReverse);
-            setPlayers(players);
-            setTurn(nextTurn(turn, isReverse, players, activeCard));
-        });
+        );
 
         socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
@@ -186,7 +189,11 @@ const useSocketHook = (roomID, username) => {
     }
 
     function startGame(newDeck, newPlayers, gameStartCard) {
-        socketRef.current.emit("start game", { players: newPlayers, playDeck: newDeck, activeCard: gameStartCard });
+        socketRef.current.emit("start game", {
+            players: newPlayers,
+            playDeck: newDeck,
+            activeCard: gameStartCard,
+        });
     }
 
     function endGame() {
@@ -200,6 +207,7 @@ const useSocketHook = (roomID, username) => {
             activeCard,
             isReverse,
             turn,
+            playedWild,
         });
     }
 

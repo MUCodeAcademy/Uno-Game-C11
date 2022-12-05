@@ -27,15 +27,15 @@ const ChooseColorPrompt = ({
         );
     }
     return (
-        <>
-            <div style={{ backgroundColor: theme.palette.background.paper }}>Pick a color</div>
+        <div style={{ backgroundColor: theme.palette.background.paper }}>
+            <div>Pick a color</div>
 
             {colors.map((c) => (
                 <Button key={c} value={c} onClick={(e) => handleClick(e)}>
                     {c}
                 </Button>
             ))}
-        </>
+        </div>
     );
 };
 

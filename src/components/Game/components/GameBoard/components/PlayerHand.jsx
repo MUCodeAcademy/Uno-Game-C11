@@ -8,11 +8,6 @@ import {
     CardValue,
     CardColor,
 } from "../../../../../shared/functions";
-
-// import removeCardFromHand from "../../../../../shared/functions/removeCardFromHand";
-// import validatePlayedCard from "../../../../../shared/functions/validatePlayedCard";
-// import playCard from "../../../../../shared/functions/playCard";
-// import shuffleDeck from "../../../../../shared/functions/shuffleDeck";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
 import { Button } from "../../../../../shared/styled/components/Button";
@@ -143,6 +138,11 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
                     setPlayedWild={setPlayedWild}
                     setActiveCard={setActiveCard}
                     endTurn={endTurn}
+                    newPlayers={newPlayers}
+                    newDiscardDeck={newDiscardDeck}
+                    newActiveCard={newActiveCard}
+                    newIsReverse={newIsReverse}
+                    turn={turn}
                 />
             )}
             <div style={{ display: "flex" }}>
