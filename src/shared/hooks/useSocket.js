@@ -157,18 +157,19 @@ const useSocketHook = (roomID, username) => {
             onDisconnect();
         });
 
-        socketRef.current.on("end game", () => {
+        socketRef.current.on("end game", ({ players, playDeck, discardDeck }) => {
             //search for is host in array
-            if (!players.find(players.isHost === true)) {
+            if (checkForWin(players).length) {
                 setMessages((curr) => [
                     ...curr,
                     {
-                        body: "Game has ended due to host disconnect, all players will now return to waiting area",
+                        body: `${checkForWin(players)} has won!`,
                     },
                 ]);
                 playersToWaiting();
                 initialState();
-            } else if ("stalemate") {
+                setIsGameActive(false);
+            } else if (!playDeck && !discardDeck) {
                 setMessages((curr) => [
                     ...curr,
                     {
@@ -177,16 +178,18 @@ const useSocketHook = (roomID, username) => {
                 ]);
                 playersToWaiting();
                 initialState();
+                setIsGameActive(false);
+            } else if (!players.find((p) => p.isHost)) {
+                setMessages((curr) => [
+                    ...curr,
+                    {
+                        body: "Game has ended due to host disconnect, all players will now return to waiting area",
+                    },
+                ]);
+                playersToWaiting();
+                initialState();
+                setIsGameActive(false);
             }
-            //send game winner message
-            setMessages((curr) => [
-                ...curr,
-                {
-                    body: `${players[turn].name} has won!`,
-                },
-            ]);
-            playersToWaiting();
-            initialState();
         });
 
         return () => socketRef.current?.disconnect();
@@ -204,8 +207,12 @@ const useSocketHook = (roomID, username) => {
         });
     }
 
-    function endGame() {
-        socketRef.current.emit("end game");
+    function endGame(players, playDeck, discardDeck) {
+        socketRef.current.emit("end game", {
+            players,
+            playDeck,
+            discardDeck,
+        });
     }
 
     function endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck, playedWild) {

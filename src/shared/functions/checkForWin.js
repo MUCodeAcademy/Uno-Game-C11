@@ -1,8 +1,5 @@
-export function checkForWin(players, playerIndex) {
-    if (players[playerIndex].hand.length === 0) {
-        return true;
-    }
-    return false;
+export function checkForWin(players) {
+  return players.filter((p) => p.hand.length === 0);
 }
 
 export default checkForWin;
