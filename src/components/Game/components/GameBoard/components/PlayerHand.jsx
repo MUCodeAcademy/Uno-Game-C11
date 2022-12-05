@@ -34,51 +34,42 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const newIsReverse = useRef();
     const newActiveCard = useRef();
 
-    let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
-    function handleDrawClick() {
-        //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
-        if (turn === playerIndex && !playedWild) {
-            drawCard(players, playDeck, turn);
-        }
-        console.log(
-            "player hand",
-            players[playerIndex].hand.length,
-            "deck",
-            playDeck.length,
-            "discard deck",
-            discardDeck.length
-        );
-
-        // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
-        //     players,
-        //     playerIndex,
-        //     playDeck
-        // );
-        // setPlayDeck(newPlayDeck);
-        // setPlayers(newPlayers);
+  let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
+  function handleDrawClick() {
+    //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
+    if (turn === playerIndex && !playedWild) {
+      drawCard(players, playDeck, turn, 1);
     }
+    // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
+    //     players,
+    //     playerIndex,
+    //     playDeck
+    // );
+    // setPlayDeck(newPlayDeck);
+    // setPlayers(newPlayers);
+  }
 
-    function handlePlayCardClick(card) {
-        if (turn === playerIndex && !playedWild) {
-            if (validatePlayedCard(card, activeCard)) {
-                newPlayers.current = removeCardFromHand(players, playerIndex, card);
-                newActiveCard.current = card;
-                newIsReverse.current = card.value === CardValue.Reverse;
-                newDiscardDeck.current = [...discardDeck, card];
-                setPlayedWild(card.color === CardColor.Black);
-                //if wild played, wait for color picker prompt before ending turn
-                if (card.color !== CardColor.Black) {
-                    endTurn(
-                        newPlayers.current,
-                        newDiscardDeck.current,
-                        newActiveCard.current,
-                        newIsReverse.current,
-                        turn,
-                        playDeck
-                    );
-                }
-            }
+  function handlePlayCardClick(card) {
+    if (turn === playerIndex && !playedWild) {
+      if (validatePlayedCard(card, activeCard)) {
+        newPlayers.current = removeCardFromHand(players, playerIndex, card);
+        newActiveCard.current = card;
+        newIsReverse.current =
+          card.value === CardValue.Reverse ? !isReverse : isReverse;
+        newDiscardDeck.current = [...discardDeck, card];
+        setPlayedWild(card.color === CardColor.Black);
+        //if wild played, wait for color picker prompt before ending turn
+        if (card.color !== CardColor.Black) {
+          endTurn(
+            newPlayers.current,
+            newDiscardDeck.current,
+            newActiveCard.current,
+            newIsReverse.current,
+            turn,
+            playDeck
+          );
         }
+      }
     }
 
     useEffect(() => {
@@ -104,19 +95,19 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 // });
                 // endGame(false, `Stalemate: ${loser} had the fewest cards (${mostCards}).`);
 
-                // //? winner:
-                // let winner = "";
-                // let fewestCards = 108;
-                // players.forEach((player) => {
-                //     if (player.hand.length < fewestCards) {
-                //         fewestCards = player.hand.length;
-                //         winner = player.name;
-                //     }
-                // });
-                // endGame(false, `Stalemate: ${winner} had the fewest cards (${fewestCards}).`);
-            }
-        }
-    }, [playDeck?.length]);
+        // //? winner:
+        // let winner = "";
+        // let fewestCards = 108;
+        // players.forEach((player) => {
+        //     if (player.hand.length < fewestCards) {
+        //         fewestCards = player.hand.length;
+        //         winner = player.name;
+        //     }
+        // });
+        // endGame(false, `Stalemate: ${winner} had the fewest cards (${fewestCards}).`);
+      }
+    }
+  }, [playDeck?.length]);
 
     return (
         <div
@@ -160,16 +151,20 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                         </div>
                     ))}
             </div>
-            <div style={{ margin: "150px 0px 0px 0px" }}>
-                {turn === playerIndex && (
-                    <h4 style={{ color: theme.palette.secondary.main }}>It's your turn!</h4>
-                )}
-            </div>
-            <div>
-                <Button onClick={() => handleDrawClick()}>Draw Card</Button>
-            </div>
-        </div>
-    );
+          ))}
+      </div>
+      <div style={{ margin: "150px 0px 0px 0px" }}>
+        {turn === playerIndex && (
+          <h4 style={{ color: theme.palette.secondary.main }}>
+            It's your turn!
+          </h4>
+        )}
+      </div>
+      <div>
+        <Button onClick={() => handleDrawClick()}>Draw Card</Button>
+      </div>
+    </div>
+  );
 }
 
 export default PlayerHand;
