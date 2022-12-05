@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 
 import { theme } from "../../../../shared/styled/themes/Theme";
-
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
 import ChatMessageDisplay from "./ChatMessageDisplay";
@@ -20,59 +19,63 @@ export function ChatRoom({ messages, sendMessage }) {
   }, [messages]);
 
   return (
-    <div
-      style={{
-        borderWidth: "1px",
-        borderStyle: "solid",
-        borderColor: "black",
-      }}
-    >
+    <>
       <div
-        ref={bottomRef}
         style={{
-          width: "300px",
-          height: "400px",
-          border: "1px solid back",
-          overflowY: "scroll",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "black",
         }}
       >
-        {messages.map((v, idx) => (
-          <ChatMessageDisplay key={idx} {...v} />
-        ))}
-      </div>
-      <form
-        style={{
-          display: "flex",
-          padding: "5px",
-          justifyContent: "space-evenly",
-          backgroundColor: theme.palette.secondary.light,
-        }}
-      >
-        <TextField
-          size="small"
-          value={body}
-          variant="standard"
-          color="primary"
-          sx={{
-            alignSelf: "center",
-            backgroundColor: theme.palette.primary.light,
-          }}
-          onChange={(e) => setBody(e.target.value)}
-        />
-        <IconButton
-          color="primary"
-          variant="filled"
-          disabled={body.length === 0}
-          onClick={(e) => {
-            e.preventDefault();
-            sendMessage(body);
-            setBody("");
+        <div
+          ref={bottomRef}
+          style={{
+            //   width: "300px",
+            height: "400px",
+            padding: "2px",
+            backgroundColor: theme.palette.background.default,
+            border: "1px solid back",
+            overflowY: "scroll",
           }}
         >
-          <SendIcon />
-        </IconButton>
-      </form>
-    </div>
+          {messages.map((v, idx) => (
+            <ChatMessageDisplay key={idx} {...v} />
+          ))}
+        </div>
+        <form
+          style={{
+            display: "flex",
+            padding: "5px",
+            justifyContent: "space-evenly",
+            backgroundColor: theme.palette.secondary.light,
+          }}
+        >
+          <TextField
+            size="small"
+            value={body}
+            variant="standard"
+            color="primary"
+            sx={{
+              alignSelf: "center",
+              backgroundColor: theme.palette.primary.light,
+            }}
+            onChange={(e) => setBody(e.target.value)}
+          />
+          <IconButton
+            color="primary"
+            variant="filled"
+            disabled={body.length === 0}
+            onClick={(e) => {
+              e.preventDefault();
+              sendMessage(body);
+              setBody("");
+            }}
+          >
+            <SendIcon />
+          </IconButton>
+        </form>
+      </div>
+    </>
   );
 }
 

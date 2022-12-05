@@ -49,6 +49,8 @@ function GamePage() {
       <div>
         {isGameActive && (
           <GameBoard
+            messages={messages}
+            sendMessage={sendMessage}
             endTurn={endTurn}
             drawCard={drawCard}
             endGame={endGame}

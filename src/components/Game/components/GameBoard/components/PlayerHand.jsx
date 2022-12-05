@@ -140,7 +140,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
       <div
         style={{
           display: "flex",
-          maxWidth: "calc(100vw - 10px)",
+          maxWidth: "100%",
           margin: "5px",
           height: "250px",
           overflowX: "auto",
