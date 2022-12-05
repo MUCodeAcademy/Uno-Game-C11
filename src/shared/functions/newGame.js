@@ -12,7 +12,7 @@ const dummyPlayers = [
 export function newGame(players) {
     // const { started, sendStart, endTurn, sendCards, cards, drawCard } = useSocketHook();
     const deck = shuffleDeck(buildDeck());
-    const gameStartCard = null;
+    let gameStartCard = null;
     let { deck: newDeck, hands } = dealCards(deck, players.length);
 
     for (let i = 0; i < players.length; i++) {

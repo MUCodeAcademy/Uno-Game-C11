@@ -1,23 +1,19 @@
-import { CardValue } from "./cardEnums";
-
 export function nextTurn(turn, isReverse, players, activeCard) {
-  let change = 1;
-  console.log(activeCard.value);
-  if (
-    activeCard.value === CardValue.Skip ||
-    activeCard.value === CardValue.WildDrawFour ||
-    activeCard.value === CardValue.DrawTwo
-  ) {
-    change = 2;
+  let plusOne = isReverse ? turn - 1 : turn + 1;
+  let next = checkOverflow(plusOne, players.length);
+  let skipped = checkOverflow(nextTurn + plusOne, players.length);
+
+  return { next, skipped };
+}
+
+function checkOverflow(newTurn, playerLength) {
+  if (newTurn >= 0 && newTurn < playerLength) {
+    return newTurn;
   }
-  change = change * isReverse ? -1 : 1;
-  if (turn + change >= 0 && turn + change < players.length) {
-    return turn + change;
+  if (newTurn < 0) {
+    return newTurn + playerLength;
   }
-  if (turn + change < 0) {
-    return turn + change + players.length;
-  }
-  return turn + change - players.length;
+  return newTurn - playerLength;
 }
 
 export default nextTurn;
