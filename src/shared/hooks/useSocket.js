@@ -46,14 +46,14 @@ const useSocketHook = (roomID, username) => {
   };
 
   const waitingToPlayers = () => {
-    setPlayers([...waitingUsers]);
-    waitingUsers = [];
+    // setPlayers([...waitingUsers]);
+    // waitingUsers = [];
   };
 
   const playersToWaiting = () => {
-    waitingUsers = [...players];
-    waitingUsers.forEach(() => (players.hand = []));
-    setPlayers([]);
+    // waitingUsers = [...players];
+    // waitingUsers.forEach(() => (players.hand = []));
+    // setPlayers([]);
   };
 
   const onConnect = (newPlayerName, newPlayerUID) => {
