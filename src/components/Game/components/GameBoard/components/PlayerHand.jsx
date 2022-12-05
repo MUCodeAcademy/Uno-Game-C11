@@ -7,6 +7,7 @@ import {
     shuffleDeck,
     CardValue,
     CardColor,
+    reshuffleDeck,
 } from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
@@ -14,16 +15,18 @@ import { Button } from "../../../../../shared/styled/components/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 import Card from "./Card";
 
-function PlayerHand({ endTurn, drawCard, endGame }) {
+
+function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
     const {
         players,
         activeCard,
         setActiveCard,
         isGameActive,
         playDeck,
+        discardDeck,
+        setShuffling,
         isReverse,
         discardDeck,
-        setReshuffling,
         turn,
     } = useGameContext();
     const [playedWild, setPlayedWild] = useState(false);
@@ -78,13 +81,14 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
 
     useEffect(() => {
         //TODO build shuffle socket and then implement here or close to here or whatever you feel like doing
+
         if (playDeck?.length === 0) {
             if (discardDeck.length > 0) {
-                setReshuffling(true);
+                setShuffling(true);
                 //shuffle needs to
+                reshuffle(reshuffleDeck(playDeck, discardDeck, activeCard));
                 //  setPlayDeck(shuffleDeck(discardDeck))
-                //  setDiscardDeck([])
-                //  setReshuffling(false)
+
             } else {
                 //TODO: handle case when there is no discard deck (meaning all players have drawn all available cards)
                 endGame(false, "Stalemate");
@@ -152,11 +156,13 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
                             key={idx}
                         >
                             <img
-                                src={require(`./cards/${card.color}_${card.value}.png`)}
+                                src={require(`./cards/${card?.color}_${card?.value}.png`)}
                                 style={{ maxHeight: "200px" }}
                             ></img>
                         </div>
                     ))}
+
+
             </div>
             <div style={{ margin: "150px 0px 0px 0px" }}>
                 {turn === playerIndex && (
@@ -165,6 +171,7 @@ function PlayerHand({ endTurn, drawCard, endGame }) {
             </div>
             <div>
                 <Button onClick={() => handleDrawClick()}>Draw Card</Button>
+
             </div>
         </div>
     );
