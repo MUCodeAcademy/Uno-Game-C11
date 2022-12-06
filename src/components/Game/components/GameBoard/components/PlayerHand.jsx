@@ -37,7 +37,6 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
                 newActiveCard.current = card;
                 newIsReverse.current = card.value === CardValue.Reverse ? !isReverse : isReverse;
                 newDiscardDeck.current = discardDeck;
-                console.log(discardDeck, newDiscardDeck.current);
                 setPlayedWild(card.color === CardColor.Black);
                 //if wild played, wait for color picker prompt before ending turn
                 if (card.color !== CardColor.Black) {

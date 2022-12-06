@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { auth } from "../../firebase.config";
 import { useGameContext } from "../context/GameContext";
-import { CardColor, checkForEndGame, reshuffleDeck } from "../functions";
+import { CardColor, checkForEndGame, shuffleDeck } from "../functions";
 
 import { CardValue } from "../functions";
 import nextTurn from "../functions/nextTurn";
@@ -106,8 +106,6 @@ const useSocketHook = (roomID, username) => {
             setDiscardDeck(discardDeck);
             players[turn].hand = [...players[turn].hand, ...cards];
             setPlayers(players);
-            console.log(playDeck);
-            console.log(discardDeck);
         });
 
         socketRef.current.on("end turn", ({ players, discardDeck, newActiveCard, activeCard, isReverse, turn, playDeck }) => {
@@ -189,7 +187,6 @@ const useSocketHook = (roomID, username) => {
     }
 
     function endTurn(players, discardDeck, newActiveCard, isReverse, turn, playDeck) {
-        console.log(discardDeck);
         socketRef.current.emit("end turn", {
             activeCard,
             players,
@@ -206,10 +203,15 @@ const useSocketHook = (roomID, username) => {
             endGame("Stalemate, not enough cards to draw.");
             return;
         }
+        console.log(discardDeck);
         if (playDeck.length < draws) {
-            playDeck = [...playDeck, ...reshuffleDeck(discardDeck)];
+            const deck = shuffleDeck(discardDeck);
+            console.log(deck);
+            playDeck = [...playDeck, ...deck];
             discardDeck = [];
         }
+        // console.log(playDeck.length);
+        // console.log(discardDeck.length);
         socketRef.current.emit("draw card", {
             players,
             playDeck,
