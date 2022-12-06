@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { auth } from "../../firebase.config";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 function LobbyPage() {
   const navigate = useNavigate();
@@ -26,6 +26,11 @@ function LobbyPage() {
       setRooms(rooms);
     });
   }, []);
+
+  const errorMsg = useMemo(() => {
+    if (rooms.includes(roomNum)) return "Room already exists";
+    return "Must be at least 3 characters";
+  }, [roomNum]);
   return (
     <>
       <Container>
@@ -58,7 +63,10 @@ function LobbyPage() {
             placeholder="room-name"
             color="secondary"
             value={roomNum}
-            error={hasClicked && roomNum.length < 3}
+            helperText={errorMsg}
+            error={
+              (hasClicked && roomNum.length < 3) || rooms.includes(roomNum)
+            }
             onChange={(e) => setRoomNum(e.target.value)}
           />
           <Button
@@ -68,7 +76,7 @@ function LobbyPage() {
             onClick={(e) => {
               e.preventDefault();
               setHasClicked(true);
-              if (roomNum.length > 3) {
+              if (roomNum.length > 3 && !rooms.includes(roomNum)) {
                 navigate(`/game-room/${roomNum}`);
               }
             }}
@@ -98,7 +106,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static-1")}
+            onClick={() => navigate("/game-room/game-1")}
           >
             Game 1
           </Button>
@@ -107,7 +115,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static-2")}
+            onClick={() => navigate("/game-room/game-2")}
           >
             Game 2
           </Button>
@@ -116,7 +124,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static-3")}
+            onClick={() => navigate("/game-room/game-3")}
           >
             Game 3
           </Button>
@@ -125,12 +133,12 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static-4")}
+            onClick={() => navigate("/game-room/game-4")}
           >
             Game 4
           </Button>
           {rooms.map((val) => {
-            let starting = ["static-1", "static-2", "static-3", "static-4"];
+            let starting = ["game-1", "game-2", "game-3", "game-4"];
             if (starting.includes(val)) return <div key={val}></div>;
             return (
               <Button
