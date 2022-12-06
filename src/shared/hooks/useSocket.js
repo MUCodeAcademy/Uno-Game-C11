@@ -81,7 +81,7 @@ const useSocketHook = (roomID, username) => {
     };
 
     useEffect(() => {
-        socketRef.current = io("localhost:8080", {
+        socketRef.current = io("10.200.224.164:8080", {
             query: {
                 username,
                 roomID,
@@ -91,8 +91,8 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on("host check", ({ roomCount, uid }) => {
             if (roomCount === null) {
-                setIsHost(true)
-                socketRef.current.emit("sendhostuid", uid)
+                setIsHost(true);
+                socketRef.current.emit("sendhostuid", uid);
             }
         });
 
@@ -102,15 +102,7 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on(
             "draw card",
-            ({
-                players,
-                playDeck,
-                turn,
-                draws,
-                activeCard,
-                discardDeck,
-                isReverse,
-            }) => {
+            ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
                 let cards = playDeck.splice(0, draws);
                 setPlayDeck(playDeck);
                 setDiscardDeck(discardDeck);
@@ -147,12 +139,7 @@ const useSocketHook = (roomID, username) => {
                 setActiveCard(newActiveCard);
                 setIsReverse(isReverse);
                 setPlayers(players);
-                const { next, skipped } = nextTurn(
-                    turn,
-                    isReverse,
-                    players,
-                    newActiveCard
-                );
+                const { next, skipped } = nextTurn(turn, isReverse, players, newActiveCard);
                 if (
                     newActiveCard.value === CardValue.DrawTwo ||
                     newActiveCard.value === CardValue.WildDrawFour ||
@@ -174,7 +161,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
             onConnect(username, uid);
-        })
+        });
 
         socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
             setPlayers(players);
@@ -190,15 +177,12 @@ const useSocketHook = (roomID, username) => {
             setMessages((curr) => [...curr, msg]);
         });
         socketRef.current.on("user disconnect", ({ username, uid }) => {
-            setMessages((curr) => [
-                ...curr,
-                { body: `${username} has disconnected` },
-            ]);
+            setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
             // onDisconnect();
         });
         socketRef.current.on("host disconnected", () => {
-            navigate("/")
-        })
+            navigate("/");
+        });
 
         socketRef.current.on("end game", ({ message }) => {
             setMessages((curr) => [...curr, { body: message }]);
@@ -228,14 +212,7 @@ const useSocketHook = (roomID, username) => {
         });
     }
 
-    function endTurn(
-        players,
-        discardDeck,
-        newActiveCard,
-        isReverse,
-        turn,
-        playDeck
-    ) {
+    function endTurn(players, discardDeck, newActiveCard, isReverse, turn, playDeck) {
         socketRef.current.emit("end turn", {
             activeCard,
             players,
@@ -247,28 +224,17 @@ const useSocketHook = (roomID, username) => {
         });
     }
 
-    function drawCard(
-        players,
-        playDeck,
-        turn,
-        draws,
-        activeCard,
-        discardDeck,
-        isReverse
-    ) {
+    function drawCard(players, playDeck, turn, draws, activeCard, discardDeck, isReverse) {
         if (playDeck.length + discardDeck.length < draws) {
             endGame("Stalemate, not enough cards to draw.");
             return;
         }
-        console.log(discardDeck);
+
         if (playDeck.length < draws) {
             const deck = shuffleDeck(discardDeck);
-            console.log(deck);
             playDeck = [...playDeck, ...deck];
             discardDeck = [];
         }
-        // console.log(playDeck.length);
-        // console.log(discardDeck.length);
         socketRef.current.emit("draw card", {
             players,
             playDeck,
