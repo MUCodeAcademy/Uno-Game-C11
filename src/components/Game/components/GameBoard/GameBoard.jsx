@@ -10,6 +10,7 @@ import ChatRoom from "../../shared/Chat/ChatRoom";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Player from "./components/Player";
 
 function GameBoard({
   endTurn,
@@ -42,20 +43,22 @@ function GameBoard({
             >
               {players &&
                 players.map((player) => (
-                  <Div
+                  <Player
                     key={player.uid}
                     activePlayer={player.uid === activePlayer.uid}
+                    playerName={player.name}
+                    numCards={player.hand.length}
                   >
                     <div>{player.name}</div>
                     <div>{player.hand.length} cards</div>
-                  </Div>
+                  </Player>
                 ))}
             </div>
             <div style={{ marginTop: "10px" }}>
               <PlayPile></PlayPile>
             </div>
           </div>
-          <div style={{ margin: "50px 0px 0px 0px" }}>
+          <div>
             <PlayerHand
               endTurn={endTurn}
               drawCard={drawCard}
@@ -65,20 +68,14 @@ function GameBoard({
           </div>
         </Grid>
         <Grid
-          marginTop="40px"
+          marginTop="20px"
           item
           md={3}
           className={`chat ${showChat ? "show-chat" : ""}`}
         >
           <ChatRoom messages={messages} sendMessage={sendMessage} />
         </Grid>
-        <Grid
-          marginTop="44px"
-          item
-          xs={1}
-          className="chat-btn-container"
-          textAlign={"right"}
-        >
+        <Grid item xs={12} className="chat-btn-container" textAlign={"center"}>
           <Button
             variant="contained"
             className="chat-button"
