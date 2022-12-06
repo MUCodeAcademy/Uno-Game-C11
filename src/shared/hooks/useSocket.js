@@ -190,7 +190,6 @@ const useSocketHook = (roomID, username) => {
 
     function endTurn(players, discardDeck, newActiveCard, isReverse, turn, playDeck) {
         console.log(discardDeck);
-        console.log(activeCard);
         socketRef.current.emit("end turn", {
             activeCard,
             players,

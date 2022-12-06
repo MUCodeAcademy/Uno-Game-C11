@@ -22,36 +22,22 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
 
     function handleDrawClick() {
         //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
-        if (turn === playerIndex && !playedWild) {
-            drawCard(players, playDeck, turn, 1, newActiveCard.current, newDiscardDeck.current, newIsReverse.current);
+        if (isPlayersTurn && !playedWild) {
+            drawCard(players, playDeck, turn, 1, activeCard, discardDeck, isReverse);
         }
-        // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
-        //     players,
-        //     playerIndex,
-        //     playDeck
-        // );
-        // setPlayDeck(newPlayDeck);
-        // setPlayers(newPlayers);
     }
-    // const { players: newPlayers, playDeck: newPlayDeck } = drawCard(
-    //     players,
-    //     playerIndex,
-    //     playDeck
-    // );
-    // setPlayDeck(newPlayDeck);
-    // setPlayers(newPlayers);
 
     const isPlayersTurn = useMemo(() => {
         return turn === playerIndex;
     });
     function handlePlayCardClick(card) {
-        // console.log(discardDeck);
-        if (turn === playerIndex && !playedWild) {
+        if (isPlayersTurn && !playedWild) {
             if (validatePlayedCard(card, activeCard)) {
                 newPlayers.current = removeCardFromHand(players, playerIndex, card);
                 newActiveCard.current = card;
                 newIsReverse.current = card.value === CardValue.Reverse ? !isReverse : isReverse;
                 newDiscardDeck.current = discardDeck;
+                console.log(discardDeck, newDiscardDeck.current);
                 setPlayedWild(card.color === CardColor.Black);
                 //if wild played, wait for color picker prompt before ending turn
                 if (card.color !== CardColor.Black) {
