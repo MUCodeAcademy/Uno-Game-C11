@@ -12,21 +12,18 @@ import nextTurn from "../functions/nextTurn";
 const useSocketHook = (roomID, username) => {
   const {
     setIsHost,
-    isHost,
-    isGameActive,
     setIsGameActive,
     setActiveCard,
     players,
     setPlayers,
     activeCard,
-    playDeck,
+
     setPlayDeck,
     setShuffling,
-    discardDeck,
+
     setDiscardDeck,
-    isReverse,
+
     setIsReverse,
-    turn,
     setTurn,
   } = useGameContext();
   const socketRef = useRef(null);

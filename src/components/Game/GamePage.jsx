@@ -10,7 +10,6 @@ import Typography from "@mui/material/Typography";
 
 function GamePage() {
   const { roomID } = useParams();
-  const { user } = useUserContext();
   const { isGameActive } = useGameContext();
 
   const {

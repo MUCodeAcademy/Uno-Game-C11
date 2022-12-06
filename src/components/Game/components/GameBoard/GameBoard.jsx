@@ -1,11 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useGameContext } from "../../../../shared/context/GameContext";
-import WaitingRoom from "../WaitingRoom";
-// import { Card, PlayPile, PlayerHand } from "./index";
 import PlayPile from "./components/PlayPile";
 import PlayerHand from "./components/PlayerHand";
-import { auth } from "../../../../firebase.config";
-import styled from "@emotion/styled";
 import ChatRoom from "../../shared/Chat/ChatRoom";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -24,7 +20,7 @@ function GameBoard({
 
   const activePlayer = useMemo(() => {
     return players[turn];
-  }, [turn]);
+  }, [turn, players]);
   const [showChat, setShowChat] = useState(false);
   return (
     <>
@@ -91,7 +87,3 @@ function GameBoard({
 }
 
 export default GameBoard;
-
-const Div = styled("div")((props) => ({
-  border: props.activePlayer ? "2px solid white" : "1px solid black",
-}));
