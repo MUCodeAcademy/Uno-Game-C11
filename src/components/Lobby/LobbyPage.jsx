@@ -1,28 +1,42 @@
 import Container from "@mui/material/Container";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // import { Button } from "../../shared/styled/components/Button";
 import Button from "@mui/material/Button";
 import { theme } from "../../shared/styled/themes/Theme";
+import io from "socket.io-client";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { auth } from "../../firebase.config";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 function LobbyPage() {
   const navigate = useNavigate();
   const [hasClicked, setHasClicked] = useState(false);
+  const socketRef = useRef(null);
+  const [roomNum, setRoomNum] = useState("");
+  const [rooms, setRooms] = useState([]);
+  useEffect(() => {
+    socketRef.current = io("localhost:8080", {
+      query: {
+        username: auth.currentUser?.displayName,
+      },
+    });
+    socketRef.current.on("rooms", ({ rooms }) => {
+      setRooms(rooms);
+    });
+  }, []);
+
+  const errorMsg = useMemo(() => {
+    if (rooms.includes(roomNum)) return "Room already exists";
+    return "Must be at least 3 characters";
+  }, [roomNum]);
   return (
     <>
       <Container>
         <Typography variant="h4" textAlign="center" paddingTop={"5px"}>
           Join a room
         </Typography>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/gameroom/static")}
-        >
-          Join static room
-        </Button>
       </Container>
       <Grid container spacing={1} justifyContent="space-evenly">
         <Grid
@@ -48,6 +62,12 @@ function LobbyPage() {
             label="Room Name"
             placeholder="room-name"
             color="secondary"
+            value={roomNum}
+            helperText={errorMsg}
+            error={
+              (hasClicked && roomNum.length < 3) || rooms.includes(roomNum)
+            }
+            onChange={(e) => setRoomNum(e.target.value)}
           />
           <Button
             sx={{ marginTop: "5px" }}
@@ -56,6 +76,9 @@ function LobbyPage() {
             onClick={(e) => {
               e.preventDefault();
               setHasClicked(true);
+              if (roomNum.length > 3 && !rooms.includes(roomNum)) {
+                navigate(`/game-room/${roomNum}`);
+              }
             }}
           >
             Create Room
@@ -83,6 +106,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
+            onClick={() => navigate("/game-room/game-1")}
           >
             Game 1
           </Button>
@@ -91,6 +115,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
+            onClick={() => navigate("/game-room/game-2")}
           >
             Game 2
           </Button>
@@ -99,6 +124,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
+            onClick={() => navigate("/game-room/game-3")}
           >
             Game 3
           </Button>
@@ -107,9 +133,26 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
+            onClick={() => navigate("/game-room/game-4")}
           >
             Game 4
           </Button>
+          {rooms.map((val) => {
+            let starting = ["game-1", "game-2", "game-3", "game-4"];
+            if (starting.includes(val)) return <div key={val}></div>;
+            return (
+              <Button
+                key={val}
+                sx={{ margin: "5px" }}
+                fullWidth
+                variant="contained"
+                size="small"
+                onClick={() => navigate(`/game-room/${val}`)}
+              >
+                {val}
+              </Button>
+            );
+          })}
         </Grid>
       </Grid>
     </>

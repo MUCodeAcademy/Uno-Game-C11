@@ -19,19 +19,6 @@ import { GameProvider } from "./shared/context/GameContext";
 function App() {
   return (
     <div>
-      {/* {auth.currentUser && (
-                <>
-                    <div>{auth.currentUser?.displayName}</div>
-                    <button
-                        onClick={() => {
-                            clearUser();
-                            auth.signOut();
-                        }}
-                    >
-                        Sign Out
-                    </button>
-                </>
-            )} */}
       <Router>
         <Menu></Menu>
         <Routes>
@@ -39,7 +26,7 @@ function App() {
           <Route path="/lobby" element={<LobbyPageWithAuth />} />
           <Route path="/about" element={<AboutPage />} />
           <Route
-            path="/GameRoom/:roomID"
+            path="/game-room/:roomID"
             element={
               <GameProvider>
                 <GamePageWithAuth />
