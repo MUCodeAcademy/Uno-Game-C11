@@ -1,4 +1,5 @@
 function socketConfig(io) {
+  let hostuid
   const startingRooms = ["game-1", "game-2", "game-3", "game-4"];
   let rooms = ["game-1", "game-2", "game-3", "game-4"];
   io.on("connection", (socket) => {
@@ -11,8 +12,7 @@ function socketConfig(io) {
         io.emit("rooms", { rooms });
       }
     }
-    console.log(roomCount);
-    io.to(socket.id).emit("host check", roomCount);
+    io.to(socket.id).emit("host check", { roomCount, uid });
     if (!roomID) {
       io.to(socket.id).emit("rooms", { rooms });
     }
@@ -21,6 +21,7 @@ function socketConfig(io) {
     socket.on("new message", ({ body }) => {
       io.to(roomID).emit("new message", { username, body });
     });
+
 
     socket.on(
       "end turn",
@@ -53,7 +54,14 @@ function socketConfig(io) {
       io.to(roomID).emit("end game", { message });
     });
 
+    socket.on("sendhostuid", (uid) => {
+      hostuid = uid
+    });
+
     socket.on("disconnect", () => {
+      if (hostuid == uid) {
+        io.to(roomID).emit("host disconnected", {})
+      }
       io.to(roomID).emit("user disconnect", { username });
       if (roomID) {
         let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
