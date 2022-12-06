@@ -136,7 +136,7 @@ function PlayerHand({ endTurn, drawCard, endGame, reshuffle }) {
           display: "flex",
           maxWidth: "100%",
           margin: "5px",
-          height: "250px",
+          height: "150px",
           overflowX: "auto",
           alignItems: "center",
         }}

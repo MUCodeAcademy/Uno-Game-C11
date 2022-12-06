@@ -33,7 +33,7 @@ export function ChatRoom({ messages, sendMessage }) {
             //   width: "300px",
             height: "400px",
             padding: "2px",
-            backgroundColor: theme.palette.background.default,
+            backgroundColor: theme.palette.secondary.light,
             border: "1px solid back",
             overflowY: "scroll",
           }}

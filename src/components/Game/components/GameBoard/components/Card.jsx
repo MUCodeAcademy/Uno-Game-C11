@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 export function Card({ isTurn, card, handlePlayCardClick }) {
   return (
-    <Div isTurn={isTurn} value={card} onClick={() => handlePlayCardClick(card)}>
+    <Div isTurn={isTurn} onClick={() => handlePlayCardClick(card)}>
       <Img src={require(`./cards/${card.color}_${card.value}.png`)} />
     </Div>
   );
@@ -12,9 +12,8 @@ export function Card({ isTurn, card, handlePlayCardClick }) {
 export default Card;
 
 const Div = styled("div")((props) => ({
-  height: "200px",
-  width: "140px",
-  margin: "0px 0px 0px -50px",
+  height: "125px",
+  margin: "0px 0px 0px -40px",
   transition: "all .2s",
   cursor: "pointer",
   "&:hover": {
@@ -27,5 +26,5 @@ const Div = styled("div")((props) => ({
 }));
 
 const Img = styled("img")((props) => ({
-  maxHeight: "200px",
+  maxHeight: "125px",
 }));
