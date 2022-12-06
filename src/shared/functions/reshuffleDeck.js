@@ -1,18 +1,19 @@
 export function reshuffleDeck(discardDeck, activeCard) {
-    // debugger;
-    let curIdx = discardDeck.length;
-    let rdmIdx;
-    while (curIdx != 0) {
-        rdmIdx = Math.floor(Math.random() * curIdx);
-        curIdx--;
-        [discardDeck[curIdx], discardDeck[rdmIdx]] = [discardDeck[rdmIdx], discardDeck[curIdx]];
+    let currentIndex = discardDeck.length;
+    let randomIndex;
+
+    while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [discardDeck[currentIndex], discardDeck[randomIndex]] = [discardDeck[randomIndex], discardDeck[currentIndex]];
     }
-    //remove activeCard from reshuffled play deck
-    // let idx = discardDeck.findIndex((e) => e.color === activeCard.color && e.value === activeCard.value);
-    // discardDeck.splice(idx);
-    console.log("new playDeck in reshuffleDeck");
-    console.log(discardDeck);
+
+    let idx = discardDeck.findIndex((e) => e.color === activeCard.color && e.value === activeCard.value);
+    discardDeck.splice(idx, 1);
+
     return discardDeck;
 }
+//remove activeCard from reshuffled play deck
 
 export default reshuffleDeck;

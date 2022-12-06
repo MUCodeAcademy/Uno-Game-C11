@@ -102,31 +102,12 @@ const useSocketHook = (roomID, username) => {
 
         socketRef.current.on("draw card", ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
             let cards = playDeck.splice(0, draws);
-            //! splice is removing from beginning of playDeck
-
-            if (playDeck.length === 0) {
-                if (discardDeck.length === 0) {
-                    console.log("STALEMATE in draw card socket conditions met");
-                    endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
-                    return;
-                }
-                console.log("playDeck is empty");
-                if (discardDeck.length + playDeck.length < draws) {
-                    console.log("discardDeck.len + playDeck.length < 1, turn is ending");
-                    endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck);
-                } else {
-                    console.log("discardDeck.len + playDeck.length >=1, deck should reshuffle");
-                    players[turn].hand = [...players[turn].hand, ...cards];
-                    console.log("discard deck in draw card socket inside else statement");
-                    console.log(discardDeck);
-                    setPlayDeck(reshuffleDeck(discardDeck, activeCard));
-                    setDiscardDeck([]);
-                    setPlayers(players);
-                }
-            }
-            players[turn].hand = [...players[turn].hand, ...cards];
             setPlayDeck(playDeck);
+            setDiscardDeck(discardDeck);
+            players[turn].hand = [...players[turn].hand, ...cards];
             setPlayers(players);
+            console.log(playDeck);
+            console.log(discardDeck);
         });
 
         socketRef.current.on("end turn", ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
@@ -134,6 +115,7 @@ const useSocketHook = (roomID, username) => {
             //message will be null if end game conditions are not met
             if (message) {
                 endGame(message);
+                return;
             }
             setDiscardDeck(discardDeck);
             setActiveCard(activeCard);
@@ -160,6 +142,7 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
+            setDiscardDeck((curr) => [...curr, activeCard]);
             setTurn(0);
             setIsGameActive(true);
             //! onNewGame();
@@ -214,6 +197,14 @@ const useSocketHook = (roomID, username) => {
     }
 
     function drawCard(players, playDeck, turn, draws, activeCard, discardDeck, isReverse) {
+        if (playDeck.length + discardDeck.length < draws) {
+            endGame("Stalemate, not enough cards to draw.");
+            return;
+        }
+        if (playDeck.length < draws) {
+            playDeck = [...playDeck, ...reshuffleDeck(discardDeck, activeCard)];
+            discardDeck = [];
+        }
         socketRef.current.emit("draw card", {
             players,
             playDeck,

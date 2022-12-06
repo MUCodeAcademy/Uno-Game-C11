@@ -6,11 +6,6 @@ export function checkForEndGame(players, playDeck, discardDeck) {
         return `${winner.name} has won!`;
     }
 
-    //stalemate
-    if (playDeck.length === 0 && discardDeck.length === 0) {
-        return "Stalemate. Get better.";
-    }
-
     //host disconnected
     if (!players.find((p) => p.isHost)) {
         return "Game has ended due to host disconnect, all players will now return to waiting area";
