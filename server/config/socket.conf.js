@@ -11,6 +11,8 @@ function socketConfig(io) {
         io.emit("rooms", { rooms });
       }
     }
+    console.log(roomCount);
+    io.to(socket.id).emit("host check", roomCount);
     if (!roomID) {
       io.to(socket.id).emit("rooms", { rooms });
     }
