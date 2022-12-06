@@ -1,38 +1,37 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { auth } from "../../firebase.config";
-import { useUserContext } from "../context";
 import { useGameContext } from "../context/GameContext";
-import checkForWin from "../functions/checkForWin";
+import { CardColor, checkForEndGame, shuffleDeck } from "../functions";
+
+import { CardValue } from "../functions";
 import nextTurn from "../functions/nextTurn";
 
-//TODO: force draw 2/4
 //TODO: check for win
 
 const useSocketHook = (roomID, username) => {
     const {
         setIsHost,
-        isHost,
-        isGameActive,
         setIsGameActive,
         setActiveCard,
         players,
         setPlayers,
         activeCard,
-        playDeck,
+        isHost,
         setPlayDeck,
         setShuffling,
-        discardDeck,
+
         setDiscardDeck,
-        isReverse,
+
         setIsReverse,
-        turn,
         setTurn,
     } = useGameContext();
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
     const [waitingUsers, setWaitingUsers] = useState([]);
+    const [hostuid, setHostuid] = useState();
+    const navigate = useNavigate();
 
     const initialState = () => {
         setIsGameActive(false);
@@ -45,14 +44,14 @@ const useSocketHook = (roomID, username) => {
     };
 
     const waitingToPlayers = () => {
-        setPlayers([...waitingUsers]);
-        waitingUsers = [];
+        // setPlayers([...waitingUsers]);
+        // waitingUsers = [];
     };
 
     const playersToWaiting = () => {
-        waitingUsers = [...players];
-        waitingUsers.forEach(() => (players.hand = []));
-        setPlayers([]);
+        // waitingUsers = [...players];
+        // waitingUsers.forEach(() => (players.hand = []));
+        // setPlayers([]);
     };
 
     const onConnect = (newPlayerName, newPlayerUID) => {
@@ -82,7 +81,7 @@ const useSocketHook = (roomID, username) => {
     };
 
     useEffect(() => {
-        socketRef.current = io("http://localhost:8080", {
+        socketRef.current = io("10.200.224.164:8080", {
             query: {
                 username,
                 roomID,
@@ -90,10 +89,10 @@ const useSocketHook = (roomID, username) => {
             },
         });
 
-        socketRef.current.on("host check", (roomCount) => {
-            if (roomCount == null) {
+        socketRef.current.on("host check", ({ roomCount, uid }) => {
+            if (roomCount === null) {
                 setIsHost(true);
-                // players[0].isHost = true;
+                socketRef.current.emit("sendhostuid", uid);
             }
         });
 
@@ -101,39 +100,40 @@ const useSocketHook = (roomID, username) => {
             setIsGameActive(gameActive);
         });
 
-        socketRef.current.on("draw card", ({ players, playDeck, turn, draws }) => {
-            let card = playDeck.pop();
-            players[turn].hand.push(card);
+        socketRef.current.on("draw card", ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
+            let cards = playDeck.splice(0, draws);
             setPlayDeck(playDeck);
+            setDiscardDeck(discardDeck);
+            players[turn].hand = [...players[turn].hand, ...cards];
             setPlayers(players);
-            if (draws === "2") {
-                let card2 = playDeck.pop();
-                players[turn].hand.push(card2);
-                setPlayDeck(playDeck);
-                setPlayers(players);
-            }
         });
 
-        socketRef.current.on(
-            "end turn",
-            ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
-                if (checkForWin(players, turn)) {
-                    endGame(players);
-                }
-                setDiscardDeck(discardDeck);
-                setActiveCard(activeCard);
-                setIsReverse(isReverse);
-                setPlayers(players);
-                let turns = nextTurn(turn, isReverse, players, activeCard);
-                setTurn(nextTurn(turn, isReverse, players, activeCard));
-                let draw;
-                if (activeCard.value === "draw2") {
-                    draw = "2";
-                    drawCard(players, playDeck, turns, draw);
-                }
+        socketRef.current.on("end turn", ({ players, discardDeck, newActiveCard, activeCard, isReverse, turn, playDeck }) => {
+            const message = checkForEndGame(players, playDeck, discardDeck);
+            //message will be null if end game conditions are not met
+            if (message) {
+                endGame(message);
+                return;
             }
-        );
 
+            if (activeCard.value === CardValue.Wild || activeCard.value === CardValue.WildDrawFour) {
+                activeCard.color = CardColor.Black;
+            }
+            setDiscardDeck([...discardDeck, activeCard]);
+            setActiveCard(newActiveCard);
+            setIsReverse(isReverse);
+            setPlayers(players);
+            const { next, skipped } = nextTurn(turn, isReverse, players, newActiveCard);
+            if (newActiveCard.value === CardValue.DrawTwo || newActiveCard.value === CardValue.WildDrawFour || newActiveCard.value === CardValue.Skip) {
+                setTurn(skipped);
+            } else {
+                setTurn(next);
+            }
+            if (newActiveCard.value === CardValue.DrawTwo || newActiveCard.value === CardValue.WildDrawFour) {
+                const draw = newActiveCard.value === CardValue.DrawTwo ? 2 : 4;
+                drawCard(players, playDeck, next, draw, isReverse);
+            }
+        });
         socketRef.current.on("user connect", ({ username, uid }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
             onConnect(username, uid);
@@ -143,6 +143,7 @@ const useSocketHook = (roomID, username) => {
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
+            setDiscardDeck([]);
             setTurn(0);
             setIsGameActive(true);
             //! onNewGame();
@@ -151,45 +152,31 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on("new message", (msg) => {
             setMessages((curr) => [...curr, msg]);
         });
-
-        socketRef.current.on("user disconnect", ({ username }) => {
+        socketRef.current.on("user disconnect", ({ username, uid }) => {
+            setPlayers((curr) => {
+                //Check for player to remove
+                let playerIndex = curr.findIndex((p) => p.uid === uid);
+                let playerToRemove = curr[playerIndex];
+                curr.splice(playerIndex, 1);
+                console.log(curr);
+                // Get their cards
+                // Update turn order
+                setTurn((currTurn) => (currTurn >= playerIndex ? currTurn - 1 : currTurn));
+                setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
+                return [...curr];
+            });
             setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
-            onDisconnect();
+            // onDisconnect();
+        });
+        socketRef.current.on("host disconnected", () => {
+            navigate("/");
         });
 
-        socketRef.current.on("end game", ({ players, playDeck, discardDeck }) => {
-            //search for is host in array
-            if (checkForWin(players).length) {
-                setMessages((curr) => [
-                    ...curr,
-                    {
-                        body: `${checkForWin(players)} has won!`,
-                    },
-                ]);
-                playersToWaiting();
-                initialState();
-                setIsGameActive(false);
-            } else if (!playDeck && !discardDeck) {
-                setMessages((curr) => [
-                    ...curr,
-                    {
-                        body: "Stalemate. Get better.",
-                    },
-                ]);
-                playersToWaiting();
-                initialState();
-                setIsGameActive(false);
-            } else if (!players.find((p) => p.isHost)) {
-                setMessages((curr) => [
-                    ...curr,
-                    {
-                        body: "Game has ended due to host disconnect, all players will now return to waiting area",
-                    },
-                ]);
-                playersToWaiting();
-                initialState();
-                setIsGameActive(false);
-            }
+        socketRef.current.on("end game", ({ message }) => {
+            setMessages((curr) => [...curr, { body: message }]);
+            playersToWaiting();
+            initialState();
+            setIsGameActive(false);
         });
 
         return () => socketRef.current?.disconnect();
@@ -207,31 +194,54 @@ const useSocketHook = (roomID, username) => {
         });
     }
 
-    function endGame(players, playDeck, discardDeck) {
+    function endGame(message) {
         socketRef.current.emit("end game", {
-            players,
-            playDeck,
-            discardDeck,
+            message,
         });
     }
 
-    function endTurn(players, discardDeck, activeCard, isReverse, turn, playDeck, playedWild) {
+    function endTurn(players, discardDeck, newActiveCard, isReverse, turn, playDeck) {
         socketRef.current.emit("end turn", {
+            activeCard,
             players,
             discardDeck,
-            activeCard,
+            newActiveCard,
             isReverse,
             turn,
             playDeck,
-            playedWild,
         });
     }
 
-    function drawCard(players, playDeck, turn, draws) {
-        socketRef.current.emit("draw card", { players, playDeck, turn, draws });
+    function drawCard(players, playDeck, turn, draws, activeCard, discardDeck, isReverse) {
+        if (playDeck.length + discardDeck.length < draws) {
+            endGame("Stalemate, not enough cards to draw.");
+            return;
+        }
+
+        if (playDeck.length < draws) {
+            const deck = shuffleDeck(discardDeck);
+            playDeck = [...playDeck, ...deck];
+            discardDeck = [];
+        }
+        socketRef.current.emit("draw card", {
+            players,
+            playDeck,
+            turn,
+            draws,
+            activeCard,
+            discardDeck,
+            isReverse,
+        });
     }
 
-    return { messages, sendMessage, endGame, endTurn, drawCard, startGame };
+    return {
+        messages,
+        sendMessage,
+        endGame,
+        endTurn,
+        drawCard,
+        startGame,
+    };
 };
 
 export default useSocketHook;

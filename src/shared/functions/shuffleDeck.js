@@ -1,14 +1,8 @@
 export function shuffleDeck(deck) {
-    let currentIndex = deck.length;
-    let randomIndex;
-
-    while (currentIndex != 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        [deck[currentIndex], deck[randomIndex]] = [deck[randomIndex], deck[currentIndex]];
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
     }
-
     return deck;
 }
 
