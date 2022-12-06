@@ -7,9 +7,9 @@ export function checkForEndGame(players, playDeck, discardDeck) {
     }
 
     //host disconnected
-    if (!players.find((p) => p.isHost)) {
-        return "Game has ended due to host disconnect, all players will now return to waiting area";
-    }
+    // if (!players.find((p) => p.isHost)) {
+    //     return "Game has ended due to host disconnect, all players will now return to waiting area";
+    // }
 
     return null;
 }
