@@ -1,15 +1,20 @@
 function socketConfig(io) {
+  const startingRooms = ["static-1", "static-2", "static-3", "static-4"];
+  let rooms = ["static-1", "static-2", "static-3", "static-4"];
   io.on("connection", (socket) => {
     const { roomID, username, uid } = socket.handshake.query;
     let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
-    let rooms = Array.from(io.sockets.adapter.rooms)
-    socket.join(roomID);
-
-    io.to(socket.id).emit("rooms", { rooms })
-
+    if (roomID) {
+      socket.join(roomID);
+      if (!rooms.includes(roomID)) {
+        rooms.push(roomID);
+        io.emit("rooms", { rooms });
+      }
+    }
+    if (!roomID) {
+      io.to(socket.id).emit("rooms", { rooms });
+    }
     io.to(roomID).emit("user connect", { username, uid });
-
-
 
     socket.on("new message", ({ body }) => {
       io.to(roomID).emit("new message", { username, body });
@@ -48,6 +53,13 @@ function socketConfig(io) {
 
     socket.on("disconnect", () => {
       io.to(roomID).emit("user disconnect", { username });
+      if (roomID) {
+        let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
+        if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
+          rooms = rooms.filter((val) => val !== roomID);
+          io.emit("rooms", { rooms });
+        }
+      }
     });
 
     socket.on("game active", (activeGame) => {

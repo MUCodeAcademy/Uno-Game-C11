@@ -15,18 +15,15 @@ function LobbyPage() {
   const [hasClicked, setHasClicked] = useState(false);
   const socketRef = useRef(null);
   const [roomNum, setRoomNum] = useState("");
-  const [room, setRoom] = useState([]);
+  const [rooms, setRooms] = useState([]);
   useEffect(() => {
     socketRef.current = io("localhost:8080", {
       query: {
         username: auth.currentUser?.displayName,
-        roomID: roomID,
-        uid: auth.currentUser?.uid,
       },
     });
-    socketRef.current.on("rooms", (rooms) => {
-      setRoom(rooms);
-      console.log(room);
+    socketRef.current.on("rooms", ({ rooms }) => {
+      setRooms(rooms);
     });
   }, []);
   return (
@@ -35,12 +32,6 @@ function LobbyPage() {
         <Typography variant="h4" textAlign="center" paddingTop={"5px"}>
           Join a room
         </Typography>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/gameroom/static")}
-        >
-          Join static room
-        </Button>
       </Container>
       <Grid container spacing={1} justifyContent="space-evenly">
         <Grid
@@ -67,6 +58,7 @@ function LobbyPage() {
             placeholder="room-name"
             color="secondary"
             value={roomNum}
+            error={hasClicked && roomNum.length < 3}
             onChange={(e) => setRoomNum(e.target.value)}
           />
           <Button
@@ -76,7 +68,7 @@ function LobbyPage() {
             onClick={(e) => {
               e.preventDefault();
               setHasClicked(true);
-              if (room.length > 3) {
+              if (roomNum.length > 3) {
                 navigate(`/game-room/${roomNum}`);
               }
             }}
@@ -106,7 +98,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static1")}
+            onClick={() => navigate("/game-room/static-1")}
           >
             Game 1
           </Button>
@@ -115,7 +107,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static2")}
+            onClick={() => navigate("/game-room/static-2")}
           >
             Game 2
           </Button>
@@ -124,7 +116,7 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static3")}
+            onClick={() => navigate("/game-room/static-3")}
           >
             Game 3
           </Button>
@@ -133,22 +125,26 @@ function LobbyPage() {
             fullWidth
             variant="contained"
             size="small"
-            onClick={() => navigate("/game-room/static4")}
+            onClick={() => navigate("/game-room/static-4")}
           >
             Game 4
           </Button>
-          {room.map((val) => (
-            <Button
-              key={val}
-              sx={{ margin: "5px" }}
-              fullWidth
-              variant="contained"
-              size="small"
-              onClick={() => navigate(`/game-room/${val}`)}
-            >
-              {val}
-            </Button>
-          ))}
+          {rooms.map((val) => {
+            let starting = ["static-1", "static-2", "static-3", "static-4"];
+            if (starting.includes(val)) return <div key={val}></div>;
+            return (
+              <Button
+                key={val}
+                sx={{ margin: "5px" }}
+                fullWidth
+                variant="contained"
+                size="small"
+                onClick={() => navigate(`/game-room/${val}`)}
+              >
+                {val}
+              </Button>
+            );
+          })}
         </Grid>
       </Grid>
     </>
