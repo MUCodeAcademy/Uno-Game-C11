@@ -1,6 +1,6 @@
 function socketConfig(io) {
-  const startingRooms = ["static-1", "static-2", "static-3", "static-4"];
-  let rooms = ["static-1", "static-2", "static-3", "static-4"];
+  const startingRooms = ["game-1", "game-2", "game-3", "game-4"];
+  let rooms = ["game-1", "game-2", "game-3", "game-4"];
   io.on("connection", (socket) => {
     const { roomID, username, uid } = socket.handshake.query;
     let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
