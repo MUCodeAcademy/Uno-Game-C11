@@ -15,24 +15,29 @@ function LobbyPage() {
     const { roomID } = useParams();
     const socketRef = useRef(null);
     const [room, setRoom] = useState([])
+    const [err, setErr] = useState(true)
     const [roomNum, setRoomNum] = useState("")
     let x = "hi"
     useEffect(() => {
-        socketRef.current = io("localhost:8080", {
-            query: {
-                username: auth.currentUser?.displayName,
-                roomID: roomID,
-                uid: auth.currentUser?.uid,
-            },
-        })
+        socketRef.current = io("localhost:8080", {})
         socketRef.current.on("rooms", (rooms) => {
             setRoom(rooms)
-            console.log(room);
+            console.log();
         })
 
 
 
     }, [])
+    function roomCheck() {
+        console.log(roomNum);
+        console.log(room.indexOf(roomNum) == -1);
+        if (room.indexOf(roomNum) == false) {
+            setErr("Room Already Exists")
+        } else {
+            navigate(`/GameRoom/${roomNum}`)
+        }
+    }
+
     console.log(room);
     return (
         <>
@@ -41,7 +46,6 @@ function LobbyPage() {
                 <Button onClick={() => { navigate("/GameRoom/static") }
                 }>Join static room</Button>
             </div>
-            <div>{Array.from(room)?.map((rooms) => <li key={rooms}>{rooms}</li>)}</div>
             <div
                 style={{
                     display: "flex",
@@ -67,11 +71,12 @@ function LobbyPage() {
                                 margin: "5px 0px",
                             }}
                         >
-                            <Button onClick={() => navigate("/GameRoom/static1")}>Game 1</Button>
+
+                            <div>{Array.from(room)?.map((rooms) => <div key={rooms}><Button onClick={() => { navigate(`/GameRoom/${rooms}`) }}>{rooms}</Button></div>)}</div>
                         </div>
-                        <div><Button onClick={() => navigate("/GameRoom/static2")}>Game 2</Button></div>
-                        <div><Button onClick={() => navigate("/GameRoom/static3")}>Game 3</Button></div>
-                        <div><Button onClick={() => navigate("/GameRoom/static4")}>Game 4</Button></div>
+                        <Button onClick={() => {
+                            window.location.reload(false);
+                        }}>Refresh</Button>
                     </div>
                 </div>
                 <div
@@ -89,7 +94,10 @@ function LobbyPage() {
                         <Input label="roomname" value={roomNum} onChange={(e) => setRoomNum(e.target.value)}></Input>
                     </div>
                     <div>
-                        <Button onClick={() => navigate(`/GameRoom/${roomNum}`)} >Create Room</Button>
+                        <Button onClick={() => {
+                            roomCheck()
+                        }} >Create Room</Button>
+                        <div>{err}</div>
                     </div>
                 </div>
             </div>
