@@ -2,24 +2,24 @@ import React from "react";
 import { useGameContext } from "../../../../../shared/context/GameContext";
 
 function PlayPile() {
-    const { activeCard } = useGameContext();
-    return (
-        <div
-            style={{
-                display: "flex",
-                alignContent: "center",
-                justifyContent: "center",
-            }}
-        >
-            {/* {activeCard && <div>ACTIVE CARD: {`${activeCard.color} ${activeCard.value}`}</div>} */}
-            <img
-                src={require(`./cards/${activeCard.color}_${activeCard.value}.png`)}
-                alt={`activeCard.color}_${activeCard.value}`}
-                title={`${activeCard.color}_${activeCard.value}`}
-                style={{ maxHeight: "200px" }}
-            ></img>
-        </div>
-    );
+  const { activeCard } = useGameContext();
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignContent: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* {activeCard && <div>ACTIVE CARD: {`${activeCard.color} ${activeCard.value}`}</div>} */}
+      <img
+        src={require(`./cards/${activeCard.color}_${activeCard.value}.png`)}
+        alt={`activeCard.color}_${activeCard.value}`}
+        title={`${activeCard.color}_${activeCard.value}`}
+        style={{ maxHeight: "125px" }}
+      ></img>
+    </div>
+  );
 }
 
 export default PlayPile;

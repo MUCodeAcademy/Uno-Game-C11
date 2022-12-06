@@ -1,7 +1,7 @@
 export * from "./buildDeck";
 export * from "./cardEnums";
 export * from "./checkForReshuffle";
-export * from "./checkForWin";
+export * from "./checkForEndGame";
 export * from "./dealCards";
 export * from "./drawCard";
 export * from "./newGame";
@@ -9,3 +9,4 @@ export * from "./playCard";
 export * from "./removeCardFromHand";
 export * from "./shuffleDeck";
 export * from "./validatePlayedCard";
+export * from "./reshuffleDeck";

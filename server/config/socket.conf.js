@@ -17,11 +17,20 @@ function socketConfig(io) {
 
     socket.on(
       "end turn",
-      ({ players, discardDeck, activeCard, isReverse, turn, playDeck }) => {
+      ({
+        players,
+        discardDeck,
+        activeCard,
+        newActiveCard,
+        isReverse,
+        turn,
+        playDeck,
+      }) => {
         io.to(roomID).emit("end turn", {
           players,
           discardDeck,
           activeCard,
+          newActiveCard,
           isReverse,
           turn,
           playDeck,
@@ -33,6 +42,10 @@ function socketConfig(io) {
       io.to(roomID).emit("start game", { players, playDeck, activeCard });
     });
 
+    socket.on("end game", ({ message }) => {
+      io.to(roomID).emit("end game", { message });
+    });
+
     socket.on("disconnect", () => {
       io.to(roomID).emit("user disconnect", { username });
     });
@@ -41,11 +54,28 @@ function socketConfig(io) {
       io.socket.broadcast.to(roomID).emit("game active", activeGame);
     });
 
-    socket.on("draw card", ({ players, playDeck, turn, draws }) => {
-      io.to(roomID).emit("draw card", { players, playDeck, turn, draws });
-    });
+    socket.on(
+      "draw card",
+      ({
+        players,
+        playDeck,
+        turn,
+        draws,
+        activeCard,
+        discardDeck,
+        isReverse,
+      }) => {
+        io.to(roomID).emit("draw card", {
+          players,
+          playDeck,
+          turn,
+          draws,
+          activeCard,
+          discardDeck,
+          isReverse,
+        });
+      }
+    );
   });
-
-  //game socket
 }
 module.exports = socketConfig;

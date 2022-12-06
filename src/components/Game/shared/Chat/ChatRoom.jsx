@@ -1,61 +1,82 @@
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { auth } from "../../../../firebase.config";
-import { Button } from "../../../../shared/styled/components/Button";
-import { ChatTextBox } from "../../../../shared/styled/components/ChatTextBox";
+
+import TextField from "@mui/material/TextField";
+
+import { theme } from "../../../../shared/styled/themes/Theme";
+import IconButton from "@mui/material/IconButton";
+import SendIcon from "@mui/icons-material/Send";
 import ChatMessageDisplay from "./ChatMessageDisplay";
 
 export function ChatRoom({ messages, sendMessage }) {
-    const { id } = useParams();
-    const bottomRef = useRef(null);
-    const [body, setBody] = useState("");
+  const bottomRef = useRef(null);
+  const [body, setBody] = useState("");
 
-    useEffect(() => {
-        bottomRef.current?.scrollTo({
-            top: bottomRef.current.scrollHeight,
-            behavior: "smooth",
-        });
-    }, [messages]);
+  useEffect(() => {
+    bottomRef.current?.scrollTo({
+      top: bottomRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
 
-    return (
-        <div style={{ border: "1px solid black" }}>
-            <div
-                ref={bottomRef}
-                style={{
-                    width: "300px",
-                    height: "400px",
-                    border: "1px solid back",
-                    overflowY: "scroll",
-                }}
-            >
-                {messages.map((v, idx) => (
-                    <ChatMessageDisplay key={idx} {...v} />
-                ))}
-            </div>
-            <form
-                style={{
-                    border: "1px solid black",
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                }}
-            >
-                <label htmlFor="msg"></label>
-                <ChatTextBox
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                ></ChatTextBox>
-                <Button
-                    disabled={body.length === 0}
-                    onClick={() => {
-                        sendMessage(body);
-                        setBody("");
-                    }}
-                >
-                    Send
-                </Button>
-            </form>
+  return (
+    <>
+      <div
+        style={{
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "black",
+        }}
+      >
+        <div
+          ref={bottomRef}
+          style={{
+            //   width: "300px",
+            height: "400px",
+            padding: "2px",
+            backgroundColor: theme.palette.secondary.light,
+            border: "1px solid back",
+            overflowY: "scroll",
+          }}
+        >
+          {messages.map((v, idx) => (
+            <ChatMessageDisplay key={idx} {...v} />
+          ))}
         </div>
-    );
+        <form
+          style={{
+            display: "flex",
+            padding: "5px",
+            justifyContent: "space-evenly",
+            backgroundColor: theme.palette.secondary.light,
+          }}
+        >
+          <TextField
+            size="small"
+            value={body}
+            variant="standard"
+            color="primary"
+            sx={{
+              alignSelf: "center",
+              backgroundColor: theme.palette.primary.light,
+            }}
+            onChange={(e) => setBody(e.target.value)}
+          />
+          <IconButton
+            color="primary"
+            variant="filled"
+            disabled={body.length === 0}
+            onClick={(e) => {
+              e.preventDefault();
+              sendMessage(body);
+              setBody("");
+            }}
+          >
+            <SendIcon />
+          </IconButton>
+        </form>
+      </div>
+    </>
+  );
 }
 
 export default ChatRoom;
