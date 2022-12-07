@@ -21,9 +21,8 @@ function GameBoard({
   const turnOrder = useMemo(() => {
     let oldOrder = [...players];
     let newOrder = oldOrder.splice(0, turn + isReverse ? 1 : 0);
-    newOrder = [...newOrder, ...oldOrder];
+    newOrder = [...oldOrder, ...newOrder];
     if (isReverse) return newOrder.reverse();
-
     return newOrder;
   }, [turn, isReverse, players]);
 

@@ -17,7 +17,7 @@ function socketConfig(io) {
       const i = rooms.findIndex((r) => r.id === roomID);
       rooms[i].playerCount = rooms[i].playerCount + 1;
       io.emit("rooms", { rooms });
-      let activeGame = rooms[i].isActive;
+      let activeGame = rooms[i].activeGame;
       io.to(roomID).emit("user connect", {
         username,
         uid,
