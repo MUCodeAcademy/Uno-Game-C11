@@ -6,6 +6,7 @@ import { useGameContext } from "../context/GameContext";
 import { CardColor, checkForEndGame, shuffleDeck } from "../functions";
 
 import { CardValue } from "../functions";
+import { updateStats } from "../functions/databse/updateStats";
 import nextTurn from "../functions/nextTurn";
 
 //TODO: check for win
@@ -60,7 +61,7 @@ const useSocketHook = (roomID, username) => {
     if (devUIDs.includes(uid)) {
       player.isDev = true;
     }
-    if (isActive) {
+    if (!isActive) {
       setWaitingUsers((curr) => [...curr, player]);
       return;
     }
@@ -152,7 +153,6 @@ const useSocketHook = (roomID, username) => {
       ({ username, uid, isHost, activeGame }) => {
         setMessages((curr) => [...curr, { body: `${username} has connected` }]);
         onConnect(username, uid, isHost, activeGame);
-        setIsGameActive(activeGame);
       }
     );
 
@@ -217,6 +217,9 @@ const useSocketHook = (roomID, username) => {
     });
 
     socketRef.current.on("end game", ({ message }) => {
+      if (message === "Stalemate, not enough cards to draw.") {
+        updateStats(auth.currentUser?.uid, null);
+      }
       setMessages((curr) => [...curr, { body: message }]);
       playersToWaiting();
       initialState();
