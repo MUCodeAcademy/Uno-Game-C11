@@ -223,7 +223,7 @@ function LobbyPage() {
                 }
               }}
             >
-              Join Private Room
+              `` Join Private Room
             </Button>
           </form>
         </Grid>

@@ -64,7 +64,7 @@ function socketConfig(io) {
     );
 
     socket.on("start game", ({ players, playDeck, activeCard, turn }) => {
-      rooms.map((r) => {
+      rooms = rooms.map((r) => {
         if (r.id === roomID) {
           return { ...r, activeGame: true };
         }
