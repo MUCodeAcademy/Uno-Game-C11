@@ -20,6 +20,7 @@ export function useGameContext() {
 }
 
 export function GameProvider(props) {
+    const [waitingUsers, setWaitingUsers] = useState([]);
     const [isGameActive, setIsGameActive] = useState(false);
     const [isHost, setIsHost] = useState(false);
     const [playDeck, setPlayDeck] = useState([]);
@@ -97,6 +98,8 @@ export function GameProvider(props) {
     return (
         <GameContext.Provider
             value={{
+                waitingUsers,
+                setWaitingUsers,
                 isHost,
                 setIsHost,
                 isGameActive,

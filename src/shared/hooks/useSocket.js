@@ -21,13 +21,12 @@ const useSocketHook = (roomID, username) => {
         setPlayDeck,
         setShuffling,
         setDiscardDeck,
-
+        setWaitingUsers,
         setIsReverse,
         setTurn,
     } = useGameContext();
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
-    const [waitingUsers, setWaitingUsers] = useState([]);
     const [hostuid, setHostuid] = useState();
     const navigate = useNavigate();
 
@@ -145,6 +144,7 @@ const useSocketHook = (roomID, username) => {
             setDiscardDeck([]);
             setTurn(0);
             setIsGameActive(true);
+            setWaitingUsers([])
             //! onNewGame();
         });
 
@@ -152,16 +152,26 @@ const useSocketHook = (roomID, username) => {
             setMessages((curr) => [...curr, msg]);
         });
         socketRef.current.on("user disconnect", ({ username, uid }) => {
+            setWaitingUsers((curr) => {
+                if (curr.findIndex((p) => p.uid === uid) !== -1) {
+                    let playerIndex = curr.findIndex((p) => p.uid === uid);
+                    curr.splice(playerIndex, 1);
+                }
+                return [...curr];
+            })
             setPlayers((curr) => {
                 //Check for player to remove
-                let playerIndex = curr.findIndex((p) => p.uid === uid);
-                let playerToRemove = curr[playerIndex];
-                curr.splice(playerIndex, 1);
-                console.log(curr);
-                // Get their cards
-                // Update turn order
-                setTurn((currTurn) => (currTurn >= playerIndex ? currTurn - 1 : currTurn));
-                setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
+                if (curr.findIndex((p) => p.uid === uid) !== -1) {
+                    let playerIndex = curr.findIndex((p) => p.uid === uid);
+                    let playerToRemove = curr[playerIndex];
+                    curr.splice(playerIndex, 1);
+                    console.log(curr);
+                    // Get their cards
+                    // Update turn order
+                    setTurn((currTurn) => (currTurn >= playerIndex ? currTurn - 1 : currTurn));
+                    setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
+                }
+
                 return [...curr];
             });
             setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
@@ -194,7 +204,6 @@ const useSocketHook = (roomID, username) => {
     }
 
     function endGame(message) {
-        setPlayers((curr) => [...curr, waitingUsers])
         socketRef.current.emit("end game", {
             message,
         });
