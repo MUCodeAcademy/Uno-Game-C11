@@ -79,26 +79,28 @@ function PlayerHand({ endTurn, drawCard }) {
         justifyItems: "center",
       }}
     >
-      {playedWild && (
-        <ChooseColorPrompt
-          setPlayedWild={setPlayedWild}
-          setActiveCard={setActiveCard}
-          playDeck={playDeck}
-          endTurn={endTurn}
-          newPlayers={newPlayers}
-          newDiscardDeck={newDiscardDeck}
-          newActiveCard={newActiveCard}
-          newIsReverse={newIsReverse}
-          turn={turn}
-        />
-      )}
+      <div style={{ height: "50px", marginTop: "5px" }}>
+        {playedWild && (
+          <ChooseColorPrompt
+            setPlayedWild={setPlayedWild}
+            setActiveCard={setActiveCard}
+            playDeck={playDeck}
+            endTurn={endTurn}
+            newPlayers={newPlayers}
+            newDiscardDeck={newDiscardDeck}
+            newActiveCard={newActiveCard}
+            newIsReverse={newIsReverse}
+            turn={turn}
+          />
+        )}
+      </div>
       <div
         style={{
           display: "flex",
           maxWidth: "100%",
           margin: "5px",
-          height: "150px",
-          overflowX: "auto",
+          height: "165px",
+          overflowX: "scroll",
           alignItems: "center",
         }}
       >

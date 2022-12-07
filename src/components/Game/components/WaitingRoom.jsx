@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 export function WaitingRoom({ startGame, messages, sendMessage }) {
-  const { isHost, players } = useGameContext();
+  const { players, isHost } = useGameContext();
 
   function handleClick() {
     let { newDeck, players: newPlayers, gameStartCard } = newGame(players);
