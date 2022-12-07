@@ -18,10 +18,8 @@ const useSocketHook = (roomID, username) => {
         players,
         setPlayers,
         activeCard,
-        isHost,
         setPlayDeck,
         setShuffling,
-
         setDiscardDeck,
 
         setIsReverse,
@@ -54,16 +52,16 @@ const useSocketHook = (roomID, username) => {
         // setPlayers([]);
     };
 
-    const onConnect = (newPlayerName, newPlayerUID) => {
+    const onConnect = (newPlayerName, newPlayerUID, active) => {
         let player = { name: "", uid: "", hand: [], isHost: false };
         player.name = newPlayerName;
         player.uid = newPlayerUID;
-        if (waitingUsers.length === 0) {
-            player.isHost = true;
-        }
 
-        // waitingUsers.push(player);
-        setPlayers((curr) => [...curr, player]);
+        if (active === false) {
+            setPlayers((curr) => [...curr, player]);
+        } else {
+            setWaitingUsers((curr) => [...curr, player])
+        }
     };
 
     function onNewGame() {
@@ -81,7 +79,7 @@ const useSocketHook = (roomID, username) => {
     };
 
     useEffect(() => {
-        socketRef.current = io("10.200.224.164:8080", {
+        socketRef.current = io("localhost:8080", {
             query: {
                 username,
                 roomID,
@@ -111,6 +109,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on("end turn", ({ players, discardDeck, newActiveCard, activeCard, isReverse, turn, playDeck }) => {
             const message = checkForEndGame(players, playDeck, discardDeck);
             //message will be null if end game conditions are not met
+
             if (message) {
                 endGame(message);
                 return;
@@ -134,9 +133,9 @@ const useSocketHook = (roomID, username) => {
                 drawCard(players, playDeck, next, draw, isReverse);
             }
         });
-        socketRef.current.on("user connect", ({ username, uid }) => {
+        socketRef.current.on("user connect", ({ username, uid, active }) => {
             setMessages((curr) => [...curr, { body: `${username} has connected` }]);
-            onConnect(username, uid);
+            onConnect(username, uid, active);
         });
 
         socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
@@ -195,6 +194,7 @@ const useSocketHook = (roomID, username) => {
     }
 
     function endGame(message) {
+        setPlayers((curr) => [...curr, waitingUsers])
         socketRef.current.emit("end game", {
             message,
         });
