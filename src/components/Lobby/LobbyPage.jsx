@@ -106,7 +106,7 @@ function LobbyPage() {
               id="private"
               name="private"
               checked={isPrivate}
-              onChange={() => setIsPrivate(!isPrivate)}
+              onChange={() => setIsPrivate((curr) => !curr)}
             />
             <label htmlFor="private">Create private room</label>
             <Button
@@ -122,6 +122,10 @@ function LobbyPage() {
                   roomNum.length > 3 &&
                   !rooms.some((room) => room.id.includes(roomNum))
                 ) {
+                  socketRef.current.emit("create room", {
+                    id: roomNum,
+                    isPrivate: isPrivate,
+                  });
                   navigate(`/game-room/${roomNum}`);
                 }
               }}
@@ -210,18 +214,20 @@ function LobbyPage() {
             .map((val) => {
               let starting = ["game-1", "game-2", "game-3", "game-4"];
               if (starting.includes(val.id)) return <div key={val.id}></div>;
-              return (
-                <Button
-                  key={val.id}
-                  sx={{ margin: "5px" }}
-                  fullWidth
-                  variant="contained"
-                  size="small"
-                  onClick={() => navigate(`/game-room/${val.id}`)}
-                >
-                  {val.id}
-                </Button>
-              );
+              if (!val.isPrivate) {
+                return (
+                  <Button
+                    key={val.id}
+                    sx={{ margin: "5px" }}
+                    fullWidth
+                    variant="contained"
+                    size="small"
+                    onClick={() => navigate(`/game-room/${val.id}`)}
+                  >
+                    {val.id}
+                  </Button>
+                );
+              }
             })}
         </Grid>
       </Grid>

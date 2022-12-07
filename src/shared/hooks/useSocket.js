@@ -10,7 +10,7 @@ import nextTurn from "../functions/nextTurn";
 
 //TODO: check for win
 
-const useSocketHook = (roomID, username, isPrivate) => {
+const useSocketHook = (roomID, username, uid, isPrivate) => {
   const {
     setIsHost,
     setIsGameActive,
@@ -83,8 +83,8 @@ const useSocketHook = (roomID, username, isPrivate) => {
       query: {
         username,
         roomID,
-        uid: auth.currentUser?.uid,
-        isPrivate: "pulls from here",
+        uid,
+        isPrivate,
       },
     });
 
