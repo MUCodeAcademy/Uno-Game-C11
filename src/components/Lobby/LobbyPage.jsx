@@ -1,6 +1,5 @@
 import Container from "@mui/material/Container";
-import { useNavigate, useParams } from "react-router-dom";
-// import { Button } from "../../shared/styled/components/Button";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { theme } from "../../shared/styled/themes/Theme";
 import io from "socket.io-client";
@@ -9,6 +8,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { auth } from "../../firebase.config";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { CheckBox } from "@mui/icons-material";
 
 function LobbyPage() {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ function LobbyPage() {
   const [roomNum, setRoomNum] = useState("");
   const [roomFilter, setRoomFilter] = useState("");
   const [rooms, setRooms] = useState([]);
+  const [isPrivate, setIsPrivate] = useState(false);
   useEffect(() => {
     socketRef.current = io("localhost:8080", {
       query: {
@@ -27,6 +28,8 @@ function LobbyPage() {
       setRooms(rooms);
     });
   }, []);
+
+  console.log(rooms);
 
   const errorMsg = useMemo(() => {
     if (rooms.some((room) => room.id === roomNum)) return "Room already exists";
@@ -97,6 +100,15 @@ function LobbyPage() {
                 setRoomNum(e.target.value);
               }}
             />
+            {/* <CheckBox name="private" checked={false} /> */}
+            <input
+              type="checkbox"
+              id="private"
+              name="private"
+              checked={isPrivate}
+              onChange={() => setIsPrivate(!isPrivate)}
+            />
+            <label htmlFor="private">Create private room</label>
             <Button
               sx={{ marginTop: "5px" }}
               fullWidth

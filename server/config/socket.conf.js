@@ -8,12 +8,12 @@ function socketConfig(io) {
     { id: "game-4", isPrivate: false },
   ];
   io.on("connection", (socket) => {
-    const { roomID, username, uid } = socket.handshake.query;
+    const { roomID, username, uid, isPrivate } = socket.handshake.query;
     let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
     if (roomID) {
       socket.join(roomID);
       if (!rooms.some((room) => room.id === roomID)) {
-        rooms.push({ id: roomID, isPrivate: false });
+        rooms.push({ id: roomID, isPrivate: isPrivate });
         io.emit("rooms", { rooms });
       }
     }

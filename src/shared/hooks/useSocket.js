@@ -10,7 +10,7 @@ import nextTurn from "../functions/nextTurn";
 
 //TODO: check for win
 
-const useSocketHook = (roomID, username) => {
+const useSocketHook = (roomID, username, isPrivate) => {
   const {
     setIsHost,
     setIsGameActive,
@@ -21,9 +21,7 @@ const useSocketHook = (roomID, username) => {
     isHost,
     setPlayDeck,
     setShuffling,
-
     setDiscardDeck,
-
     setIsReverse,
     setTurn,
   } = useGameContext();
@@ -55,7 +53,6 @@ const useSocketHook = (roomID, username) => {
   };
 
   const onConnect = (newPlayerName, newPlayerUID) => {
-    console.log("onconnect");
     let player = { name: "", uid: "", hand: [], isHost: false };
     player.name = newPlayerName;
     player.uid = newPlayerUID;
@@ -87,6 +84,7 @@ const useSocketHook = (roomID, username) => {
         username,
         roomID,
         uid: auth.currentUser?.uid,
+        isPrivate: "pulls from here",
       },
     });
 
