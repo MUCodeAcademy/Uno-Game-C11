@@ -13,6 +13,7 @@ export const theme = createTheme({
       blue: "rgb(0, 152, 220)",
       yellow: "rgb(255, 200, 37)",
     },
+    error: { main: "#ffffff" },
   },
   // palette: {
   //     type: "theme",

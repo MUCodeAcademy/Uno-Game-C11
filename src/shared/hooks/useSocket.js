@@ -60,7 +60,7 @@ const useSocketHook = (roomID, username) => {
     if (devUIDs.includes(uid)) {
       player.isDev = true;
     }
-    if (!isActive) {
+    if (isActive) {
       setWaitingUsers((curr) => [...curr, player]);
       return;
     }
@@ -152,6 +152,7 @@ const useSocketHook = (roomID, username) => {
       ({ username, uid, isHost, activeGame }) => {
         setMessages((curr) => [...curr, { body: `${username} has connected` }]);
         onConnect(username, uid, isHost, activeGame);
+        setIsGameActive(activeGame);
       }
     );
 
