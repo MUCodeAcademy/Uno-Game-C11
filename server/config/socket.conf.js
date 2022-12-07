@@ -1,11 +1,6 @@
 function socketConfig(io) {
   let hostuid;
-  const startingRooms = [
-    { id: "game-1", isPrivate: false },
-    { id: "game-2", isPrivate: false },
-    { id: "game-3", isPrivate: false },
-    { id: "game-3", isPrivate: false },
-  ];
+  const startingRooms = ["game-1", "game-2", "game-3", "game-4"];
   let rooms = [
     { id: "game-1", isPrivate: false },
     { id: "game-2", isPrivate: false },
@@ -15,7 +10,7 @@ function socketConfig(io) {
   io.on("connection", (socket) => {
     const { roomID, username, uid } = socket.handshake.query;
     let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
-    if (rooms.some((room) => room.id === roomID)) {
+    if (roomID) {
       socket.join(roomID);
       if (!rooms.some((room) => room.id === roomID)) {
         rooms.push({ id: roomID, isPrivate: false });
@@ -74,10 +69,7 @@ function socketConfig(io) {
       io.to(roomID).emit("user disconnect", { username, uid });
       if (roomID) {
         let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
-        if (
-          isNaN(roomCount) &&
-          !startingRooms.some((room) => room.id === roomID)
-        ) {
+        if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
           let newRooms = rooms.filter((room) => room.id !== roomID);
           io.emit("rooms", { newRooms });
         }
