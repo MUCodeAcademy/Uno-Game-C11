@@ -1,9 +1,8 @@
 function socketConfig(io) {
-  let hostuid;
-  let active = false
   const startingRooms = ["game-1", "game-2", "game-3", "game-4"];
   let rooms = ["game-1", "game-2", "game-3", "game-4"];
   io.on("connection", (socket) => {
+    let isHost = false;
     const { roomID, username, uid } = socket.handshake.query;
     let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
     if (roomID) {
@@ -12,19 +11,20 @@ function socketConfig(io) {
         rooms.push(roomID);
         io.emit("rooms", { rooms });
       }
+      isHost = isNaN(roomCount);
+      io.to(roomID).emit("user connect", { username, uid, isHost });
     }
-    io.to(socket.id).emit("host check", { roomCount, uid });
     if (!roomID) {
       io.to(socket.id).emit("rooms", { rooms });
     }
-    io.to(roomID).emit("user connect", { username, uid, active });
 
     socket.on("new message", ({ body }) => {
       io.to(roomID).emit("new message", { username, body });
     });
 
-    socket.on("end turn", ({ players, discardDeck, activeCard, newActiveCard, isReverse, turn, playDeck }) => {
-      io.to(roomID).emit("end turn", {
+    socket.on(
+      "end turn",
+      ({
         players,
         discardDeck,
         activeCard,
@@ -32,28 +32,29 @@ function socketConfig(io) {
         isReverse,
         turn,
         playDeck,
-      });
-    });
+      }) => {
+        io.to(roomID).emit("end turn", {
+          players,
+          discardDeck,
+          activeCard,
+          newActiveCard,
+          isReverse,
+          turn,
+          playDeck,
+        });
+      }
+    );
 
     socket.on("start game", ({ players, playDeck, activeCard }) => {
-      active = true
+      active = true;
       io.to(roomID).emit("start game", { players, playDeck, activeCard });
     });
 
     socket.on("end game", ({ message }) => {
-      active = false
       io.to(roomID).emit("end game", { message });
     });
 
-    socket.on("sendhostuid", (uid) => {
-      hostuid = uid;
-    });
-
     socket.on("disconnect", () => {
-      if (hostuid == uid) {
-        active = false
-        io.to(roomID).emit("host disconnected", {});
-      }
       io.to(roomID).emit("user disconnect", { username, uid });
       if (roomID) {
         let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
@@ -68,8 +69,9 @@ function socketConfig(io) {
       io.socket.broadcast.to(roomID).emit("game active", activeGame);
     });
 
-    socket.on("draw card", ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
-      io.to(roomID).emit("draw card", {
+    socket.on(
+      "draw card",
+      ({
         players,
         playDeck,
         turn,
@@ -77,8 +79,18 @@ function socketConfig(io) {
         activeCard,
         discardDeck,
         isReverse,
-      });
-    });
+      }) => {
+        io.to(roomID).emit("draw card", {
+          players,
+          playDeck,
+          turn,
+          draws,
+          activeCard,
+          discardDeck,
+          isReverse,
+        });
+      }
+    );
   });
 }
 module.exports = socketConfig;

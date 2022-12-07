@@ -9,7 +9,10 @@ import Toolbar from "@mui/material/Toolbar";
 
 function Menu() {
   const { clearUser, setUser } = useUserContext();
-  auth.onAuthStateChanged((activeUser) => setUser(activeUser));
+  auth.onAuthStateChanged((activeUser) => {
+    setUser(activeUser);
+  });
+
   return (
     <AppBar position="static">
       <Toolbar sx={{ justifyContent: "space-evenly" }}>

@@ -15,12 +15,18 @@ function GameBoard({
   reshuffle,
   messages,
   sendMessage,
+  forceDisconnect,
 }) {
-  const { players, turn } = useGameContext();
+  const { players, turn, isReverse } = useGameContext();
+  const turnOrder = useMemo(() => {
+    let oldOrder = [...players];
+    let newOrder = oldOrder.splice(0, turn + isReverse ? 1 : 0);
+    newOrder = [...newOrder, ...oldOrder];
+    if (isReverse) return newOrder.reverse();
 
-  const activePlayer = useMemo(() => {
-    return players[turn];
-  }, [turn, players]);
+    return newOrder;
+  }, [turn, isReverse, players]);
+
   const [showChat, setShowChat] = useState(false);
   return (
     <>
@@ -38,11 +44,12 @@ function GameBoard({
               }}
             >
               {players &&
-                players.map((player) => (
+                turnOrder.map((player) => (
                   <Player
                     key={player.uid}
-                    activePlayer={player.uid === activePlayer.uid}
+                    isHost={player.isHost}
                     playerName={player.name}
+                    isDev={player.isDev}
                     numCards={player.hand.length}
                   >
                     <div>{player.name}</div>
@@ -60,6 +67,7 @@ function GameBoard({
               drawCard={drawCard}
               endGame={endGame}
               reshuffle={reshuffle}
+              forceDisconnect={forceDisconnect}
             ></PlayerHand>
           </div>
         </Grid>

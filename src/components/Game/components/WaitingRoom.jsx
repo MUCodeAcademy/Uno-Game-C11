@@ -10,7 +10,7 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
   const { isHost, players, waitingUsers, setPlayers } = useGameContext();
 
   function handleClick() {
-    let player = [...players, ...waitingUsers]
+    let player = [...players, ...waitingUsers];
     let { newDeck, players: newPlayers, gameStartCard } = newGame(player);
     startGame(newDeck, newPlayers, gameStartCard);
   }
