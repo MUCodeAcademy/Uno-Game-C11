@@ -55,13 +55,15 @@ const useSocketHook = (roomID, username) => {
     };
 
     const onConnect = (newPlayerName, newPlayerUID) => {
-        let player = { name: "", uid: "", hand: [], isHost: false };
+        let player = { name: "", uid: "", hand: [], isHost: false, isDev: false };
         player.name = newPlayerName;
         player.uid = newPlayerUID;
+        if (devUIDs.includes(newPlayerUID)) {
+            player.isDev = true;
+        }
         if (waitingUsers.length === 0) {
             player.isHost = true;
         }
-
         // waitingUsers.push(player);
         setPlayers((curr) => [...curr, player]);
     };
