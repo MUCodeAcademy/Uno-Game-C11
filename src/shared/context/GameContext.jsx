@@ -31,7 +31,6 @@ export function GameProvider(props) {
   const [players, setPlayers] = useState([]);
   const isHost = useMemo(() => {
     let host = players.filter((p) => p.uid === user.uid)[0]?.isHost;
-    console.log(host);
     return host;
   }, [players]);
   const [isGameActive, setIsGameActive] = useState(false);

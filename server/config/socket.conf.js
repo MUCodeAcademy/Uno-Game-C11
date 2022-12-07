@@ -64,6 +64,79 @@ function socketConfig(io) {
       }
     });
 
+    socket.on("force disconnect", () => {
+      io.to(roomID).emit("user disconnect", { username, uid });
+    });
+
+    socket.on("game active", (activeGame) => {
+      io.socket.broadcast.to(roomID).emit("game active", activeGame);
+    });
+
+    socket.on(
+      "draw card",
+      ({
+        players,
+        playDeck,
+        turn,
+        draws,
+        activeCard,
+        discardDeck,
+        isReverse,
+      }) => {
+        io.to(roomID).emit("draw card", {
+          players,
+          playDeck,
+          turn,
+          draws,
+          activeCard,
+          discardDeck,
+          isReverse,
+        });
+      }
+    );
+
+    socket.on(
+      "end turn",
+      ({
+        players,
+        discardDeck,
+        activeCard,
+        newActiveCard,
+        isReverse,
+        turn,
+        playDeck,
+      }) => {
+        io.to(roomID).emit("end turn", {
+          players,
+          discardDeck,
+          activeCard,
+          newActiveCard,
+          isReverse,
+          turn,
+          playDeck,
+        });
+      }
+    );
+
+    socket.on("start game", ({ players, playDeck, activeCard }) => {
+      io.to(roomID).emit("start game", { players, playDeck, activeCard });
+    });
+
+    socket.on("end game", ({ message }) => {
+      io.to(roomID).emit("end game", { message });
+    });
+
+    socket.on("disconnect", () => {
+      io.to(roomID).emit("user disconnect", { username, uid });
+      if (roomID) {
+        let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
+        if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
+          rooms = rooms.filter((val) => val !== roomID);
+          io.emit("rooms", { rooms });
+        }
+      }
+    });
+
     socket.on("game active", (activeGame) => {
       io.socket.broadcast.to(roomID).emit("game active", activeGame);
     });

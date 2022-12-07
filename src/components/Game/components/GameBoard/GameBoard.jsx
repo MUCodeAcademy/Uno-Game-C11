@@ -15,6 +15,7 @@ function GameBoard({
   reshuffle,
   messages,
   sendMessage,
+  forceDisconnect,
 }) {
   const { players, turn, isReverse } = useGameContext();
   const turnOrder = useMemo(() => {
@@ -65,6 +66,7 @@ function GameBoard({
               drawCard={drawCard}
               endGame={endGame}
               reshuffle={reshuffle}
+              forceDisconnect={forceDisconnect}
             ></PlayerHand>
           </div>
         </Grid>

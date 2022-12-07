@@ -283,6 +283,9 @@ const useSocketHook = (roomID, username) => {
       isReverse,
     });
   }
+  function forceDisconnect(username, uid) {
+    socketRef.current.emit("force disconnect", { username, uid });
+  }
 
   return {
     messages,
@@ -291,6 +294,7 @@ const useSocketHook = (roomID, username) => {
     endTurn,
     drawCard,
     startGame,
+    forceDisconnect,
   };
 };
 

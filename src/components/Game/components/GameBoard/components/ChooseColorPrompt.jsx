@@ -13,6 +13,7 @@ const ChooseColorPrompt = ({
   newActiveCard,
   newIsReverse,
   turn,
+  resetCountdown,
   playDeck,
 }) => {
   let colors = [
@@ -22,6 +23,7 @@ const ChooseColorPrompt = ({
     { name: CardColor.Green, color: theme.palette.wild.green },
   ];
   function handleClick(e) {
+    resetCountdown();
     newActiveCard.current = {
       value: newActiveCard.current.value,
       color: e.target.value,
