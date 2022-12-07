@@ -137,8 +137,9 @@ function LobbyPage() {
                 setHasClicked(true);
                 if (
                   roomNum.length > 3 &&
-                  !rooms.some((room) =>
-                    room.id.includes(roomNum.replace(/\s+/g, "-").toLowerCase())
+                  !rooms.some(
+                    (room) =>
+                      room === roomNum.replace(/\s+/g, "-").toLowerCase()
                   )
                 ) {
                   socketRef.current.emit("create room", {
@@ -209,10 +210,9 @@ function LobbyPage() {
                 setHasClickedJoin(true);
                 if (
                   roomNum.length > 3 &&
-                  rooms.some((room) =>
-                    room.id.includes(
-                      joinRoomNum.replace(/\s+/g, "-").toLowerCase()
-                    )
+                  rooms.some(
+                    (room) =>
+                      room === joinRoomNum.replace(/\s+/g, "-").toLowerCase()
                   )
                 ) {
                   navigate(
