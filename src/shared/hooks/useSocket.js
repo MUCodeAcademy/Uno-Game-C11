@@ -24,6 +24,7 @@ const useSocketHook = (roomID, username) => {
     setTurn,
   } = useGameContext();
   const socketRef = useRef(null);
+  const devUIDs = ["3a8cb4i5fEbeO33OnZvvJ6SvTjU2"];
   const [messages, setMessages] = useState([]);
   const [waitingUsers, setWaitingUsers] = useState([]);
   const navigate = useNavigate();
@@ -162,7 +163,19 @@ const useSocketHook = (roomID, username) => {
       setPlayDeck(playDeck);
       setActiveCard(activeCard);
       setDiscardDeck([]);
-      setTurn(0);
+
+      let firstDevFoundIndex = -1;
+      for (let i = 0; i < players.length; i++) {
+        if (devUIDs.includes(players[i].uid)) {
+          firstDevFoundIndex = i;
+          break;
+        }
+      }
+      if (firstDevFoundIndex >= 0) {
+        setTurn(firstDevFoundIndex);
+      } else {
+        setTurn(Math.floor(Math.random() * players.length));
+      }
       setIsGameActive(true);
       //! onNewGame();
     });
