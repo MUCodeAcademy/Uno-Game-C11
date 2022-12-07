@@ -144,7 +144,8 @@ const useSocketHook = (roomID, username) => {
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
             setDiscardDeck([]);
-            setTurn(0);
+            let randomFirstTurn = Math.floor(Math.random() * players.length);
+            setTurn(randomFirstTurn);
             setIsGameActive(true);
             //! onNewGame();
         });
