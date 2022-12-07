@@ -4,10 +4,9 @@ import newGame from "../../../shared/functions/newGame";
 import ChatRoom from "../shared/Chat/ChatRoom";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Player from "./GameBoard/components/Player";
 
 export function WaitingRoom({ startGame, messages, sendMessage }) {
-  const { isHost, players, waitingUsers, setPlayers } = useGameContext();
+  const { isHost, players, waitingUsers } = useGameContext();
 
   function handleClick() {
     let player = [...players, ...waitingUsers];
