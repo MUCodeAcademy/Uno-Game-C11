@@ -66,6 +66,7 @@ const useSocketHook = (roomID, username) => {
       setWaitingUsers((curr) => [...curr, player]);
       return;
     }
+    setIsGameActive(isActive);
     setPlayers((curr) => [...curr, player]);
   };
 
