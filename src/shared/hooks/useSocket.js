@@ -4,11 +4,12 @@ import io from "socket.io-client";
 import { auth } from "../../firebase.config";
 import { useGameContext } from "../context/GameContext";
 import { CardColor, checkForEndGame, shuffleDeck } from "../functions";
-
 import { CardValue } from "../functions";
 import nextTurn from "../functions/nextTurn";
 
 //TODO: check for win
+
+const devUIDs = ["3a8cb4i5fEbeO33OnZvvJ6SvTjU2"];
 
 const useSocketHook = (roomID, username) => {
     const {
@@ -140,7 +141,6 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
-            const devUIDs = ["3a8cb4i5fEbeO33OnZvvJ6SvTjU2"];
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
