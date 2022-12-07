@@ -60,7 +60,7 @@ const useSocketHook = (roomID, username) => {
     if (devUIDs.includes(uid)) {
       player.isDev = true;
     }
-    if (isActive) {
+    if (!isActive) {
       setWaitingUsers((curr) => [...curr, player]);
       return;
     }

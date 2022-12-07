@@ -127,6 +127,7 @@ export function GameProvider(props) {
         turn,
         setTurn,
         waitingUsers,
+        setWaitingUsers,
       }}
     >
       {props.children}
