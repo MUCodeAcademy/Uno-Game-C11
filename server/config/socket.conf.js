@@ -15,7 +15,6 @@ function socketConfig(io) {
       socket.join(roomID);
       isHost = roomCount === 1;
       const i = rooms.findIndex((r) => r.id === roomID);
-      console.log(rooms);
       rooms[i].playerCount = rooms[i].playerCount + 1;
       io.emit("rooms", { rooms });
       let activeGame = rooms[i].isActive;
