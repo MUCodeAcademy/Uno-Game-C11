@@ -18,9 +18,6 @@ function GameBoard({
 }) {
   const { players, turn } = useGameContext();
 
-  const activePlayer = useMemo(() => {
-    return players[turn];
-  }, [turn, players]);
   const [showChat, setShowChat] = useState(false);
   return (
     <>
@@ -41,7 +38,7 @@ function GameBoard({
                 players.map((player) => (
                   <Player
                     key={player.uid}
-                    activePlayer={player.uid === activePlayer.uid}
+                    isHost={player.isHost}
                     playerName={player.name}
                     numCards={player.hand.length}
                   >

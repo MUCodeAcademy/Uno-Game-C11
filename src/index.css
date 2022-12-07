@@ -18,6 +18,16 @@
   }
 }
 
+.crown {
+  height: 15px;
+  display: block;
+  margin: auto;
+}
+
+.crown path {
+  fill: white;
+}
+
 body {
   overflow-x: hidden;
 }
