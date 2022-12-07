@@ -69,9 +69,10 @@ function socketConfig(io) {
       io.to(roomID).emit("user disconnect", { username, uid });
       if (roomID) {
         let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
+        console.log(roomCount);
         if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
-          let newRooms = rooms.filter((room) => room.id !== roomID);
-          io.emit("rooms", { newRooms });
+          rooms = rooms.filter((room) => room.id !== roomID);
+          io.emit("rooms", { rooms });
         }
       }
     });
