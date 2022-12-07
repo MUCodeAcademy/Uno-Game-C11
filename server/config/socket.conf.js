@@ -12,7 +12,12 @@ function socketConfig(io) {
         io.emit("rooms", { rooms });
       }
       isHost = isNaN(roomCount);
-      io.to(roomID).emit("user connect", { username, uid, isHost });
+      io.to(roomID).emit("user connect", {
+        username,
+        uid,
+        isHost,
+        activeGame: true,
+      });
     }
     if (!roomID) {
       io.to(socket.id).emit("rooms", { rooms });
@@ -46,7 +51,6 @@ function socketConfig(io) {
     );
 
     socket.on("start game", ({ players, playDeck, activeCard }) => {
-      active = true;
       io.to(roomID).emit("start game", { players, playDeck, activeCard });
     });
 
@@ -63,10 +67,6 @@ function socketConfig(io) {
           io.emit("rooms", { rooms });
         }
       }
-    });
-
-    socket.on("game active", (activeGame) => {
-      io.socket.broadcast.to(roomID).emit("game active", activeGame);
     });
 
     socket.on(
