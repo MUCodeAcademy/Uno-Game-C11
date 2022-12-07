@@ -3,12 +3,6 @@ import dealCards from "./dealCards";
 import shuffleDeck from "./shuffleDeck";
 import { CardValue, CardColor } from "./cardEnums";
 
-//assuming players looks something like this
-const dummyPlayers = [
-  { name: "player1", hand: [], isTurn: false },
-  { name: "player2", hand: [], isTurn: false },
-];
-
 export function newGame(players) {
   const deck = shuffleDeck(buildDeck());
   let gameStartCard = null;

@@ -24,6 +24,7 @@ const useSocketHook = (roomID, username) => {
     setDiscardDeck,
     setIsReverse,
     setTurn,
+    waitingUsers,
   } = useGameContext();
   const socketRef = useRef(null);
   const devUIDs = [
@@ -174,7 +175,6 @@ const useSocketHook = (roomID, username) => {
         setIsGameActive(true);
         setTurn(turn);
         setWaitingUsers([]);
-        //! onNewGame();
       }
     );
 
@@ -233,14 +233,11 @@ const useSocketHook = (roomID, username) => {
   }
 
   function startGame(newDeck, newPlayers, gameStartCard) {
-    let firstDevFoundIndex = -1;
-    for (let i = 0; i < players.length; i++) {
-      if (devUIDs.includes(players[i].uid)) {
-        firstDevFoundIndex = i;
-        break;
-      }
-    }
-    let turn = Math.floor(Math.random() * players.length);
+    let firstDev = newPlayers.findIndex((d) =>
+      devUIDs.includes(newPlayers.uid)
+    );
+    let turn =
+      firstDev >= 0 ? firstDev : Math.floor(Math.random() * newPlayers.length);
 
     socketRef.current.emit("start game", {
       players: newPlayers,
