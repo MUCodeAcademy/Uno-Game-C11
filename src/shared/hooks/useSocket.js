@@ -10,25 +10,29 @@ import nextTurn from "../functions/nextTurn";
 
 //TODO: check for win
 
-const useSocketHook = (roomID, username, uid, isPrivate) => {
+const useSocketHook = (roomID, username) => {
   const {
-    setIsHost,
     setIsGameActive,
     setActiveCard,
     players,
     setPlayers,
     activeCard,
-    isHost,
     setPlayDeck,
     setShuffling,
+    setWaitingUsers,
     setDiscardDeck,
     setIsReverse,
     setTurn,
   } = useGameContext();
   const socketRef = useRef(null);
+  const devUIDs = [
+    "3a8cb4i5fEbeO33OnZvvJ6SvTjU2",
+    "u4MqHUMDMdQbG3pGSJuIIKsv5KA2",
+    "GbviAKHZ5dVht3YjOfQjdxG7vRL2",
+    "lC7f56DqSVgnrvRQgWhznMIjPs83",
+    "8P1enWo03vY7KP3xHG9fMd92iWx1",
+  ];
   const [messages, setMessages] = useState([]);
-  const [waitingUsers, setWaitingUsers] = useState([]);
-  const [hostuid, setHostuid] = useState();
   const navigate = useNavigate();
 
   const initialState = () => {
@@ -41,41 +45,26 @@ const useSocketHook = (roomID, username, uid, isPrivate) => {
     setTurn(0);
   };
 
-  const waitingToPlayers = () => {
-    // setPlayers([...waitingUsers]);
-    // waitingUsers = [];
-  };
-
   const playersToWaiting = () => {
-    // waitingUsers = [...players];
-    // waitingUsers.forEach(() => (players.hand = []));
-    // setPlayers([]);
+    setWaitingUsers((currWaiting) => {
+      setPlayers((currPlayers) => [
+        ...currPlayers.map((v) => ({ ...v, hand: [] })),
+        ...currWaiting,
+      ]);
+      return [];
+    });
   };
 
-  const onConnect = (newPlayerName, newPlayerUID) => {
-    let player = { name: "", uid: "", hand: [], isHost: false };
-    player.name = newPlayerName;
-    player.uid = newPlayerUID;
-    if (waitingUsers.length === 0) {
-      player.isHost = true;
+  const onConnect = (name, uid, isHost, isActive) => {
+    let player = { name, uid, hand: [], isHost, isDev: false };
+    if (devUIDs.includes(uid)) {
+      player.isDev = true;
     }
-
-    // waitingUsers.push(player);
+    if (isActive) {
+      setWaitingUsers((curr) => [...curr, player]);
+      return;
+    }
     setPlayers((curr) => [...curr, player]);
-  };
-
-  function onNewGame() {
-    waitingToPlayers();
-    setTurn(Math.random(Math.floor() * players.length - 1));
-    // setIsGameActive(true);
-  }
-
-  const onDisconnect = (player) => {
-    if (player.isHost) {
-      endGame();
-    }
-    let cardsToDiscard = [...player.hand];
-    setDiscardDeck((curr) => [...curr, cardsToDiscard]);
   };
 
   useEffect(() => {
@@ -83,20 +72,8 @@ const useSocketHook = (roomID, username, uid, isPrivate) => {
       query: {
         username,
         roomID,
-        uid,
-        isPrivate,
+        uid: auth.currentUser?.uid,
       },
-    });
-
-    socketRef.current.on("host check", ({ roomCount, uid }) => {
-      if (roomCount === null) {
-        setIsHost(true);
-        socketRef.current.emit("sendhostuid", uid);
-      }
-    });
-
-    socketRef.current.on("game active", (gameActive) => {
-      setIsGameActive(gameActive);
     });
 
     socketRef.current.on(
@@ -170,33 +147,62 @@ const useSocketHook = (roomID, username, uid, isPrivate) => {
         }
       }
     );
-    socketRef.current.on("user connect", ({ username, uid }) => {
-      setMessages((curr) => [...curr, { body: `${username} has connected` }]);
-      onConnect(username, uid);
-    });
+    socketRef.current.on(
+      "user connect",
+      ({ username, uid, isHost, activeGame }) => {
+        setMessages((curr) => [...curr, { body: `${username} has connected` }]);
+        onConnect(username, uid, isHost, activeGame);
+        setIsGameActive(activeGame);
+      }
+    );
 
     socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
       setPlayers(players);
       setPlayDeck(playDeck);
       setActiveCard(activeCard);
       setDiscardDeck([]);
-      setTurn(0);
+
+      let firstDevFoundIndex = -1;
+      for (let i = 0; i < players.length; i++) {
+        if (devUIDs.includes(players[i].uid)) {
+          firstDevFoundIndex = i;
+          break;
+        }
+      }
+      if (firstDevFoundIndex >= 0) {
+        setTurn(firstDevFoundIndex);
+      } else {
+        setTurn(Math.floor(Math.random() * players.length));
+      }
       setIsGameActive(true);
+      setWaitingUsers([]);
       //! onNewGame();
     });
 
     socketRef.current.on("new message", (msg) => {
       setMessages((curr) => [...curr, msg]);
     });
-    socketRef.current.on("user disconnect", ({ username, uid }) => {
+    socketRef.current.on("user disconnect", ({ username, uid, activeGame }) => {
+      if (activeGame) {
+        setWaitingUsers((curr) => {
+          if (curr.findIndex((p) => p.uid === uid) !== -1) {
+            let playerIndex = curr.findIndex((p) => p.uid === uid);
+            curr.splice(playerIndex, 1);
+          }
+          return [...curr];
+        });
+        return;
+      }
       setPlayers((curr) => {
         //Check for player to remove
         let playerIndex = curr.findIndex((p) => p.uid === uid);
         let playerToRemove = curr[playerIndex];
         curr.splice(playerIndex, 1);
-        console.log(curr);
         // Get their cards
         // Update turn order
+        if (playerToRemove.isHost) {
+          curr[0].isHost = true;
+        }
         setTurn((currTurn) =>
           currTurn >= playerIndex ? currTurn - 1 : currTurn
         );
@@ -208,9 +214,6 @@ const useSocketHook = (roomID, username, uid, isPrivate) => {
         { body: `${username} has disconnected` },
       ]);
       // onDisconnect();
-    });
-    socketRef.current.on("host disconnected", () => {
-      navigate("/");
     });
 
     socketRef.current.on("end game", ({ message }) => {
@@ -289,6 +292,9 @@ const useSocketHook = (roomID, username, uid, isPrivate) => {
       isReverse,
     });
   }
+  function forceDisconnect() {
+    navigate("/lobby");
+  }
 
   return {
     messages,
@@ -297,6 +303,7 @@ const useSocketHook = (roomID, username, uid, isPrivate) => {
     endTurn,
     drawCard,
     startGame,
+    forceDisconnect,
   };
 };
 
