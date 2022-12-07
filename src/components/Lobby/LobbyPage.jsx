@@ -33,12 +33,18 @@ function LobbyPage() {
   }, []);
 
   const errorMsg = useMemo(() => {
-    if (rooms.some((room) => room.id === roomNum)) return "Room already exists";
+    const startingVals = ["game 1", "game 2", "game 3", "game 4"];
+    if (
+      rooms.some((room) => room.id === roomNum) ||
+      startingVals.includes(roomNum.toLowerCase())
+    )
+      return "Room already exists";
     return "Must be at least 4 characters";
   }, [roomNum]);
 
   const joinErrorMsg = useMemo(() => {
-    if (!rooms.some((room) => room.id === roomNum)) return "Room Doesn't Exist";
+    if (!rooms.some((room) => room.id === joinRoomNum))
+      return "Room Doesn't Exist";
     return "Must be at least 4 characters";
   }, [roomNum]);
 
@@ -99,7 +105,10 @@ function LobbyPage() {
               helperText={errorMsg}
               error={
                 (hasClicked && roomNum.length < 4) ||
-                rooms.some((room) => room.id === roomNum)
+                rooms.some(
+                  (room) =>
+                    room.id === roomNum.replace(/\s+/g, "-").toLowerCase()
+                )
               }
               onChange={(e) => {
                 setHasClicked(false);
@@ -128,13 +137,17 @@ function LobbyPage() {
                 setHasClicked(true);
                 if (
                   roomNum.length > 3 &&
-                  !rooms.some((room) => room.id.includes(roomNum))
+                  !rooms.some((room) =>
+                    room.id.includes(roomNum.replace(/\s+/g, "-").toLowerCase())
+                  )
                 ) {
                   socketRef.current.emit("create room", {
-                    id: roomNum,
+                    id: roomNum.replace(/\s+/g, "-").toLowerCase(),
                     isPrivate: isPrivate,
                   });
-                  navigate(`/game-room/${roomNum}`);
+                  navigate(
+                    `/game-room/${roomNum.replace(/\s+/g, "-").toLowerCase()}`
+                  );
                 }
               }}
             >
@@ -196,9 +209,17 @@ function LobbyPage() {
                 setHasClickedJoin(true);
                 if (
                   roomNum.length > 3 &&
-                  rooms.some((room) => room.id.includes(roomNum))
+                  rooms.some((room) =>
+                    room.id.includes(
+                      joinRoomNum.replace(/\s+/g, "-").toLowerCase()
+                    )
+                  )
                 ) {
-                  navigate(`/game-room/${roomNum}`);
+                  navigate(
+                    `/game-room/${joinRoomNum
+                      .replace(/\s+/g, "-")
+                      .toLowerCase()}`
+                  );
                 }
               }}
             >
@@ -236,6 +257,7 @@ function LobbyPage() {
             />
           </form>
           <Button
+            disabled={rooms[0]?.playerCount === 6}
             sx={{ margin: "5px 0" }}
             fullWidth
             variant="contained"
@@ -243,9 +265,11 @@ function LobbyPage() {
             size="small"
             onClick={() => navigate("/game-room/game-1")}
           >
-            Game 1
+            Game 1 - {rooms[0]?.playerCount} player
+            {rooms[0]?.playerCount !== 1 ? "s" : ""}
           </Button>
           <Button
+            disabled={rooms[1]?.playerCount === 6}
             sx={{ margin: "5px 0" }}
             fullWidth
             variant="contained"
@@ -253,9 +277,11 @@ function LobbyPage() {
             style={buttonDisplay("Game 2")}
             onClick={() => navigate("/game-room/game-2")}
           >
-            Game 2
+            Game 2 - {rooms[1]?.playerCount} player
+            {rooms[1]?.playerCount !== 1 ? "s" : ""}
           </Button>
           <Button
+            disabled={rooms[2]?.playerCount === 6}
             sx={{ margin: "5px 0" }}
             fullWidth
             variant="contained"
@@ -263,9 +289,11 @@ function LobbyPage() {
             style={buttonDisplay("Game 3")}
             onClick={() => navigate("/game-room/game-3")}
           >
-            Game 3
+            Game 3 - {rooms[2]?.playerCount} player
+            {rooms[2]?.playerCount !== 1 ? "s" : ""}
           </Button>
           <Button
+            disabled={rooms[3]?.playerCount === 6}
             sx={{ margin: "5px 0" }}
             fullWidth
             variant="contained"
@@ -273,7 +301,8 @@ function LobbyPage() {
             style={buttonDisplay("Game 4")}
             onClick={() => navigate("/game-room/game-4")}
           >
-            Game 4
+            Game 4 - {rooms[3]?.playerCount} player
+            {rooms[3]?.playerCount !== 1 ? "s" : ""}
           </Button>
 
           {rooms
@@ -290,6 +319,7 @@ function LobbyPage() {
 
               return (
                 <Button
+                  disabled={val.playerCount === 6}
                   key={val.id}
                   sx={{ margin: "5px 0" }}
                   fullWidth
@@ -297,7 +327,8 @@ function LobbyPage() {
                   size="small"
                   onClick={() => navigate(`/game-room/${val.id}`)}
                 >
-                  {val.id}
+                  {val.id} - {val.playerCount} player
+                  {val?.playerCount !== 1 ? "s" : ""}
                 </Button>
               );
             })}

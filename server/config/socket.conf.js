@@ -1,19 +1,23 @@
 function socketConfig(io) {
   const startingRooms = ["game-1", "game-2", "game-3", "game-4"];
   let rooms = [
-    { id: "game-1", isPrivate: false, activeGame: false },
-    { id: "game-2", isPrivate: false, activeGame: false },
-    { id: "game-3", isPrivate: false, activeGame: false },
-    { id: "game-4", isPrivate: false, activeGame: false },
+    { id: "game-1", isPrivate: false, activeGame: false, playerCount: 0 },
+    { id: "game-2", isPrivate: false, activeGame: false, playerCount: 0 },
+    { id: "game-3", isPrivate: false, activeGame: false, playerCount: 0 },
+    { id: "game-4", isPrivate: false, activeGame: false, playerCount: 0 },
   ];
   io.on("connection", (socket) => {
     let isHost = false;
     const { roomID, username, uid } = socket.handshake.query;
-    let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
     if (roomID) {
+      let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
+      roomCount = isNaN(roomCount) ? 1 : roomCount + 1;
       socket.join(roomID);
-      isHost = isNaN(roomCount);
-      let activeGame = rooms.filter((r) => (r.id = roomID))[0].isActive;
+      isHost = roomCount === 1;
+      const i = rooms.findIndex((r) => r.id === roomID);
+      rooms[i].playerCount = rooms[i].playerCount + 1;
+      io.emit("rooms", { rooms });
+      let activeGame = rooms[i].isActive;
       io.to(roomID).emit("user connect", {
         username,
         uid,
@@ -32,7 +36,7 @@ function socketConfig(io) {
 
     socket.on("create room", ({ id, isPrivate }) => {
       io.to(roomID).emit("create room", { id, isPrivate });
-      rooms.push({ id, isPrivate, isActive: false });
+      rooms.push({ id, isPrivate, isActive: false, playerCount: 0 });
       io.emit("rooms", { rooms });
     });
 
@@ -91,12 +95,17 @@ function socketConfig(io) {
         if (isNaN(roomCount) && startingRooms.includes(roomID)) {
           rooms = rooms.map((v) => {
             if (roomID === v.id) {
-              return { ...v, activeGame: false };
+              return { ...v, activeGame: false, playerCount: 0 };
             }
             return v;
           });
         }
 
+        if (!isNaN(roomCount)) {
+          const i = rooms.findIndex((r) => r.id === roomID);
+
+          rooms[i].playerCount = rooms[i].playerCount - 1;
+        }
         io.emit("rooms", { rooms });
       }
     });
@@ -123,6 +132,37 @@ function socketConfig(io) {
         });
       }
     );
+
+    socket.on(
+      "end turn",
+      ({
+        players,
+        discardDeck,
+        activeCard,
+        newActiveCard,
+        isReverse,
+        turn,
+        playDeck,
+      }) => {
+        io.to(roomID).emit("end turn", {
+          players,
+          discardDeck,
+          activeCard,
+          newActiveCard,
+          isReverse,
+          turn,
+          playDeck,
+        });
+      }
+    );
+
+    socket.on("start game", ({ players, playDeck, activeCard }) => {
+      io.to(roomID).emit("start game", { players, playDeck, activeCard });
+    });
+
+    socket.on("force disconnect", () => {
+      io.to(roomID).emit("user disconnect", { username, uid });
+    });
   });
 }
 module.exports = socketConfig;
