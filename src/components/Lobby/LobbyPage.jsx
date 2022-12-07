@@ -212,7 +212,7 @@ function LobbyPage() {
                   roomNum.length > 3 &&
                   rooms.some(
                     (room) =>
-                      room === joinRoomNum.replace(/\s+/g, "-").toLowerCase()
+                      room.id === joinRoomNum.replace(/\s+/g, "-").toLowerCase()
                   )
                 ) {
                   navigate(
