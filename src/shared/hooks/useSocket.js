@@ -195,6 +195,9 @@ const useSocketHook = (roomID, username) => {
       setPlayers((curr) => {
         //Check for player to remove
         let playerIndex = curr.findIndex((p) => p.uid === uid);
+        if (playerIndex === -1) {
+          return;
+        }
         let playerToRemove = curr[playerIndex];
         curr.splice(playerIndex, 1);
         // Get their cards
