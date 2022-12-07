@@ -1,7 +1,8 @@
 import React from "react";
 import { CardColor } from "../../../../../shared/functions/cardEnums.js";
-import { Button } from "../../../../../shared/styled/components/Button";
+import Button from "@mui/material/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
+import Typography from "@mui/material/Typography";
 
 const ChooseColorPrompt = ({
   setPlayedWild,
@@ -12,15 +13,17 @@ const ChooseColorPrompt = ({
   newActiveCard,
   newIsReverse,
   turn,
+  resetCountdown,
   playDeck,
 }) => {
   let colors = [
-    CardColor.Red,
-    CardColor.Blue,
-    CardColor.Yellow,
-    CardColor.Green,
+    { name: CardColor.Red, color: theme.palette.wild.red },
+    { name: CardColor.Blue, color: theme.palette.wild.blue },
+    { name: CardColor.Yellow, color: theme.palette.wild.yellow },
+    { name: CardColor.Green, color: theme.palette.wild.green },
   ];
   function handleClick(e) {
+    resetCountdown();
     newActiveCard.current = {
       value: newActiveCard.current.value,
       color: e.target.value,
@@ -37,15 +40,24 @@ const ChooseColorPrompt = ({
     );
   }
   return (
-    <div style={{ backgroundColor: theme.palette.background.paper }}>
-      <div>Pick a color</div>
+    <>
+      <Typography textAlign="center" color="secondary">
+        Pick A Wild Color
+      </Typography>
 
       {colors.map((c) => (
-        <Button key={c} value={c} onClick={(e) => handleClick(e)}>
-          {c}
+        <Button
+          variant="contained"
+          size="small"
+          style={{ margin: "0 4px", backgroundColor: c.color }}
+          key={c.name}
+          value={c.name}
+          onClick={(e) => handleClick(e)}
+        >
+          {c.name}
         </Button>
       ))}
-    </div>
+    </>
   );
 };
 
