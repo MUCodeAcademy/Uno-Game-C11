@@ -209,7 +209,7 @@ function LobbyPage() {
                 e.preventDefault();
                 setHasClickedJoin(true);
                 if (
-                  roomNum.length > 3 &&
+                  joinRoomNum.length > 4 &&
                   rooms.some(
                     (room) =>
                       room.id === joinRoomNum.replace(/\s+/g, "-").toLowerCase()
