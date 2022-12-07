@@ -156,10 +156,6 @@ function socketConfig(io) {
       }
     );
 
-    socket.on("start game", ({ players, playDeck, activeCard }) => {
-      io.to(roomID).emit("start game", { players, playDeck, activeCard });
-    });
-
     socket.on("force disconnect", () => {
       io.to(roomID).emit("user disconnect", { username, uid });
     });
