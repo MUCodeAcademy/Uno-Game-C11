@@ -62,11 +62,11 @@ const useSocketHook = (roomID, username) => {
     if (devUIDs.includes(uid)) {
       player.isDev = true;
     }
-    if (!isActive && !isHost) {
+    setIsGameActive(isActive);
+    if (isActive) {
       setWaitingUsers((curr) => [...curr, player]);
       return;
     }
-    setIsGameActive(isActive);
     setPlayers((curr) => [...curr, player]);
   };
 
@@ -197,7 +197,7 @@ const useSocketHook = (roomID, username) => {
         //Check for player to remove
         let playerIndex = curr.findIndex((p) => p.uid === uid);
         if (playerIndex === -1) {
-          return;
+          return curr;
         }
         let playerToRemove = curr[playerIndex];
         curr.splice(playerIndex, 1);

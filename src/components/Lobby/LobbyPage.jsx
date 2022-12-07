@@ -46,7 +46,7 @@ function LobbyPage() {
     if (!rooms.some((room) => room.id === joinRoomNum))
       return "Room Doesn't Exist";
     return "Must be at least 4 characters";
-  }, [roomNum]);
+  }, [joinRoomNum]);
 
   const filterErrorMsg = useMemo(() => {
     const startingVals = ["Game 1", "Game 2", "Game 3", "Game 4"];
