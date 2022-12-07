@@ -1,9 +1,9 @@
 import React from "react";
 import playerNameCard from "./cards/player_name.png";
 import Typography from "@mui/material/Typography";
-import { theme } from "../../../../../shared/styled/themes/Theme";
+import Crown from "./Crown";
 
-function Player({ playerName, numCards, activePlayer }) {
+function Player({ playerName, numCards, isHost }) {
   return (
     <div
       style={{
@@ -13,11 +13,17 @@ function Player({ playerName, numCards, activePlayer }) {
         justifyContent: "center",
         maxWidth: "100px",
         padding: "2px",
-        border: `1px solid ${
-          activePlayer ? theme.palette.secondary.light : "rgba(0,0,0,0)"
-        }`,
       }}
     >
+      <Typography
+        textAlign="center"
+        height="15px"
+        paddingBottom="5px"
+        lineHeight="15px"
+        color="secondary"
+      >
+        {isHost && <Crown />}
+      </Typography>
       <Typography fontSize="12px" color="secondary">
         {playerName}
       </Typography>
