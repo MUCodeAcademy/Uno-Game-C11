@@ -152,6 +152,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on("new message", (msg) => {
             setMessages((curr) => [...curr, msg]);
         });
+
         socketRef.current.on("user disconnect", ({ username, uid }) => {
             setPlayers((curr) => {
                 //Check for player to remove
@@ -168,6 +169,7 @@ const useSocketHook = (roomID, username) => {
             setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
             // onDisconnect();
         });
+
         socketRef.current.on("host disconnected", () => {
             navigate("/");
         });
@@ -186,6 +188,9 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.emit("new message", { body });
     }
 
+    function forceDisconnect(username, uid) {
+        socketRef.current.emit("force disconnect", { username, uid });
+    }
     function startGame(newDeck, newPlayers, gameStartCard) {
         socketRef.current.emit("start game", {
             players: newPlayers,
@@ -241,6 +246,7 @@ const useSocketHook = (roomID, username) => {
         endTurn,
         drawCard,
         startGame,
+        forceDisconnect,
     };
 };
 

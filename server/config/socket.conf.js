@@ -60,6 +60,10 @@ function socketConfig(io) {
             }
         });
 
+        socket.on("force disconnect", () => {
+            io.to(roomID).emit("user disconnect", { username, uid });
+        });
+
         socket.on("game active", (activeGame) => {
             io.socket.broadcast.to(roomID).emit("game active", activeGame);
         });
