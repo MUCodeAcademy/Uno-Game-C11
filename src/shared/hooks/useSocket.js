@@ -24,7 +24,13 @@ const useSocketHook = (roomID, username) => {
     setTurn,
   } = useGameContext();
   const socketRef = useRef(null);
-  const devUIDs = ["3a8cb4i5fEbeO33OnZvvJ6SvTjU2"];
+  const devUIDs = [
+    "3a8cb4i5fEbeO33OnZvvJ6SvTjU2",
+    "u4MqHUMDMdQbG3pGSJuIIKsv5KA2",
+    "GbviAKHZ5dVht3YjOfQjdxG7vRL2",
+    "lC7f56DqSVgnrvRQgWhznMIjPs83",
+    "8P1enWo03vY7KP3xHG9fMd92iWx1",
+  ];
   const [messages, setMessages] = useState([]);
   const [waitingUsers, setWaitingUsers] = useState([]);
   const navigate = useNavigate();
@@ -51,7 +57,11 @@ const useSocketHook = (roomID, username) => {
   };
 
   const onConnect = (name, uid, isHost) => {
-    let player = { name, uid, hand: [], isHost };
+    let player = { name, uid, hand: [], isHost, isDev: false };
+    if (devUIDs.includes(uid)) {
+      player.isDev = true;
+    }
+    // waitingUsers.push(player);
     setPlayers((curr) => [...curr, player]);
   };
 
@@ -283,8 +293,8 @@ const useSocketHook = (roomID, username) => {
       isReverse,
     });
   }
-  function forceDisconnect(username, uid) {
-    socketRef.current.emit("force disconnect", { username, uid });
+  function forceDisconnect() {
+    navigate("/lobby");
   }
 
   return {

@@ -43,7 +43,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   useEffect(() => {
     let interval = null;
     if (countdown <= 0) {
-      forceDisconnect(players[playerIndex].name, players[playerIndex].uid);
+      forceDisconnect();
       return;
     }
     if (isPlayersTurn) {
