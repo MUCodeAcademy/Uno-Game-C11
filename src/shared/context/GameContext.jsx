@@ -40,6 +40,7 @@ export function GameProvider(props) {
   const [isReverse, setIsReverse] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [turn, setTurn] = useState(0);
+  const [waitingUsers, setWaitingUsers] = useState([]);
   //! const [isGameActive, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
   //! const setIsGameActive = useCallback(
   //     (isGameActive) => {
@@ -125,6 +126,8 @@ export function GameProvider(props) {
         setShuffling,
         turn,
         setTurn,
+        waitingUsers,
+        setWaitingUsers,
       }}
     >
       {props.children}

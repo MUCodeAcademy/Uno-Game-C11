@@ -2,8 +2,9 @@ import React from "react";
 import playerNameCard from "./cards/player_name.png";
 import Typography from "@mui/material/Typography";
 import Crown from "./Crown";
+import CodeIcon from "@mui/icons-material/Code";
 
-function Player({ playerName, numCards, isHost }) {
+function Player({ playerName, numCards, isHost, isDev }) {
   return (
     <div
       style={{
@@ -23,6 +24,7 @@ function Player({ playerName, numCards, isHost }) {
         color="secondary"
       >
         {isHost && <Crown />}
+        {isDev && <CodeIcon style={{ height: "15px" }} />}
       </Typography>
       <Typography fontSize="12px" color="secondary">
         {playerName}

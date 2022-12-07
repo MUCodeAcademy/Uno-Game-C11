@@ -1,10 +1,13 @@
-export function checkForEndGame(players, playDeck, discardDeck) {
-  //WIN
-  // const winner = players.filter((p) => p.hand.length === 0);
+import { updateStats } from "./databse/updateStats";
+import { auth } from "../../firebase.config";
+
+export function checkForEndGame(players) {
   const winner = players.find((p) => p.hand.length === 0);
   if (winner) {
+    updateStats(auth.currentUser.uid, winner.uid);
     return `${winner.name} has won!`;
   }
+
   return null;
 }
 

@@ -49,6 +49,7 @@ function GameBoard({
                     key={player.uid}
                     isHost={player.isHost}
                     playerName={player.name}
+                    isDev={player.isDev}
                     numCards={player.hand.length}
                   >
                     <div>{player.name}</div>
