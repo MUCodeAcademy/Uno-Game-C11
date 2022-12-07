@@ -69,7 +69,7 @@ const useSocketHook = (roomID, username) => {
   };
 
   useEffect(() => {
-    socketRef.current = io("localhost:8080", {
+    socketRef.current = io("10.200.224.166:8080", {
       query: {
         username,
         roomID,
@@ -169,20 +169,8 @@ const useSocketHook = (roomID, username) => {
       setPlayDeck(playDeck);
       setActiveCard(activeCard);
       setDiscardDeck([]);
-
-      let firstDevFoundIndex = -1;
-      for (let i = 0; i < players.length; i++) {
-        if (devUIDs.includes(players[i].uid)) {
-          firstDevFoundIndex = i;
-          break;
-        }
-      }
-      if (firstDevFoundIndex >= 0) {
-        setTurn(firstDevFoundIndex);
-      } else {
-        setTurn(Math.floor(Math.random() * players.length));
-      }
       setIsGameActive(true);
+      setTurn(turn);
       setWaitingUsers([]);
       //! onNewGame();
     });
@@ -242,10 +230,20 @@ const useSocketHook = (roomID, username) => {
   }
 
   function startGame(newDeck, newPlayers, gameStartCard) {
+    let firstDevFoundIndex = -1;
+    for (let i = 0; i < players.length; i++) {
+      if (devUIDs.includes(players[i].uid)) {
+        firstDevFoundIndex = i;
+        break;
+      }
+    }
+    let turn = Math.floor(Math.random() * players.length);
+
     socketRef.current.emit("start game", {
       players: newPlayers,
       playDeck: newDeck,
       activeCard: gameStartCard,
+      turn,
     });
   }
 

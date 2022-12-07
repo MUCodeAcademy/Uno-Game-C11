@@ -14,7 +14,6 @@ import { auth } from "../../../../../firebase.config";
 import Button from "@mui/material/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 import Card from "./Card";
-import { io } from "socket.io-client";
 
 function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   const {
@@ -150,6 +149,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
       <div>
         <Button
           fullWidth
+          disabled={!isPlayersTurn}
           variant="contained"
           color="primary"
           onClick={() => {

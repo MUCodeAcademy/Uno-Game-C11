@@ -63,7 +63,7 @@ function socketConfig(io) {
       }
     );
 
-    socket.on("start game", ({ players, playDeck, activeCard }) => {
+    socket.on("start game", ({ players, playDeck, activeCard, turn }) => {
       rooms.map((r) => {
         if (r.id === roomID) {
           return { ...r, activeGame: true };
@@ -71,7 +71,7 @@ function socketConfig(io) {
         return r;
       });
       io.emit("rooms", { rooms });
-      io.to(roomID).emit("start game", { players, playDeck, activeCard });
+      io.to(roomID).emit("start game", { players, playDeck, activeCard, turn });
     });
 
     socket.on("end game", ({ message }) => {
