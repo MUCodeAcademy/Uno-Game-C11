@@ -164,16 +164,19 @@ const useSocketHook = (roomID, username) => {
       }
     );
 
-    socketRef.current.on("start game", ({ players, playDeck, activeCard }) => {
-      setPlayers(players);
-      setPlayDeck(playDeck);
-      setActiveCard(activeCard);
-      setDiscardDeck([]);
-      setIsGameActive(true);
-      setTurn(turn);
-      setWaitingUsers([]);
-      //! onNewGame();
-    });
+    socketRef.current.on(
+      "start game",
+      ({ players, playDeck, activeCard, turn }) => {
+        setPlayers(players);
+        setPlayDeck(playDeck);
+        setActiveCard(activeCard);
+        setDiscardDeck([]);
+        setIsGameActive(true);
+        setTurn(turn);
+        setWaitingUsers([]);
+        //! onNewGame();
+      }
+    );
 
     socketRef.current.on("new message", (msg) => {
       setMessages((curr) => [...curr, msg]);
