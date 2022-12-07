@@ -16,7 +16,15 @@ function GameBoard({
   messages,
   sendMessage,
 }) {
-  const { players, turn } = useGameContext();
+  const { players, turn, isReverse } = useGameContext();
+  const turnOrder = useMemo(() => {
+    let oldOrder = [...players];
+    let newOrder = oldOrder.splice(0, turn + isReverse ? 1 : 0);
+    newOrder = [...newOrder, ...oldOrder];
+    if (isReverse) return newOrder.reverse();
+
+    return newOrder;
+  }, [turn, isReverse, players]);
 
   const [showChat, setShowChat] = useState(false);
   return (
@@ -35,7 +43,7 @@ function GameBoard({
               }}
             >
               {players &&
-                players.map((player) => (
+                turnOrder.map((player) => (
                   <Player
                     key={player.uid}
                     isHost={player.isHost}
