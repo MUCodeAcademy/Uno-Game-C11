@@ -165,6 +165,7 @@ const useSocketHook = (roomID, username) => {
                     if (curr.findIndex((p) => p.uid === uid) !== -1) {
                         let playerIndex = curr.findIndex((p) => p.uid === uid);
                         curr.splice(playerIndex, 1);
+                        updateStats(uid, null);
                     }
                     return [...curr];
                 });
