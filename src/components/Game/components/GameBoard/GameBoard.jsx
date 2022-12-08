@@ -31,7 +31,14 @@ function GameBoard({
     <>
       <Grid display={"flex"} justifyContent="center" container spacing={1}>
         {activeCard && (
-          <Grid margin={1} item xs={10} md={8} marginRight={1} padding={1}>
+          <Grid
+            margin={1}
+            item
+            xs={11}
+            md={8}
+            marginRight={"5px"}
+            padding={"5px"}
+          >
             <div>
               <Typography variant="h5" textAlign={"center"}>
                 Players
