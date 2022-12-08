@@ -4,7 +4,6 @@ import { useGameContext } from "../../../../../shared/context/GameContext";
 import {
   removeCardFromHand,
   validatePlayedCard,
-  playCard,
   shuffleDeck,
   CardValue,
   CardColor,
@@ -107,7 +106,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
     if (isPlayersTurn && !playedWild) {
       resetCountdown();
-      drawCard(players, playDeck, turn, 1, activeCard, discardDeck, isReverse);
+      drawCard(players, playDeck, turn, 1, discardDeck);
     }
   }
 
@@ -195,11 +194,16 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
               ))}
         </div>
       </div>
-      <div>
+      <div style={{ minHeight: "48px", textAlign: "center" }}>
         {isPlayersTurn && (
-          <h4 style={{ color: theme.palette.secondary.main }}>
-            It's your turn!
-          </h4>
+          <>
+            <h4 style={{ color: theme.palette.secondary.main, margin: "3px" }}>
+              It's your turn!
+            </h4>
+            <h4 style={{ color: theme.palette.secondary.main, margin: "3px" }}>
+              {countdown} seconds to draw or play
+            </h4>
+          </>
         )}
       </div>
 

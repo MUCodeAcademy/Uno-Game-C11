@@ -10,10 +10,10 @@ export const MenuLink = styled(NavLink)(({ theme }) => ({
   borderColor: theme.palette.primary.main,
   borderRadius: "5px",
   color: theme.palette.secondary.main,
-  "&:not(.active):hover": {
-    color: theme.palette.secondary.main,
+  "&:not(.active):hover, &.logout:hover": {
+    color: "white",
   },
-  "&.active": {
-    color: theme.palette.secondary.main,
+  "&.active:not(.logout)": {
+    color: "white",
   },
 }));
