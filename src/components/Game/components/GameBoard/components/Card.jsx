@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { theme } from "../../../../../shared/styled/themes/Theme";
 
 export function Card({ isTurn, card, handlePlayCardClick }) {
   return (
@@ -16,6 +17,10 @@ export const Div = styled("div")((props) => ({
   margin: "0px 0px 0px -40px",
   transition: "all .2s",
   cursor: "pointer",
+  border:
+    props.hasDrawn && props.recentCard
+      ? `2px solid ${theme.palette.primary.main}`
+      : "",
   "&:hover:not(.stack)": {
     transform: props.isTurn ? "translate(0px, -10px)" : "",
     zIndex: 100,
@@ -24,11 +29,10 @@ export const Div = styled("div")((props) => ({
     marginLeft: "0px",
   },
   "&.stack": {
-    "&:not(.discard)": {
-      left: `${props.idx * 0.25}px`,
-      borderLeft: props.border ? ".25px solid black" : "",
-      position: "absolute",
-    },
+    left: `${props.idx * 0.25}px`,
+    borderLeft: props.border ? ".25px solid black" : "",
+    position: "absolute",
+    borderRadius: "5px",
     cursor: "auto",
     height: "100px",
     marginLeft: "0px",

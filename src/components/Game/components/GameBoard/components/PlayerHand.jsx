@@ -31,7 +31,11 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   } = useGameContext();
 
   const [playedWild, setPlayedWild] = useState(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
 
+  useEffect(() => {
+    setHasDrawn(false), [turn];
+  });
   let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
   const isPlayersTurn = useMemo(() => {
     return turn === playerIndex;
@@ -105,6 +109,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   function handleDrawClick() {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
     if (isPlayersTurn && !playedWild) {
+      setHasDrawn(true);
       resetCountdown();
       drawCard(players, playDeck, turn, 1, discardDeck);
     }
@@ -186,6 +191,15 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
               })
               .map((card, idx) => (
                 <Card
+                  recentCard={
+                    card ===
+                    players[playerIndex].hand[
+                      players[playerIndex].hand.length > 0
+                        ? players[playerIndex].hand.length - 0
+                        : 0
+                    ]
+                  }
+                  hasDrawn={hasDrawn}
                   key={idx}
                   isTurn={isPlayersTurn}
                   card={card}
