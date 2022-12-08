@@ -5,9 +5,11 @@ const dbRef = ref(database);
 
 export async function updateStats(uid, gameWinnerUID) {
     let updates = {};
-    if (!gameWinnerUID) return;
     try {
-        if (uid === gameWinnerUID) {
+        if (gameWinnerUID === "stalemate") {
+            updates[`users/${uid}/total games stalemate`] = increment(1);
+            update(dbRef, updates);
+        } else if (uid === gameWinnerUID) {
             updates[`users/${uid}/total games won`] = increment(1);
             update(dbRef, updates);
         } else {
