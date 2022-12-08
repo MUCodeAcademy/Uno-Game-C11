@@ -27,6 +27,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
     playDeck,
     discardDeck,
     isReverse,
+    waitingUsers,
     turn,
   } = useGameContext();
 
