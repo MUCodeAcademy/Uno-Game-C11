@@ -15,11 +15,4 @@ export const theme = createTheme({
     },
     error: { main: "#ffffff" },
   },
-  // palette: {
-  //     type: "theme",
-  //     primary: {},
-  //     secondary: {},
-  //     background: {},
-  //     text: {},
-  // },
 });

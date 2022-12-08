@@ -4,7 +4,6 @@ import { useGameContext } from "../../../../../shared/context/GameContext";
 import {
   removeCardFromHand,
   validatePlayedCard,
-  playCard,
   shuffleDeck,
   CardValue,
   CardColor,
@@ -107,7 +106,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
     if (isPlayersTurn && !playedWild) {
       resetCountdown();
-      drawCard(players, playDeck, turn, 1, activeCard, discardDeck, isReverse);
+      drawCard(players, playDeck, turn, 1, discardDeck);
     }
   }
 
