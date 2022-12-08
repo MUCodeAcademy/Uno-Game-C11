@@ -8,10 +8,10 @@ export async function updateStats(uid, gameWinnerUID) {
     try {
         if (uid === gameWinnerUID) {
             updates[`users/${uid}/total games won`] = increment(1);
+            updates[`users/${uid}/total games lost`] = increment(-1);
             update(dbRef, updates);
         } else {
-            updates[`users/${uid}/total games lost`] = increment(1);
-            update(dbRef, updates);
+            return;
         }
     } catch (err) {
         console.error(err);
