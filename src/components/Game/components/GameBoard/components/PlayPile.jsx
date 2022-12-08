@@ -13,7 +13,7 @@ function PlayPile() {
         justifyContent: "space-evenly",
       }}
     >
-      <div style={{ width: "100px" }}>
+      <div style={{ width: "90px" }}>
         <Typography style={{ marginBottom: "5px", textAlign: "center" }}>
           Discard
         </Typography>
