@@ -15,7 +15,18 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
   }
 
   function Waiting() {
+
     if (isHost) {
+      console.log([...players, ...waitingUsers].length);
+      if ([...players, ...waitingUsers].length <= 1) {
+        return (
+          <div>
+            <Typography variant="h6" textAlign="center">
+              Waiting For someone to join...
+            </Typography>
+          </div>
+        )
+      }
       return (
         <div>
           <Typography variant="h6" textAlign="center">
@@ -34,6 +45,8 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
         </div>
       );
     }
+
+
 
     return (
       <div>

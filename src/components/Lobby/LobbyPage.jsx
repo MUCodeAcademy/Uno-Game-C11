@@ -37,14 +37,17 @@ function LobbyPage() {
     if (joinRoomNum.length > 0 && joinRoomNum.search(regexp) === -1) {
       return "Invalid characters.";
     }
-    if (
-      !rooms.some(
-        (room) =>
-          room.id.replace(/\s+/g, "-").toLowerCase() ===
-          joinRoomNum.replace(/\s+/g, "-").toLowerCase()
-      )
-    )
+
+    let room = rooms.find(
+      (room) =>
+        room.id.replace(/\s+/g, "-").toLowerCase() ===
+        joinRoomNum.replace(/\s+/g, "-").toLowerCase()
+    );
+    if (!room) {
       return "Room Doesn't Exist";
+    }
+    if (room.playerCount >= 6) return "Room is full";
+
     return "Must be at least 4 characters";
   }, [joinRoomNum]);
 
@@ -209,7 +212,9 @@ function LobbyPage() {
               helperText={joinErrorMsg}
               error={
                 (hasClickedJoin && joinRoomNum.length < 4) ||
-                !rooms.some((room) => room.id === roomNum)
+                !rooms.some(
+                  (room) => room.id === roomNum && room.playerCount < 6
+                )
               }
               onChange={(e) => {
                 setHasClickedJoin(false);
@@ -229,7 +234,9 @@ function LobbyPage() {
                   joinRoomNum.length > 4 &&
                   rooms.some(
                     (room) =>
-                      room.id === joinRoomNum.replace(/\s+/g, "-").toLowerCase()
+                      room.id ===
+                        joinRoomNum.replace(/\s+/g, "-").toLowerCase() &&
+                      room.playerCount > 6
                   )
                 ) {
                   navigate(

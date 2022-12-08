@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { auth } from "../../firebase.config";
-import { useUserContext } from "../../shared/context";
 import { useGameContext } from "../../shared/context/GameContext";
 import useSocketHook from "../../shared/hooks/useSocket";
 import GameBoard from "./components/GameBoard/GameBoard";
@@ -10,7 +9,15 @@ import Typography from "@mui/material/Typography";
 
 function GamePage() {
   const { roomID } = useParams();
-  const { isGameActive } = useGameContext();
+
+  const { isGameActive, setIsGameActive, players, waitingUsers } =
+    useGameContext();
+
+  useEffect(() => {
+    if (players.length + waitingUsers.length <= 1) {
+      setIsGameActive(false);
+    }
+  }, [players, waitingUsers]);
 
   const {
     messages,
