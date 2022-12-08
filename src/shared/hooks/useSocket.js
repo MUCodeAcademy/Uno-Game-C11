@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { auth } from "../../firebase.config";
 import { useGameContext } from "../context/GameContext";
-import { CardColor, checkForEndGame, shuffleDeck } from "../functions";
-
-import { CardValue } from "../functions";
-import { updateStats } from "../functions/databse/updateStats";
-import nextTurn from "../functions/nextTurn";
-
-//TODO: check for win
+import {
+  CardColor,
+  checkForEndGame,
+  shuffleDeck,
+  CardValue,
+  nextTurn,
+} from "../functions";
+import { addGamePlayed, updateStats } from "../functions/database";
 
 const useSocketHook = (roomID, username) => {
   const {
@@ -71,7 +72,7 @@ const useSocketHook = (roomID, username) => {
   };
 
   useEffect(() => {
-    socketRef.current = io("localhost:8080", {
+    socketRef.current = io(process.env.REACT_APP_SOCKET_SERVER, {
       query: {
         username,
         roomID,
@@ -112,7 +113,7 @@ const useSocketHook = (roomID, username) => {
         const message = checkForEndGame(players, playDeck, discardDeck);
         //message will be null if end game conditions are not met
         if (message) {
-          endGame(message);
+          endGame(message, players);
           return;
         }
 
@@ -188,6 +189,7 @@ const useSocketHook = (roomID, username) => {
           if (curr.findIndex((p) => p.uid === uid) !== -1) {
             let playerIndex = curr.findIndex((p) => p.uid === uid);
             curr.splice(playerIndex, 1);
+            updateStats(uid, null);
           }
           return [...curr];
         });
@@ -242,7 +244,7 @@ const useSocketHook = (roomID, username) => {
     );
     let turn =
       firstDev >= 0 ? firstDev : Math.floor(Math.random() * newPlayers.length);
-
+    addGamePlayed(auth.currentUser?.uid);
     socketRef.current.emit("start game", {
       players: newPlayers,
       playDeck: newDeck,
@@ -251,10 +253,15 @@ const useSocketHook = (roomID, username) => {
     });
   }
 
-  function endGame(message) {
-    socketRef.current.emit("end game", {
-      message,
-    });
+  function endGame(message, players) {
+    let winner = players.find((p) => p.hand.length === 0);
+    updateStats(auth.currentUser?.uid, winner.uid);
+    let host = players.find((p) => p.isHost === true);
+    if (host) {
+      socketRef.current.emit("end game", {
+        message,
+      });
+    }
   }
 
   function endTurn(

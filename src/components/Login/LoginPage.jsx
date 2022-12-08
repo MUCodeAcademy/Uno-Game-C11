@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import GoogleIcon from "@mui/icons-material/Google";
 import logo from "./UNO.png";
-import { getUserInfo } from "../../shared/functions/databse/getUserInfo";
+import { getUserInfo } from "../../shared/functions/database";
 
 const provider = new GoogleAuthProvider();
 
