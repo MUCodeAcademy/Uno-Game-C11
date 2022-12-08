@@ -12,25 +12,26 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
 function LobbyPage() {
-    const navigate = useNavigate();
-    const [hasClicked, setHasClicked] = useState(false);
-    const [hasClickedJoin, setHasClickedJoin] = useState(false);
-    const socketRef = useRef(null);
-    const [roomNum, setRoomNum] = useState("");
-    const [joinRoomNum, setJoinRoomNum] = useState("");
-    const [roomFilter, setRoomFilter] = useState("");
-    const [rooms, setRooms] = useState([]);
-    const [isPrivate, setIsPrivate] = useState(false);
-    useEffect(() => {
-        socketRef.current = io("10.200.224.166:8080", {
-            query: {
-                username: auth.currentUser?.displayName,
-            },
-        });
-        socketRef.current.on("rooms", ({ rooms }) => {
-            setRooms(rooms);
-        });
-    }, []);
+  const navigate = useNavigate();
+  const [hasClicked, setHasClicked] = useState(false);
+  const [hasClickedJoin, setHasClickedJoin] = useState(false);
+  const socketRef = useRef(null);
+  const [roomNum, setRoomNum] = useState("");
+  const [joinRoomNum, setJoinRoomNum] = useState("");
+  const [roomFilter, setRoomFilter] = useState("");
+  const [rooms, setRooms] = useState([]);
+  const [isPrivate, setIsPrivate] = useState(false);
+  useEffect(() => {
+    socketRef.current = io("localhost:8080", {
+      query: {
+        username: auth.currentUser?.displayName,
+      },
+    });
+    socketRef.current.on("rooms", ({ rooms }) => {
+      setRooms(rooms);
+    });
+  }, []);
+
 
     const regexp = /^[\w\-\s]+$/; //allow a-z, A-Z, 0-9, -, _, space
     const errorMsg = useMemo(() => {
