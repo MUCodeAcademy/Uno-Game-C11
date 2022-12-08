@@ -7,15 +7,18 @@ import StateProvider from "./shared/context";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "./shared/styled/themes/Theme";
 import CssBaseline from "@mui/material/CssBaseline";
+import ErrorBoundary from "./components/Game/components/ErrorBoundary";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <StateProvider>
-            <App />
-        </StateProvider>
-    </ThemeProvider>
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <StateProvider>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </StateProvider>
+  </ThemeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -7,3 +7,4 @@ export * from "./newGame";
 export * from "./removeCardFromHand";
 export * from "./shuffleDeck";
 export * from "./validatePlayedCard";
+export * from "./nextTurn";
