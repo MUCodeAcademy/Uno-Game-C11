@@ -52,7 +52,12 @@ function AboutPage() {
         <Grid item xs={9}>
           <Box className="padding-10">
             <Typography variant="h5"> Tom Heafey</Typography>
-            <Typography variant="body2">ABOUT TOM GOES HERE</Typography>
+            <Typography variant="body2">
+              Hello! I'm a junior developer with a background in tech
+              support/system administration. In my previous role, I began
+              teaching myself programming to automate tasks in Python and
+              PowerShell, which is what sparked my interest in a career change.
+            </Typography>
             <IconButton
               color="secondary"
               href="https://github.com/tomheafey"
@@ -81,7 +86,13 @@ function AboutPage() {
         <Grid item xs={9}>
           <Box className="padding-10">
             <Typography variant="h5">Steven May</Typography>
-            <Typography variant="body2">ABOUT STEVEN GOES HERE</Typography>
+            <Typography variant="body2">
+              I was a student at the University of Nebraska Omaha where I
+              learned to program. A friend of mine had taken the Code Academy
+              class at Midland University and recommended it to me. At Code
+              Academy I learned full stack development and how to program with a
+              team.
+            </Typography>
             <IconButton
               color="secondary"
               href="https://github.com/stevenbmay"
@@ -110,7 +121,14 @@ function AboutPage() {
         <Grid item xs={9}>
           <Box className="padding-10">
             <Typography variant="h5">Mark Waring</Typography>
-            <Typography variant="body2">ABOUT MARK GOES HERE</Typography>
+            <Typography variant="body2">
+              Mark Waring is a junior developer based out of Omaha, NE. A St.
+              John's University alum, he completed the Midland University Code
+              Academy in 2022 before beginning his development career as a
+              database analyst for Signature Performance, Inc later that year.
+              In his spare time he enjoys spending time with family and friends,
+              coaching high school baseball, and playing the piano.
+            </Typography>
             <IconButton
               color="secondary"
               href="https://github.com/Mark-Waring/"
