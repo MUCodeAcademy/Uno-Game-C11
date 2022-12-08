@@ -23,7 +23,7 @@ function LobbyPage() {
   const [rooms, setRooms] = useState([]);
   const [isPrivate, setIsPrivate] = useState(false);
   useEffect(() => {
-    socketRef.current = io("localhost:8080", {
+    socketRef.current = io(process.env.REACT_APP_SOCKET_SERVER, {
       query: {
         username: auth.currentUser?.displayName,
       },
