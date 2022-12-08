@@ -99,7 +99,6 @@ const useSocketHook = (roomID, username) => {
                 const message = checkForEndGame(players, playDeck, discardDeck);
                 //message will be null if end game conditions are not met
                 if (message) {
-                    console.log("end game triggered in end turn socketRef.on", Date.now());
                     endGame(message, players);
                     return;
                 }
@@ -193,6 +192,7 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("end game", ({ message }) => {
+            console.log("end game socketRef.on", Date.now());
             if (message === "Stalemate, not enough cards to draw.") {
                 updateStats(auth.currentUser?.uid, null);
             }
@@ -225,9 +225,13 @@ const useSocketHook = (roomID, username) => {
         console.log("end game function has triggered", Date.now());
         let winner = players.find((p) => p.hand.length === 0);
         updateStats(auth.currentUser?.uid, winner.uid);
-        socketRef.current.emit("end game", {
-            message,
-        });
+        let host = players.find((p) => p.isHost === true);
+        console.log(host);
+        if (host) {
+            socketRef.current.emit("end game", {
+                message,
+            });
+        }
     }
 
     function endTurn(players, discardDeck, newActiveCard, isReverse, turn, playDeck) {
