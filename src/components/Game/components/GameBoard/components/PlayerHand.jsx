@@ -174,7 +174,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
         <div style={{ margin: "auto", display: "flex" }}>
           {isGameActive &&
             players[playerIndex] &&
-            players[playerIndex].hand
+            [...players[playerIndex].hand]
               .sort((a, b) => {
                 if (a.color === b.color) {
                   if (a.value === b.value) return 0;

@@ -27,7 +27,17 @@ function AboutPage() {
         <Grid item xs={9}>
           <Box className="padding-10">
             <Typography variant="h5"> Gabe Bierman</Typography>
-            <Typography variant="body2">ABOUT GABE GOES HERE</Typography>
+            <Typography variant="body2">
+              I'm a junior developer with a long history working in IT and a
+              formal education in music and audio engineering. My experience
+              working with music informatics and MIR while in college gave me a
+              love of working at the crossroads between music and technology,
+              something that drove me into attending the Midland University Code
+              Academy. During my time here I've gained hands-on experience with
+              full-stack development languages and methodologies and I can't
+              wait to continue to learn and grow as much as possible in my
+              career as a developer!
+            </Typography>
             <IconButton
               color="secondary"
               href="https://github.com/gabebierman"
