@@ -61,7 +61,7 @@ function LeaderBoardPage() {
 
     console.log(personalStats);
     return (
-        <div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
             <Container style={{ margin: "10px 0px" }}>
                 <Typography
                     style={{ margin: "10px", padding: "15px" }}
