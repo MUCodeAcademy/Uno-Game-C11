@@ -192,7 +192,6 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("end game", ({ message }) => {
-            console.log("end game socketRef.on", Date.now());
             if (message === "Stalemate, not enough cards to draw.") {
                 updateStats(auth.currentUser?.uid, null);
             }
@@ -222,11 +221,9 @@ const useSocketHook = (roomID, username) => {
     }
 
     function endGame(message, players) {
-        console.log("end game function has triggered", Date.now());
         let winner = players.find((p) => p.hand.length === 0);
         updateStats(auth.currentUser?.uid, winner.uid);
         let host = players.find((p) => p.isHost === true);
-        console.log(host);
         if (host) {
             socketRef.current.emit("end game", {
                 message,
