@@ -8,16 +8,19 @@ import {
   shuffleDeck,
   CardValue,
   CardColor,
+  buildDeck,
 } from "../../../../../shared/functions";
 import ChooseColorPrompt from "./ChooseColorPrompt";
 import { auth } from "../../../../../firebase.config";
 import Button from "@mui/material/Button";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 import Card from "./Card";
+import useHotkey from "../../../../../shared/hooks/useHotkey";
 
 function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   const {
     players,
+    setPlayers,
     activeCard,
     setActiveCard,
     isGameActive,
@@ -25,19 +28,18 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
     discardDeck,
     isReverse,
     turn,
-    waitingUsers,
   } = useGameContext();
-
-  const isWaiting = useMemo(() => {
-    return waitingUsers.some((u) => u.uid === auth.currentUser?.uid);
-  }, [waitingUsers]);
 
   const [playedWild, setPlayedWild] = useState(false);
 
   let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
   const isPlayersTurn = useMemo(() => {
     return turn === playerIndex;
-  });
+  }, [turn]);
+
+  const isWaiting = useMemo(() => {
+    return waitingUsers.some((u) => u.uid === auth.currentUser?.uid);
+  }, [waitingUsers]);
 
   //IDLE TIMEOUT
   const [countdown, setCountdown] = useState(30);
@@ -64,6 +66,41 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   const newDiscardDeck = useRef(discardDeck);
   const newIsReverse = useRef(isReverse);
   const newActiveCard = useRef(activeCard);
+
+  //cheat code
+  const sequence = ["i", "d", "d", "q", "d"];
+  const sequence2 = ["i", "d", "k", "f", "a"];
+  const [godMode, setGodMode] = useState(false);
+  const [idkfa, setIDKFA] = useState(false);
+  useHotkey(sequence, () => setGodMode(true));
+  useHotkey(sequence2, () => setIDKFA(true));
+  useEffect(() => {
+    if (godMode) {
+      setGodMode(false);
+      let newp = [...players];
+      newp[playerIndex].hand = [activeCard];
+      setPlayers(newp);
+    }
+    if (idkfa) {
+      setIDKFA(false);
+      let newp = [...players];
+      for (let i = 0; i < newp.length; i++) {
+        if (i !== playerIndex) {
+          let cardsToAdd = shuffleDeck(buildDeck());
+          cardsToAdd.forEach((c) => newp[i].hand.push(c));
+          // newp[i].hand.push(shuffleDeck(buildDeck()));
+        }
+      }
+      endTurn(
+        newp,
+        newDiscardDeck.current,
+        newActiveCard.current,
+        newIsReverse.current,
+        turn,
+        playDeck
+      );
+    }
+  }, [godMode, idkfa]);
 
   function handleDrawClick() {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
