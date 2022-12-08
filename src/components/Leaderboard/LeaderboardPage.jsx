@@ -8,7 +8,7 @@ import { database } from "../../firebase.config";
 import { auth } from "../../firebase.config";
 
 function LeaderBoardPage() {
-  const [leaderBoard, setLeaderBoard] = useState(null);
+  const [leaderBoard, setLeaderBoard] = useState([]);
   const dbRef = ref(database);
 
   async function getDB() {
