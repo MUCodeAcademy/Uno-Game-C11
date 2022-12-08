@@ -129,15 +129,7 @@ const useSocketHook = (roomID, username) => {
                     newActiveCard.value === CardValue.WildDrawFour
                 ) {
                     const draw = newActiveCard.value === CardValue.DrawTwo ? 2 : 4;
-                    drawCard(
-                        players,
-                        playDeck,
-                        next,
-                        draw,
-                        newActiveCard,
-                        [...discardDeck, activeCard],
-                        isReverse
-                    );
+                    drawCard(players, playDeck, next, draw, [...discardDeck, activeCard]);
                 }
             }
         );

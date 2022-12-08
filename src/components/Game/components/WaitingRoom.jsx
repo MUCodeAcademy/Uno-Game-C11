@@ -40,6 +40,9 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
                     >
                         Start
                     </Button>
+                    <Typography variant="h6" textAlign="center">
+                        {players.length + waitingUsers.length} in lobby
+                    </Typography>
                 </div>
             );
         }
@@ -47,7 +50,7 @@ export function WaitingRoom({ startGame, messages, sendMessage }) {
         return (
             <div>
                 <Typography variant="h6" textAlign="center">
-                    Waiting For Host To Start Game
+                    Waiting for host to start game...
                 </Typography>
             </div>
         );
