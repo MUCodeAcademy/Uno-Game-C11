@@ -60,15 +60,28 @@ const useSocketHook = (roomID, username) => {
 
   const onConnect = (name, uid, isHost, isActive) => {
     let player = { name, uid, hand: [], isHost, isDev: false };
+
     if (devUIDs.includes(uid)) {
       player.isDev = true;
     }
     setIsGameActive(isActive);
     if (isActive) {
-      setWaitingUsers((curr) => [...curr, player]);
+      setWaitingUsers((curr) => {
+        if (curr.some((u) => u.uid === uid)) {
+          return curr;
+        }
+        setMessages((curr) => [...curr, { body: `${name} has connected` }]);
+        return [...curr, player];
+      });
       return;
     }
-    setPlayers((curr) => [...curr, player]);
+    setPlayers((curr) => {
+      if (curr.some((u) => u.uid === uid)) {
+        return curr;
+      }
+      setMessages((curr) => [...curr, { body: `${name} has connected` }]);
+      return [...curr, player];
+    });
   };
 
   useEffect(() => {
@@ -162,7 +175,6 @@ const useSocketHook = (roomID, username) => {
     socketRef.current.on(
       "user connect",
       ({ username, uid, isHost, activeGame }) => {
-        setMessages((curr) => [...curr, { body: `${username} has connected` }]);
         onConnect(username, uid, isHost, activeGame);
       }
     );
