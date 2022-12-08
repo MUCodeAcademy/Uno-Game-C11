@@ -54,7 +54,6 @@ const useSocketHook = (roomID, username) => {
 
     const onConnect = (name, uid, isHost, isActive) => {
         let player = { name, uid, hand: [], isHost, isDev: false };
-
         if (devUIDs.includes(uid)) {
             player.isDev = true;
         }
@@ -167,6 +166,10 @@ const useSocketHook = (roomID, username) => {
             setWaitingUsers([]);
         });
 
+        socketRef.current.on("stalemate", ({ players }) => {
+            endGame("Stalemate. There are no cards left to be drawn", players);
+        });
+
         socketRef.current.on("new message", (msg) => {
             setMessages((curr) => [...curr, msg]);
         });
@@ -234,9 +237,9 @@ const useSocketHook = (roomID, username) => {
 
     function endGame(message, players) {
         let winner = players.find((p) => p.hand.length === 0);
-        updateStats(auth.currentUser?.uid, winner.uid);
+        updateStats(auth.currentUser?.uid, winner?.uid);
         let host = players.find((p) => p.isHost === true);
-        if (host) {
+        if (auth.currentUser.uid === host.uid) {
             socketRef.current.emit("end game", {
                 message,
             });
@@ -257,7 +260,7 @@ const useSocketHook = (roomID, username) => {
 
     function drawCard(players, playDeck, turn, draws, activeCard, discardDeck, isReverse) {
         if (playDeck.length + discardDeck.length < draws) {
-            endGame("Stalemate, not enough cards to draw.");
+            socketRef.current.emit("stalemate", { players });
             return;
         }
 

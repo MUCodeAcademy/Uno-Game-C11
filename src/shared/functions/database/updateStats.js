@@ -5,6 +5,7 @@ const dbRef = ref(database);
 
 export async function updateStats(uid, gameWinnerUID) {
     let updates = {};
+    if (!gameWinnerUID) return;
     try {
         if (uid === gameWinnerUID) {
             updates[`users/${uid}/total games won`] = increment(1);

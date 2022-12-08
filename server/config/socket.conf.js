@@ -125,6 +125,10 @@ function socketConfig(io) {
             }
         );
 
+        socket.on("stalemate", ({ players }) => {
+            io.to(roomID).emit("stalemate", { players });
+        });
+
         socket.on("force disconnect", () => {
             io.to(roomID).emit("user disconnect", { username, uid });
         });
