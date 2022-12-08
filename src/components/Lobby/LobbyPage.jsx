@@ -22,7 +22,7 @@ function LobbyPage() {
   const [rooms, setRooms] = useState([]);
   const [isPrivate, setIsPrivate] = useState(false);
   useEffect(() => {
-    socketRef.current = io("10.200.224.166:8080", {
+    socketRef.current = io("localhost:8080", {
       query: {
         username: auth.currentUser?.displayName,
       },
@@ -43,15 +43,21 @@ function LobbyPage() {
   }, [roomNum]);
 
   const joinErrorMsg = useMemo(() => {
-    if (!rooms.some((room) => room.id === joinRoomNum))
+    if (
+      !rooms.some(
+        (room) =>
+          room.id.replace(/\s+/g, "-").toLowerCase() ===
+          joinRoomNum.replace(/\s+/g, "-").toLowerCase()
+      )
+    )
       return "Room Doesn't Exist";
     return "Must be at least 4 characters";
   }, [joinRoomNum]);
 
   const filterErrorMsg = useMemo(() => {
-    const startingVals = ["Game 1", "Game 2", "Game 3", "Game 4"];
+    const startingVals = ["game 1", "game 2", "game 3", "game 4"];
     const isFilteringInit = startingVals.some((val) =>
-      val.toLowerCase().includes(roomFilter.toLowerCase())
+      val.includes(roomFilter.toLowerCase())
     );
     const doesRoomExist = rooms.some((room) => {
       return room.id.toLowerCase().includes(roomFilter.toLowerCase());
