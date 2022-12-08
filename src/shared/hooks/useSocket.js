@@ -71,7 +71,7 @@ const useSocketHook = (roomID, username) => {
   };
 
   useEffect(() => {
-    socketRef.current = io("10.200.224.166:8080", {
+    socketRef.current = io("localhost:8080", {
       query: {
         username,
         roomID,
