@@ -7,13 +7,9 @@ export async function updateStats(uid, gameWinnerUID) {
     let updates = {};
     try {
         if (uid === gameWinnerUID) {
-            console.log("winner match");
-            updates[`users/${uid}/total games played`] = increment(1);
             updates[`users/${uid}/total games won`] = increment(1);
             update(dbRef, updates);
         } else {
-            console.log("no winner match");
-            updates[`users/${uid}/total games played`] = increment(1);
             updates[`users/${uid}/total games lost`] = increment(1);
             update(dbRef, updates);
         }
