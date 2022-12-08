@@ -122,11 +122,11 @@ function AboutPage() {
           <Box className="padding-10">
             <Typography variant="h5">Mark Waring</Typography>
             <Typography variant="body2">
-              Mark Waring is a junior developer based out of Omaha, NE. A St.
-              John's University alum, he completed the Midland University Code
-              Academy in 2022 before beginning his development career as a
+              I'm Mark Waring, a junior developer based out of Omaha, NE. A St.
+              John's University alum, I completed the Midland University Code
+              Academy in 2022 before beginning my development career as a
               database analyst for Signature Performance, Inc later that year.
-              In his spare time he enjoys spending time with family and friends,
+              In my spare time I enjoy spending time with family and friends,
               coaching high school baseball, and playing the piano.
             </Typography>
             <IconButton
