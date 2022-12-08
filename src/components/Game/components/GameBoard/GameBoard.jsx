@@ -20,7 +20,7 @@ function GameBoard({
   const { players, turn, isReverse, activeCard } = useGameContext();
   const turnOrder = useMemo(() => {
     let oldOrder = [...players];
-    let newOrder = oldOrder.splice(0, turn + isReverse ? 1 : 0);
+    let newOrder = oldOrder.splice(0, turn + (isReverse ? 1 : 0));
     newOrder = [...oldOrder, ...newOrder];
     if (isReverse) return newOrder.reverse();
     return newOrder;

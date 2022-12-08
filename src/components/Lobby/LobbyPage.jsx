@@ -10,6 +10,7 @@ import { auth } from "../../firebase.config";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+const regexp = /^[\w\-\s]+$/; //allow a-z, A-Z, 0-9, -, _, space
 
 function LobbyPage() {
   const navigate = useNavigate();
@@ -32,17 +33,10 @@ function LobbyPage() {
     });
   }, []);
 
-  const errorMsg = useMemo(() => {
-    const startingVals = ["game 1", "game 2", "game 3", "game 4"];
-    if (
-      rooms.some((room) => room.id === roomNum) ||
-      startingVals.includes(roomNum.toLowerCase())
-    )
-      return "Room already exists";
-    return "Must be at least 4 characters";
-  }, [roomNum]);
-
   const joinErrorMsg = useMemo(() => {
+    if (joinRoomNum.length > 0 && joinRoomNum.search(regexp) === -1) {
+      return "Invalid characters.";
+    }
     if (
       !rooms.some(
         (room) =>
@@ -60,12 +54,29 @@ function LobbyPage() {
       val.includes(roomFilter.toLowerCase())
     );
     const doesRoomExist = rooms.some((room) => {
-      return room.id.toLowerCase().includes(roomFilter.toLowerCase());
+      return room.id
+        .replace(/\s+/g, "-")
+        .toLowerCase()
+        .includes(roomFilter.replace(/\s+/g, "-").toLowerCase());
     });
     if (!doesRoomExist && !isFilteringInit && roomFilter.length)
       return "That room doesn't exist";
     return null;
-  }, [roomFilter]);
+  }, [roomFilter]); //allow a-z, A-Z, 0-9, -, _, space
+  const errorMsg = useMemo(() => {
+    if (roomNum.length > 0 && roomNum.search(regexp) === -1) {
+      return "Invalid characters.";
+    }
+    if (
+      rooms.some(
+        (room) =>
+          room.id.replace(/\s+/g, "-").toLowerCase() ===
+          roomNum.replace(/\s+/g, "-").toLowerCase()
+      )
+    )
+      return "Room already exists";
+    return "Must be at least 4 characters";
+  }, [roomNum]);
 
   function buttonDisplay(text) {
     return {
