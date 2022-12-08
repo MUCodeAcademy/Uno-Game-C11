@@ -11,20 +11,33 @@ export function Card({ isTurn, card, handlePlayCardClick }) {
 
 export default Card;
 
-const Div = styled("div")((props) => ({
+export const Div = styled("div")((props) => ({
   height: "125px",
   margin: "0px 0px 0px -40px",
   transition: "all .2s",
   cursor: "pointer",
-  "&:hover": {
+  "&:hover:not(.stack)": {
     transform: props.isTurn ? "translate(0px, -10px)" : "",
     zIndex: 100,
   },
   "&:first-of-type": {
     marginLeft: "0px",
   },
+  "&.stack": {
+    "&:not(.discard)": {
+      left: `${props.idx * 0.25}px`,
+      borderLeft: props.border ? ".25px solid black" : "",
+      position: "absolute",
+    },
+    cursor: "auto",
+    height: "100px",
+    marginLeft: "0px",
+  },
 }));
 
-const Img = styled("img")((props) => ({
+export const Img = styled("img")((props) => ({
   maxHeight: "125px",
+  "&.stack": {
+    height: "100px",
+  },
 }));
