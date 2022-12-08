@@ -1,13 +1,14 @@
 import React from "react";
 import { auth } from "../../firebase.config";
 import { useUserContext } from "../context";
-import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { MenuLink } from "../styled/components/MenuLink";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import { useLocation } from "react-router-dom";
 
 function Menu() {
+  const location = useLocation();
   const { clearUser, setUser } = useUserContext();
   auth.onAuthStateChanged((activeUser) => {
     setUser(activeUser);
@@ -26,7 +27,10 @@ function Menu() {
           <>
             <MenuLink to="/lobby">Game Finder</MenuLink>
             <MenuLink to="/leader-board">Leader Board</MenuLink>
-            <Button
+            <MenuLink
+              style={{ display: "flex", alignItems: "center" }}
+              to={location}
+              className="logout"
               color="secondary"
               onClick={() => {
                 clearUser();
@@ -35,7 +39,7 @@ function Menu() {
             >
               {auth.currentUser?.displayName}
               <LogoutIcon sx={{ paddingLeft: "5px" }} />
-            </Button>
+            </MenuLink>
           </>
         )}
       </Toolbar>
