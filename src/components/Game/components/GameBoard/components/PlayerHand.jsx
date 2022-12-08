@@ -34,8 +34,8 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   const [hasDrawn, setHasDrawn] = useState(false);
 
   useEffect(() => {
-    setHasDrawn(false), [turn];
-  });
+    setHasDrawn(false);
+  }, [turn]);
   let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
   const isPlayersTurn = useMemo(() => {
     return turn === playerIndex;
