@@ -45,7 +45,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   //IDLE TIMEOUT
   const [countdown, setCountdown] = useState(30);
   function resetCountdown() {
-    setCountdown(30);
+    setCountdown(30000);
   }
   useEffect(() => {
     let interval = null;
@@ -163,23 +163,37 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
       <div
         style={{
           display: "flex",
-          maxWidth: "100%",
+          width: "100%",
           margin: "5px",
           height: "165px",
+          position: "relative",
           overflowX: "scroll",
           alignItems: "center",
         }}
       >
-        {isGameActive &&
-          players[playerIndex] &&
-          players[playerIndex].hand.map((card, idx) => (
-            <Card
-              key={idx}
-              isTurn={isPlayersTurn}
-              card={card}
-              handlePlayCardClick={handlePlayCardClick}
-            />
-          ))}
+        <div style={{ margin: "auto", display: "flex" }}>
+          {isGameActive &&
+            players[playerIndex] &&
+            players[playerIndex].hand
+              .sort((a, b) => {
+                if (a.color === b.color) {
+                  if (a.value === b.value) return 0;
+                  return a.value > b.value ? 1 : -1;
+                }
+                if (a.color === b.color) {
+                  return 0;
+                }
+                return a.color > b.color ? 1 : -1;
+              })
+              .map((card, idx) => (
+                <Card
+                  key={idx}
+                  isTurn={isPlayersTurn}
+                  card={card}
+                  handlePlayCardClick={handlePlayCardClick}
+                />
+              ))}
+        </div>
       </div>
       <div>
         {isPlayersTurn && (
