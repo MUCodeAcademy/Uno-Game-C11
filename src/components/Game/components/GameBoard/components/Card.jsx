@@ -2,9 +2,20 @@ import React from "react";
 import styled from "@emotion/styled";
 import { theme } from "../../../../../shared/styled/themes/Theme";
 
-export function Card({ isTurn, card, handlePlayCardClick }) {
+export function Card({
+  isTurn,
+  card,
+  handlePlayCardClick,
+  hasDrawn,
+  recentCard,
+}) {
   return (
-    <Div isTurn={isTurn} onClick={() => handlePlayCardClick(card)}>
+    <Div
+      hasDrawn={hasDrawn}
+      recentCard={recentCard}
+      isTurn={isTurn}
+      onClick={() => handlePlayCardClick(card)}
+    >
       <Img src={require(`./cards/${card.color}_${card.value}.png`)} />
     </Div>
   );
@@ -17,10 +28,7 @@ export const Div = styled("div")((props) => ({
   margin: "0px 0px 0px -40px",
   transition: "all .2s",
   cursor: "pointer",
-  border:
-    props.hasDrawn && props.recentCard
-      ? `2px solid ${theme.palette.primary.main}`
-      : "",
+  transform: props.hasDrawn && props.recentCard ? "translate(0px, -5px)" : "",
   "&:hover:not(.stack)": {
     transform: props.isTurn ? "translate(0px, -10px)" : "",
     zIndex: 100,

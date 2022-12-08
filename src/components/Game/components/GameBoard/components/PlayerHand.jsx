@@ -32,23 +32,31 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
 
   const [playedWild, setPlayedWild] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
-
   useEffect(() => {
     setHasDrawn(false);
   }, [turn]);
+
   let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
   const isPlayersTurn = useMemo(() => {
     return turn === playerIndex;
   }, [turn]);
+
+  const mostRecent = useMemo(() => {
+    let lastIdx =
+      players[playerIndex].hand.length > 0
+        ? players[playerIndex].hand.length - 1
+        : 0;
+    return players[playerIndex].hand[lastIdx];
+  }, [players, playerIndex]);
 
   const isWaiting = useMemo(() => {
     return waitingUsers.some((u) => u.uid === auth.currentUser?.uid);
   }, [waitingUsers]);
 
   //IDLE TIMEOUT
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
   function resetCountdown() {
-    setCountdown(30);
+    setCountdown(60);
   }
   useEffect(() => {
     let interval = null;
@@ -191,14 +199,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
               })
               .map((card, idx) => (
                 <Card
-                  recentCard={
-                    card ===
-                    players[playerIndex].hand[
-                      players[playerIndex].hand.length > 0
-                        ? players[playerIndex].hand.length - 0
-                        : 0
-                    ]
-                  }
+                  recentCard={card === mostRecent}
                   hasDrawn={hasDrawn}
                   key={idx}
                   isTurn={isPlayersTurn}

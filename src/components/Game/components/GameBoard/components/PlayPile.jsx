@@ -17,7 +17,7 @@ function PlayPile() {
         <Typography style={{ marginBottom: "5px", textAlign: "center" }}>
           Discard
         </Typography>
-        <CardStack pile={discardDeck.length > 0 ? [1] : []} show={true} />
+        <CardStack pile={discardDeck} />
       </div>
       {/* {activeCard && <div>ACTIVE CARD: {`${activeCard.color} ${activeCard.value}`}</div>} */}
       <div>
@@ -37,7 +37,7 @@ function PlayPile() {
         >
           Draw
         </Typography>
-        <CardStack pile={playDeck} show={false} />
+        <CardStack pile={playDeck} />
       </div>
     </div>
   );
