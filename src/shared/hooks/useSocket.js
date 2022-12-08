@@ -157,7 +157,7 @@ const useSocketHook = (roomID, username) => {
         socketRef.current.on("new message", (msg) => {
             setMessages((curr) => [...curr, msg]);
         });
-        socketRef.current.on("user disconnect", ({ username, uid, activeGame }) => {
+        socketRef.current.on("user disconnect", ({ username, uid, activeGame, isHost }) => {
             if (activeGame) {
                 setWaitingUsers((curr) => {
                     if (curr.findIndex((p) => p.uid === uid) !== -1) {
@@ -172,8 +172,11 @@ const useSocketHook = (roomID, username) => {
             setPlayers((curr) => {
                 //Check for player to remove
                 let playerIndex = curr.findIndex((p) => p.uid === uid);
-                if (playerIndex === -1) {
+                if (playerIndex === -1 && !isHost) {
                     return curr;
+                } else if (playerIndex === -1) {
+                    curr[0].isHost = true;
+                    return [...curr];
                 }
                 let playerToRemove = curr[playerIndex];
                 curr.splice(playerIndex, 1);
@@ -182,12 +185,12 @@ const useSocketHook = (roomID, username) => {
                 if (playerToRemove.isHost) {
                     curr[0].isHost = true;
                 }
+                console.log(curr);
                 setTurn((currTurn) => (currTurn >= playerIndex ? currTurn - 1 : currTurn));
                 setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
                 return [...curr];
             });
             setMessages((curr) => [...curr, { body: `${username} has disconnected` }]);
-            // onDisconnect();
         });
 
         socketRef.current.on("end game", ({ message }) => {

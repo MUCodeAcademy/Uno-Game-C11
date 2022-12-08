@@ -88,7 +88,7 @@ function socketConfig(io) {
 
         socket.on("disconnect", () => {
             if (roomID) {
-                io.to(roomID).emit("user disconnect", { username, uid });
+                io.to(roomID).emit("user disconnect", { username, uid, isHost });
                 let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
                 if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
                     rooms = rooms.filter((room) => room.id !== roomID);
