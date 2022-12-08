@@ -25,7 +25,12 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
     discardDeck,
     isReverse,
     turn,
+    waitingUsers,
   } = useGameContext();
+
+  const isWaiting = useMemo(() => {
+    return waitingUsers.some((u) => u.uid === auth.currentUser?.uid);
+  }, [waitingUsers]);
 
   const [playedWild, setPlayedWild] = useState(false);
 
@@ -147,18 +152,17 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
       </div>
 
       <div>
-        <Button
-          fullWidth
-          disabled={!isPlayersTurn}
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            handleDrawClick();
-          }}
-        >
-          Draw Card
-        </Button>
-        {/* <Button onClick={() => handleDrawClick()}>Draw Card</Button> */}
+        {!isWaiting && (
+          <Button
+            fullWidth
+            disabled={!isPlayersTurn}
+            variant="contained"
+            color="primary"
+            onClick={handleDrawClick}
+          >
+            Draw Card
+          </Button>
+        )}
       </div>
     </div>
   );
