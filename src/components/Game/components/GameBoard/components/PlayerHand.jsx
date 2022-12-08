@@ -45,7 +45,7 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   //IDLE TIMEOUT
   const [countdown, setCountdown] = useState(30);
   function resetCountdown() {
-    setCountdown(30000);
+    setCountdown(30);
   }
   useEffect(() => {
     let interval = null;
