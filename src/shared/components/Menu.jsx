@@ -25,7 +25,7 @@ function Menu() {
         {auth?.currentUser && (
           <>
             <MenuLink to="/lobby">Game Finder</MenuLink>
-            <MenuLink>Profile</MenuLink>
+            <MenuLink to="/leader-board">Leader Board</MenuLink>
             <Button
               color="secondary"
               onClick={() => {
