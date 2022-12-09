@@ -16,7 +16,6 @@ const useSocketHook = (roomID, username) => {
   const {
     setIsGameActive,
     setActiveCard,
-    players,
     setPlayers,
     activeCard,
     setPlayDeck,
@@ -25,16 +24,8 @@ const useSocketHook = (roomID, username) => {
     setDiscardDeck,
     setIsReverse,
     setTurn,
-    waitingUsers,
   } = useGameContext();
   const socketRef = useRef(null);
-  const devUIDs = [
-    "3a8cb4i5fEbeO33OnZvvJ6SvTjU2",
-    "u4MqHUMDMdQbG3pGSJuIIKsv5KA2",
-    "GbviAKHZ5dVht3YjOfQjdxG7vRL2",
-    "lC7f56DqSVgnrvRQgWhznMIjPs83",
-    "8P1enWo03vY7KP3xHG9fMd92iWx1",
-  ];
   const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
 
@@ -58,19 +49,15 @@ const useSocketHook = (roomID, username) => {
     });
   };
 
-  const onConnect = (name, uid, isHost, isActive) => {
-    let player = { name, uid, hand: [], isHost, isDev: false };
-
-    if (devUIDs.includes(uid)) {
-      player.isDev = true;
-    }
+  const onConnect = (name, uid, isHost, isActive, isDev) => {
+    let player = { name, uid, hand: [], isHost, isDev };
     setIsGameActive(isActive);
+    setMessages((curr) => [...curr, { body: `${name} has connected` }]);
     if (isActive) {
       setWaitingUsers((curr) => {
         if (curr.some((u) => u.uid === uid)) {
           return curr;
         }
-        setMessages((curr) => [...curr, { body: `${name} has connected` }]);
         return [...curr, player];
       });
       return;
@@ -79,7 +66,6 @@ const useSocketHook = (roomID, username) => {
       if (curr.some((u) => u.uid === uid)) {
         return curr;
       }
-      setMessages((curr) => [...curr, { body: `${name} has connected` }]);
       return [...curr, player];
     });
   };
@@ -89,21 +75,14 @@ const useSocketHook = (roomID, username) => {
       query: {
         username,
         roomID,
+        isDev: auth.currentUser?.isDev,
         uid: auth.currentUser?.uid,
       },
     });
 
     socketRef.current.on(
       "draw card",
-      ({
-        players,
-        playDeck,
-        turn,
-        draws,
-        activeCard,
-        discardDeck,
-        isReverse,
-      }) => {
+      ({ players, playDeck, turn, draws, discardDeck }) => {
         let cards = playDeck.splice(0, draws);
         setPlayDeck(playDeck);
         setDiscardDeck(discardDeck);
@@ -160,22 +139,14 @@ const useSocketHook = (roomID, username) => {
           newActiveCard.value === CardValue.WildDrawFour
         ) {
           const draw = newActiveCard.value === CardValue.DrawTwo ? 2 : 4;
-          drawCard(
-            players,
-            playDeck,
-            next,
-            draw,
-            newActiveCard,
-            [...discardDeck, activeCard],
-            isReverse
-          );
+          drawCard(players, playDeck, next, draw, [...discardDeck, activeCard]);
         }
       }
     );
     socketRef.current.on(
       "user connect",
-      ({ username, uid, isHost, activeGame }) => {
-        onConnect(username, uid, isHost, activeGame);
+      ({ username, uid, isHost, activeGame, isDev }) => {
+        onConnect(username, uid, isHost, activeGame, isDev);
       }
     );
 
@@ -189,53 +160,69 @@ const useSocketHook = (roomID, username) => {
         setIsGameActive(true);
         setTurn(turn);
         setWaitingUsers([]);
+        addGamePlayed(auth.currentUser?.uid);
       }
     );
+
+    socketRef.current.on("stalemate", ({ players }) => {
+      endGame("Stalemate. There are no cards left to be drawn", players);
+    });
 
     socketRef.current.on("new message", (msg) => {
       setMessages((curr) => [...curr, msg]);
     });
-    socketRef.current.on("user disconnect", ({ username, uid, activeGame }) => {
-      if (activeGame) {
-        setWaitingUsers((curr) => {
-          if (curr.findIndex((p) => p.uid === uid) !== -1) {
-            let playerIndex = curr.findIndex((p) => p.uid === uid);
-            curr.splice(playerIndex, 1);
-            updateStats(uid, null);
+    socketRef.current.on(
+      "user disconnect",
+      ({ username, uid, activeGame, isHost }) => {
+        setPlayers((curr) => {
+          //Check for player to remove
+          let playerIndex = curr.findIndex((p) => p.uid === uid);
+          if (playerIndex === -1) {
+            setWaitingUsers((currWait) => {
+              let playerWaitIDX = currWait.findIndex((p) => p.uid === uid);
+              currWait.splice(playerWaitIDX, 1);
+              if (isHost && curr.length === 0) {
+                currWait[0].isHost = true;
+              } else {
+                setPlayers((curr) => {
+                  curr[0].isHost = true;
+                  return [...curr];
+                });
+              }
+              return [...currWait];
+            });
+            return curr;
+          }
+          let playerToRemove = curr[playerIndex];
+          curr.splice(playerIndex, 1);
+          // Get their cards
+          // Update turn order
+          if (isHost && curr.length > 0) {
+            curr[0].isHost = true;
+          } else {
+            setWaitingUsers((currWait) => {
+              currWait[0].isHost = true;
+              return [...currWait];
+            });
+          }
+          if (activeGame) {
+            setTurn((currTurn) =>
+              currTurn >= playerIndex ? currTurn - 1 : currTurn
+            );
+            setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
           }
           return [...curr];
         });
-        return;
+        setMessages((curr) => [
+          ...curr,
+          { body: `${username} has disconnected` },
+        ]);
       }
-      setPlayers((curr) => {
-        //Check for player to remove
-        let playerIndex = curr.findIndex((p) => p.uid === uid);
-        if (playerIndex === -1) {
-          return curr;
-        }
-        let playerToRemove = curr[playerIndex];
-        curr.splice(playerIndex, 1);
-        // Get their cards
-        // Update turn order
-        if (playerToRemove.isHost) {
-          curr[0].isHost = true;
-        }
-        setTurn((currTurn) =>
-          currTurn >= playerIndex ? currTurn - 1 : currTurn
-        );
-        setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
-        return [...curr];
-      });
-      setMessages((curr) => [
-        ...curr,
-        { body: `${username} has disconnected` },
-      ]);
-      // onDisconnect();
-    });
+    );
 
     socketRef.current.on("end game", ({ message }) => {
       if (message === "Stalemate, not enough cards to draw.") {
-        updateStats(auth.currentUser?.uid, null);
+        updateStats(auth.currentUser?.uid, "stalemate");
       }
       setMessages((curr) => [...curr, { body: message }]);
       playersToWaiting();
@@ -251,9 +238,7 @@ const useSocketHook = (roomID, username) => {
   }
 
   function startGame(newDeck, newPlayers, gameStartCard) {
-    let firstDev = newPlayers.findIndex((d) =>
-      devUIDs.includes(newPlayers.uid)
-    );
+    let firstDev = newPlayers.findIndex((d) => d.isDev);
     let turn =
       firstDev >= 0 ? firstDev : Math.floor(Math.random() * newPlayers.length);
     addGamePlayed(auth.currentUser?.uid);
@@ -267,9 +252,9 @@ const useSocketHook = (roomID, username) => {
 
   function endGame(message, players) {
     let winner = players.find((p) => p.hand.length === 0);
-    updateStats(auth.currentUser?.uid, winner.uid);
+    updateStats(auth.currentUser?.uid, winner?.uid);
     let host = players.find((p) => p.isHost === true);
-    if (host) {
+    if (auth.currentUser.uid === host.uid) {
       socketRef.current.emit("end game", {
         message,
       });
@@ -295,17 +280,9 @@ const useSocketHook = (roomID, username) => {
     });
   }
 
-  function drawCard(
-    players,
-    playDeck,
-    turn,
-    draws,
-    activeCard,
-    discardDeck,
-    isReverse
-  ) {
+  function drawCard(players, playDeck, turn, draws, discardDeck) {
     if (playDeck.length + discardDeck.length < draws) {
-      endGame("Stalemate, not enough cards to draw.");
+      socketRef.current.emit("stalemate", { players });
       return;
     }
 
@@ -319,9 +296,7 @@ const useSocketHook = (roomID, username) => {
       playDeck,
       turn,
       draws,
-      activeCard,
       discardDeck,
-      isReverse,
     });
   }
   function forceDisconnect() {

@@ -8,8 +8,6 @@ export async function getUserInfo(user) {
     try {
         await get(child(dbRef, `users/${user.uid}`)).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log("user found");
-                console.log(snapshot.val());
                 return { snapshot, success: true };
             } else {
                 registerUser(user);

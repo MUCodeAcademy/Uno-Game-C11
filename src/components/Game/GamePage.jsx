@@ -9,28 +9,28 @@ import Typography from "@mui/material/Typography";
 import Rules from "../Rules/Rules";
 
 function GamePage() {
-  const { roomID } = useParams();
+    const { roomID } = useParams();
 
-  const { isGameActive, setIsGameActive, players, waitingUsers } =
-    useGameContext();
+    const { isGameActive, setIsGameActive, players, waitingUsers, activeCard } =
+        useGameContext();
 
-  useEffect(() => {
-    if (players.length + waitingUsers.length <= 1) {
-      setIsGameActive(false);
-    }
-  }, [players, waitingUsers]);
+    useEffect(() => {
+        if (players.length <= 1 && activeCard) {
+            setIsGameActive(false);
+        }
+    }, [players, waitingUsers, activeCard]);
 
-  const {
-    messages,
-    sendMessage,
-    endGame,
-    endTurn,
-    drawCard,
-    startGame,
-    reshuffle,
-    forceDisconnect,
-  } = useSocketHook(roomID, auth.currentUser?.displayName);
-  //! need to render everyone except current player's hand count
+    const {
+        messages,
+        sendMessage,
+        endGame,
+        endTurn,
+        drawCard,
+        startGame,
+        reshuffle,
+        forceDisconnect,
+    } = useSocketHook(roomID, auth.currentUser?.displayName);
+    //! need to render everyone except current player's hand count
 
   return (
     <>

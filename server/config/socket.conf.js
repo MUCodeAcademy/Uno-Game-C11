@@ -8,7 +8,7 @@ function socketConfig(io) {
     ];
     io.on("connection", (socket) => {
         let isHost = false;
-        const { roomID, username, uid } = socket.handshake.query;
+        const { roomID, username, uid, isDev } = socket.handshake.query;
         if (roomID) {
             let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
             roomCount = isNaN(roomCount) ? 1 : roomCount + 1;
@@ -23,6 +23,7 @@ function socketConfig(io) {
                 uid,
                 isHost,
                 activeGame,
+                isDev,
             });
         }
 
@@ -87,7 +88,7 @@ function socketConfig(io) {
 
         socket.on("disconnect", () => {
             if (roomID) {
-                io.to(roomID).emit("user disconnect", { username, uid });
+                io.to(roomID).emit("user disconnect", { username, uid, isHost });
                 let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
                 if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
                     rooms = rooms.filter((room) => room.id !== roomID);
@@ -105,25 +106,27 @@ function socketConfig(io) {
                     const i = rooms.findIndex((r) => r.id === roomID);
 
                     rooms[i].playerCount = rooms[i].playerCount - 1;
+                    if (rooms[i].playerCount === 1) {
+                        rooms[i].activeGame = false;
+                    }
                 }
                 io.emit("rooms", { rooms });
             }
         });
 
-        socket.on(
-            "draw card",
-            ({ players, playDeck, turn, draws, activeCard, discardDeck, isReverse }) => {
-                io.to(roomID).emit("draw card", {
-                    players,
-                    playDeck,
-                    turn,
-                    draws,
-                    activeCard,
-                    discardDeck,
-                    isReverse,
-                });
-            }
-        );
+        socket.on("draw card", ({ players, playDeck, turn, draws, discardDeck }) => {
+            io.to(roomID).emit("draw card", {
+                players,
+                playDeck,
+                turn,
+                draws,
+                discardDeck,
+            });
+        });
+
+        socket.on("stalemate", ({ players }) => {
+            io.to(roomID).emit("stalemate", { players });
+        });
 
         socket.on("force disconnect", () => {
             io.to(roomID).emit("user disconnect", { username, uid });

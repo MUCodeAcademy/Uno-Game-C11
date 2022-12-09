@@ -6,69 +6,66 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 export function WaitingRoom({ startGame, messages, sendMessage }) {
-  const { isHost, players, waitingUsers } = useGameContext();
+    const { isHost, players, waitingUsers } = useGameContext();
 
-  function handleClick() {
-    let player = [...players, ...waitingUsers];
-    let { newDeck, players: newPlayers, gameStartCard } = newGame(player);
-    startGame(newDeck, newPlayers, gameStartCard);
-  }
-
-  function Waiting() {
-
-    if (isHost) {
-      console.log([...players, ...waitingUsers].length);
-      if ([...players, ...waitingUsers].length <= 1) {
-        return (
-          <div>
-            <Typography variant="h6" textAlign="center">
-              Waiting For someone to join...
-            </Typography>
-          </div>
-        )
-      }
-      return (
-        <div>
-          <Typography variant="h6" textAlign="center">
-            Press Start When Ready
-          </Typography>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              handleClick();
-            }}
-          >
-            Start
-          </Button>
-        </div>
-      );
+    function handleClick() {
+        let player = [...players, ...waitingUsers];
+        let { newDeck, players: newPlayers, gameStartCard } = newGame(player);
+        startGame(newDeck, newPlayers, gameStartCard);
     }
 
+    function Waiting() {
+        if (isHost) {
+            if ([...players, ...waitingUsers].length <= 1) {
+                return (
+                    <div>
+                        <Typography variant="h6" textAlign="center">
+                            Waiting for someone to join...
+                        </Typography>
+                    </div>
+                );
+            }
+            return (
+                <div>
+                    <Typography variant="h6" textAlign="center">
+                        Press Start When Ready
+                    </Typography>
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            handleClick();
+                        }}
+                    >
+                        Start
+                    </Button>
+                    <Typography variant="h6" textAlign="center">
+                        {players.length + waitingUsers.length} in lobby
+                    </Typography>
+                </div>
+            );
+        }
 
+        return (
+            <div>
+                <Typography variant="h6" textAlign="center">
+                    Waiting for host to start game...
+                </Typography>
+            </div>
+        );
+    }
 
     return (
-      <div>
-        <Typography variant="h6" textAlign="center">
-          Waiting For Host To Start Game
-        </Typography>
-      </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div>
+                <ChatRoom messages={messages} sendMessage={sendMessage} />
+            </div>
+            <div>
+                <Waiting />
+            </div>
+        </div>
     );
-  }
-
-  return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      <div>
-        <ChatRoom messages={messages} sendMessage={sendMessage} />
-      </div>
-      <div>
-        <Waiting />
-      </div>
-    </div>
-  );
 }
 
 export default WaitingRoom;

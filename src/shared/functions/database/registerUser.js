@@ -8,7 +8,9 @@ export async function registerUser(user) {
             "total games played": 0,
             "total games won": 0,
             "total games lost": 0,
+            "total games drawn": 0,
             dev: false,
+            uid: user.uid,
         });
         return { data: "user added", success: true };
     } catch (err) {

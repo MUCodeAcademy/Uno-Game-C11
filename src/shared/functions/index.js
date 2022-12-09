@@ -1,6 +1,5 @@
 export * from "./buildDeck";
 export * from "./cardEnums";
-export * from "./checkForReshuffle";
 export * from "./checkForEndGame";
 export * from "./dealCards";
 export * from "./newGame";

@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
 import TextField from "@mui/material/TextField";
-
 import { theme } from "../../../../shared/styled/themes/Theme";
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
@@ -30,7 +28,6 @@ export function ChatRoom({ messages, sendMessage }) {
                 <div
                     ref={bottomRef}
                     style={{
-                        //   width: "300px",
                         height: "400px",
                         padding: "2px",
                         backgroundColor: theme.palette.secondary.light,

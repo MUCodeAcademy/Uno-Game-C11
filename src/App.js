@@ -13,8 +13,8 @@ import {
   GamePageWithAuth,
   LobbyPageWithAuth,
   LoginPageWithAuth,
+  LeaderBoardPageWithAuth,
 } from "./shared/components/ProtectedRoute";
-import { useUserContext } from "./shared/context";
 import { GameProvider } from "./shared/context/GameContext";
 
 function App() {
@@ -31,6 +31,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPageWithAuth />} />
             <Route path="/lobby" element={<LobbyPageWithAuth />} />
+            <Route path="/leader-board" element={<LeaderBoardPageWithAuth />} />
             <Route path="/about" element={<AboutPage />} />
             <Route
               path="/game-room/:roomID"

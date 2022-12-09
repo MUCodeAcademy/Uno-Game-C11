@@ -4,7 +4,6 @@ import { useGameContext } from "../../../../../shared/context/GameContext";
 import {
   removeCardFromHand,
   validatePlayedCard,
-  playCard,
   shuffleDeck,
   CardValue,
   CardColor,
@@ -32,20 +31,32 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   } = useGameContext();
 
   const [playedWild, setPlayedWild] = useState(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
+  useEffect(() => {
+    setHasDrawn(false);
+  }, [turn]);
 
   let playerIndex = players.findIndex((p) => p.uid === auth.currentUser.uid);
   const isPlayersTurn = useMemo(() => {
     return turn === playerIndex;
   }, [turn]);
 
+  const mostRecent = useMemo(() => {
+    let lastIdx =
+      players[playerIndex].hand.length > 0
+        ? players[playerIndex].hand.length - 1
+        : 0;
+    return players[playerIndex].hand[lastIdx];
+  }, [players, playerIndex]);
+
   const isWaiting = useMemo(() => {
     return waitingUsers.some((u) => u.uid === auth.currentUser?.uid);
   }, [waitingUsers]);
 
   //IDLE TIMEOUT
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
   function resetCountdown() {
-    setCountdown(30);
+    setCountdown(60);
   }
   useEffect(() => {
     let interval = null;
@@ -106,8 +117,9 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
   function handleDrawClick() {
     //only allow draw/playcard when it's current player's turn (and they aren't currently picking a color after playing a wild)
     if (isPlayersTurn && !playedWild) {
+      setHasDrawn(true);
       resetCountdown();
-      drawCard(players, playDeck, turn, 1, activeCard, discardDeck, isReverse);
+      drawCard(players, playDeck, turn, 1, discardDeck);
     }
   }
 
@@ -187,6 +199,8 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
               })
               .map((card, idx) => (
                 <Card
+                  recentCard={card === mostRecent}
+                  hasDrawn={hasDrawn}
                   key={idx}
                   isTurn={isPlayersTurn}
                   card={card}
@@ -195,11 +209,16 @@ function PlayerHand({ endTurn, drawCard, forceDisconnect }) {
               ))}
         </div>
       </div>
-      <div>
+      <div style={{ minHeight: "48px", textAlign: "center" }}>
         {isPlayersTurn && (
-          <h4 style={{ color: theme.palette.secondary.main }}>
-            It's your turn!
-          </h4>
+          <>
+            <h4 style={{ color: theme.palette.secondary.main, margin: "3px" }}>
+              It's your turn!
+            </h4>
+            <h4 style={{ color: theme.palette.secondary.main, margin: "3px" }}>
+              {countdown} seconds to draw or play
+            </h4>
+          </>
         )}
       </div>
 

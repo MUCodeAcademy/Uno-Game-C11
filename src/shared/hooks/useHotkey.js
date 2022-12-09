@@ -5,8 +5,6 @@ const createKeyChecker = (hotkeys = []) => {
     const TAIL = hotkeys.length - 1;
 
     return (key) => {
-        console.log("index", index);
-        console.log("key", key);
         if (key !== hotkeys[index]) {
             index = 0;
             return false;
@@ -27,7 +25,6 @@ function useHotkey(hotKeys, onMatch) {
 
     const listen = ({ key }) => {
         if (keyCrawler(key)) {
-            console.log("match");
             onMatch();
         }
     };
