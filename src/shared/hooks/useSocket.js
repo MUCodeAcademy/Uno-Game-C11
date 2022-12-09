@@ -60,7 +60,6 @@ const useSocketHook = (roomID, username) => {
             if (curr.some((u) => u.uid === uid)) {
                 return curr;
             }
-            // setMessages((curr) => [...curr, { body: `${name} has connected` }]);
             return [...curr, player];
         });
     };
@@ -176,7 +175,13 @@ const useSocketHook = (roomID, username) => {
                 if (playerIndex === -1 && !isHost) {
                     return curr;
                 } else if (playerIndex === -1) {
-                    curr[0].isHost = true;
+                    if (curr.length > 0) {
+                        curr[0].isHost = true;
+                    }
+                    setWaitingUsers((currWait) => {
+                        currWait[0].isHost = true;
+                        return [...currWait];
+                    });
                     return [...curr];
                 }
                 let playerToRemove = curr[playerIndex];

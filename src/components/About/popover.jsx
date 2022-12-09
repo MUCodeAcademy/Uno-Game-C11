@@ -20,7 +20,7 @@ export default function GabePopover() {
     const id = open ? "simple-popover" : undefined;
 
     return (
-        <div>
+        <>
             <IconButton aria-describedby={id} color="secondary" onClick={handleClick}>
                 <LibraryMusicRounded></LibraryMusicRounded>
             </IconButton>
@@ -70,6 +70,6 @@ export default function GabePopover() {
                     </a>
                 </Typography>
             </Popover>
-        </div>
+        </>
     );
 }

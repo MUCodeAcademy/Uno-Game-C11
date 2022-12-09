@@ -6,11 +6,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
     TableRow,
     TableSortLabel,
-    Toolbar,
-    Typography,
     Paper,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -57,7 +54,7 @@ const headCells = [
 ];
 
 export function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { order, orderBy } = props;
 
     return (
         <TableHead>
@@ -94,9 +91,6 @@ export function UserTable({ leaderBoard }) {
         [leaderBoard, auth.currentUser?.uid]
     );
     console.log(personalStats);
-    const [order, setOrder] = React.useState("asc");
-    const [orderBy, setOrderBy] = React.useState("win%");
-
     return (
         <>
             {personalStats && (
@@ -108,18 +102,9 @@ export function UserTable({ leaderBoard }) {
                                 aria-labelledby="tableTitle"
                                 size={"medium"}
                             >
-                                <EnhancedTableHead
-                                    order={order}
-                                    orderBy={orderBy}
-                                    rowCount={1}
-                                />
+                                <EnhancedTableHead rowCount={1} />
                                 <TableBody>
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        // key={index}
-                                    >
+                                    <TableRow hover role="checkbox" tabIndex={-1}>
                                         <TableCell component="th" scope="row" padding="none">
                                             {personalStats.name}
                                         </TableCell>
