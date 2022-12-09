@@ -184,7 +184,7 @@ const useSocketHook = (roomID, username) => {
               curr[0].isHost = true;
             } else if (needsWaitHost && isHost) {
               setWaitingUsers((currWait) => {
-                currWait[0].isHost;
+                currWait[0].isHost = true;
                 return [...currWait];
               });
             }

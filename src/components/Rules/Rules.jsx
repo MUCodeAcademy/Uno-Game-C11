@@ -31,7 +31,7 @@ export default function Rules() {
   }, [open]);
 
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <Button onClick={handleClickOpen("paper")}>
         <HelpOutlineIcon style={{ color: "white" }} />
       </Button>
