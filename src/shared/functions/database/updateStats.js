@@ -10,7 +10,7 @@ export async function updateStats(uid, gameWinnerUID, hostUID) {
             updates[`server/total games completed`] = increment(1);
             update(dbRef, updates);
         }
-        if (gameWinnerUID === "stalemate") {
+        if (!gameWinnerUID) {
             updates[`users/${uid}/total games drawn`] = increment(1);
             updates[`users/${uid}/total games lost`] = increment(-1);
             if (uid === hostUID) {

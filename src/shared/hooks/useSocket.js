@@ -202,9 +202,7 @@ const useSocketHook = (roomID, username) => {
         });
 
         socketRef.current.on("end game", ({ message, winner, host }) => {
-            if (message === "Stalemate, not enough cards to draw.") {
-                updateStats(auth.currentUser?.uid, winner, host);
-            }
+            updateStats(auth.currentUser?.uid, winner, host);
             setMessages((curr) => [...curr, { body: message }]);
             playersToWaiting();
             initialState();
@@ -235,8 +233,8 @@ const useSocketHook = (roomID, username) => {
         if (auth.currentUser.uid === host.uid) {
             socketRef.current.emit("end game", {
                 message,
-                winner,
-                host,
+                winner: winner?.uid,
+                host: host.uid,
             });
         }
     }
