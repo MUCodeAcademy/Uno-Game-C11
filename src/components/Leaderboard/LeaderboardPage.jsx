@@ -22,7 +22,7 @@ function LeaderBoardPage() {
                     let data = snapshot.val();
                     setLeaderBoard(putJSONinArray(data));
                 } else {
-                    console.log("snapshot doesn't exist");
+                    console.error("snapshot doesn't exist");
                 }
             });
         } catch (err) {
@@ -37,7 +37,7 @@ function LeaderBoardPage() {
                     let data = snapshot.val();
                     setServer(formatServerData(data));
                 } else {
-                    console.log("snapshot doesn't exist");
+                    console.error("snapshot doesn't exist");
                 }
             });
         } catch (err) {
