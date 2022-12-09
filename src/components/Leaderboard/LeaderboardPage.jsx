@@ -4,7 +4,8 @@ import { ref, child, get } from "firebase/database";
 import { database } from "../../firebase.config";
 import { auth } from "../../firebase.config";
 import { Container, Grid, Typography, Table, TableContainer } from "@mui/material";
-import { EnhancedTable, EnhancedTableHead } from "./LeaderboardTable";
+import { EnhancedTable } from "./tables/LeaderboardTable";
+import { UserTable } from "./tables/UserTable";
 
 function LeaderBoardPage() {
     const [leaderBoard, setLeaderBoard] = useState([]);
@@ -12,7 +13,7 @@ function LeaderBoardPage() {
 
     async function getDB() {
         try {
-            await get(child(dbRef, `users`)).then((snapshot) => {
+            await get(child(dbRef, `/users`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     let data = snapshot.val();
                     setLeaderBoard(putJSONinArray(data));
@@ -34,7 +35,7 @@ function LeaderBoardPage() {
             const drawn = parseInt(data[user]["total games drawn"]);
             const pct = played > 0 ? Math.floor((won / played) * 10000) / 100 : 0;
             arr.push({
-                uid: user,
+                uid: data[user]["uid"],
                 name: data[user]["name"],
                 played: played,
                 won: won,
@@ -43,10 +44,11 @@ function LeaderBoardPage() {
                 drawn: drawn,
             });
         }
+
         arr.sort((a, b) => b.won - a.won);
         return arr;
     }
-    console.log(leaderBoard);
+
     useEffect(() => {
         async function getData() {
             await getDB();
@@ -54,12 +56,6 @@ function LeaderBoardPage() {
         getData();
     }, []);
 
-    const personalStats = useMemo(
-        () => leaderBoard.find((u) => u.uid === auth.currentUser?.uid),
-        [leaderBoard, auth.currentUser?.uid]
-    );
-
-    console.log(personalStats);
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
             <Container style={{ margin: "10px 0px" }}>
@@ -87,7 +83,7 @@ function LeaderBoardPage() {
                         <Typography variant="h5" textAlign="center">
                             Your Stats
                         </Typography>
-                        <div></div>
+                        <UserTable leaderBoard={leaderBoard}></UserTable>
                     </Grid>
 
                     <Grid

@@ -186,7 +186,6 @@ const useSocketHook = (roomID, username) => {
                 if (playerToRemove.isHost) {
                     curr[0].isHost = true;
                 }
-                console.log(curr);
                 setTurn((currTurn) => (currTurn >= playerIndex ? currTurn - 1 : currTurn));
                 setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
                 return [...curr];

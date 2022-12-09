@@ -112,6 +112,7 @@ export function EnhancedTableHead(props) {
 //!
 
 export function EnhancedTable({ leaderBoard }) {
+    console.log(leaderBoard);
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("win%");
     const [selected, setSelected] = React.useState([]);
