@@ -1,10 +1,25 @@
 import React from "react";
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Typography, Paper } from "@mui/material";
+import {
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel,
+    Toolbar,
+    Typography,
+    Paper,
+} from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { visuallyHidden } from "@mui/utils";
 
 function getComparator(order, orderBy) {
-    return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    return order === "desc"
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
 }
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -66,12 +81,23 @@ export function EnhancedTableHead(props) {
         <TableHead>
             <TableRow>
                 {headCells.map((headCell, index) => (
-                    <TableCell key={index} align={headCell.numeric ? "right" : "left"} padding={headCell.disablePadding ? "none" : "normal"} sortDirection={orderBy === headCell.id ? order : false}>
-                        <TableSortLabel active={orderBy === headCell.id} direction={orderBy === headCell.id ? order : "asc"} onClick={createSortHandler(headCell.id)}>
+                    <TableCell
+                        key={index}
+                        align={headCell.numeric ? "right" : "left"}
+                        padding={headCell.disablePadding ? "none" : "normal"}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : "asc"}
+                            onClick={createSortHandler(headCell.id)}
+                        >
                             {headCell.label}
                             {orderBy === headCell.id ? (
                                 <Box component="span" sx={visuallyHidden}>
-                                    {order === "desc" ? "sorted descending" : "sorted ascending"}
+                                    {order === "desc"
+                                        ? "sorted descending"
+                                        : "sorted ascending"}
                                 </Box>
                             ) : null}
                         </TableSortLabel>
@@ -118,7 +144,10 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1)
+            );
         }
         setSelected(newSelected);
     };
@@ -134,13 +163,18 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
 
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - leaderBoard.length) : 0;
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - leaderBoard.length) : 0;
 
     return (
         <Box sx={{ width: "100%" }}>
             <Paper sx={{ width: "100%", mb: 2 }}>
                 <TableContainer>
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? "small" : "medium"}>
+                    <Table
+                        sx={{ minWidth: 750 }}
+                        aria-labelledby="tableTitle"
+                        size={dense ? "small" : "medium"}
+                    >
                         <EnhancedTableHead
                             numSelected={selected.length}
                             order={order}
@@ -156,7 +190,8 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                 .map((leaderBoard, index) => {
                                     const isItemSelected = isSelected(leaderBoard.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-                                    const highlight = playerUID === leaderBoard.uid ? "hotpink" : "";
+                                    const highlight =
+                                        playerUID === leaderBoard.uid ? "hotpink" : "";
                                     const styling =
                                         playerUID === leaderBoard.uid
                                             ? {
@@ -167,14 +202,22 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, leaderBoard.name)}
+                                            onClick={(event) =>
+                                                handleClick(event, leaderBoard.name)
+                                            }
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={index}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell sx={styling} component="th" id={labelId} scope="row" padding="none">
+                                            <TableCell
+                                                sx={styling}
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                padding="none"
+                                            >
                                                 {leaderBoard.name}
                                             </TableCell>
                                             <TableCell sx={styling} align="right">
