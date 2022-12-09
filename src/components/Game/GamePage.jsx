@@ -32,46 +32,46 @@ function GamePage() {
     } = useSocketHook(roomID, auth.currentUser?.displayName);
     //! need to render everyone except current player's hand count
 
-  return (
-    <>
-      <Rules />
-      <div>
-        <Typography
-          variant="h5"
-          textAlign={"center"}
-          padding="5px"
-        >{`Room name: ${roomID.toUpperCase()}`}</Typography>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {!isGameActive && (
-            <WaitingRoom
-              startGame={startGame}
-              messages={messages}
-              sendMessage={sendMessage}
-            />
-          )}
-        </div>
-        <div>
-          {isGameActive && (
-            <GameBoard
-              messages={messages}
-              sendMessage={sendMessage}
-              endTurn={endTurn}
-              drawCard={drawCard}
-              endGame={endGame}
-              reshuffle={reshuffle}
-              forceDisconnect={forceDisconnect}
-            />
-          )}
-        </div>
-      </div>
-    </>
-  );
+    return (
+        <>
+            <Rules />
+            <div>
+                <Typography
+                    variant="h5"
+                    textAlign={"center"}
+                    padding="5px"
+                >{`Room name: ${roomID.toUpperCase()}`}</Typography>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
+                >
+                    {!isGameActive && (
+                        <WaitingRoom
+                            startGame={startGame}
+                            messages={messages}
+                            sendMessage={sendMessage}
+                        />
+                    )}
+                </div>
+                <div>
+                    {isGameActive && (
+                        <GameBoard
+                            messages={messages}
+                            sendMessage={sendMessage}
+                            endTurn={endTurn}
+                            drawCard={drawCard}
+                            endGame={endGame}
+                            reshuffle={reshuffle}
+                            forceDisconnect={forceDisconnect}
+                        />
+                    )}
+                </div>
+            </div>
+        </>
+    );
 }
 
 export default GamePage;

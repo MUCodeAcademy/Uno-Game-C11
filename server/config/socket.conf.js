@@ -72,7 +72,7 @@ function socketConfig(io) {
                 return r;
             });
             io.emit("rooms", { rooms });
-            io.to(roomID).emit("start game", { players, playDeck, activeCard, turn });
+            io.to(roomID).emit("start game", { players, playDeck, activeCard, turn, uid });
         });
 
         socket.on("end game", ({ message }) => {

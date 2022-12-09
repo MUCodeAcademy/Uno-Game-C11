@@ -26,10 +26,10 @@ function AboutPage() {
                 <Typography variant="h4">About The Dev Team</Typography>
             </Grid>
             <Grid container item xs={12} sm={6}>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={3} justifyContent="center" display="flex">
                     <Avatar alt="Gabe" src={Gabe} sx={{ width: 100, height: 100 }} />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={12} md={9}>
                     <Box className="padding-10">
                         <Typography variant="h5"> Gabe Bierman</Typography>
                         <Typography
@@ -65,10 +65,10 @@ function AboutPage() {
                 </Grid>
             </Grid>
             <Grid container item xs={12} sm={6}>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={3} justifyContent="center" display="flex">
                     <Avatar alt="Tom" src={Tom} sx={{ width: 100, height: 100 }} />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={12} md={9}>
                     <Box className="padding-10">
                         <Typography variant="h5"> Tom Heafey</Typography>
                         <Typography
@@ -98,10 +98,10 @@ function AboutPage() {
                 </Grid>
             </Grid>
             <Grid container item xs={12} sm={6}>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={3} justifyContent="center" display="flex">
                     <Avatar src={Steven} alt="Steven" sx={{ width: 100, height: 100 }} />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={12} md={9}>
                     <Box className="padding-10">
                         <Typography variant="h5">Steven May</Typography>
                         <Typography
@@ -131,22 +131,22 @@ function AboutPage() {
                 </Grid>
             </Grid>
             <Grid container item xs={12} sm={6}>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={3} justifyContent="center" display="flex">
                     <Avatar alt="Mark" src={Mark} sx={{ width: 100, height: 100 }} />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={12} md={9}>
                     <Box className="padding-10">
                         <Typography variant="h5">Mark Waring</Typography>
                         <Typography
                             variant="body2"
                             style={{ marginLeft: "15px", textAlign: "left" }}
                         >
-                            I'm Mark Waring, a junior developer based out of Omaha, NE. A St.
-                            John's University alum, I completed the Midland University Code
-                            Academy in 2022 before beginning my development career as a
-                            database analyst for Signature Performance, Inc later that year. In
-                            my spare time I enjoy spending time with family and friends,
-                            coaching high school baseball, and playing the piano.
+                            I'm a junior developer based out of Omaha, NE. I'm a graduate of
+                            St. John's University in Collegeville, MN and completed the Midland
+                            University Code Academy in 2022. I began my development career as a
+                            database analyst for Signature Performance later that year. In my
+                            spare time I enjoy spending time with family and friends, coaching
+                            high school baseball, and playing the piano.
                         </Typography>
                         <IconButton
                             color="secondary"

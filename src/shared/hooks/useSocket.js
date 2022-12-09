@@ -139,7 +139,7 @@ const useSocketHook = (roomID, username) => {
             }
         );
 
-        socketRef.current.on("start game", ({ players, playDeck, activeCard, turn }) => {
+        socketRef.current.on("start game", ({ players, playDeck, activeCard, turn, uid }) => {
             setPlayers(players);
             setPlayDeck(playDeck);
             setActiveCard(activeCard);
@@ -147,7 +147,7 @@ const useSocketHook = (roomID, username) => {
             setIsGameActive(true);
             setTurn(turn);
             setWaitingUsers([]);
-            addGamePlayed(auth.currentUser?.uid);
+            addGamePlayed(auth.currentUser?.uid, uid);
         });
 
         socketRef.current.on("stalemate", ({ players }) => {
@@ -221,7 +221,6 @@ const useSocketHook = (roomID, username) => {
     function startGame(newDeck, newPlayers, gameStartCard) {
         let firstDev = newPlayers.findIndex((d) => d.isDev);
         let turn = firstDev >= 0 ? firstDev : Math.floor(Math.random() * newPlayers.length);
-        addGamePlayed(auth.currentUser?.uid);
         socketRef.current.emit("start game", {
             players: newPlayers,
             playDeck: newDeck,

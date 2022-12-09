@@ -3,12 +3,14 @@ import { database } from "../../../firebase.config";
 
 const dbRef = ref(database);
 
-export async function addGamePlayed(uid) {
+export async function addGamePlayed(uid, hostUID) {
     let updates = {};
     try {
         updates[`users/${uid}/total games played`] = increment(1);
         updates[`users/${uid}/total games lost`] = increment(1);
-        updates[`server/total games started`] = increment(1);
+        if (uid === hostUID) {
+            updates[`server/total games started`] = increment(1);
+        }
         update(dbRef, updates);
     } catch (err) {
         console.error(err);
