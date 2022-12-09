@@ -3,6 +3,10 @@ import { Avatar, Box, Button, Grid, IconButton, Typography } from "@mui/material
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GabePopover from "./popover";
+import Gabe from "./Gabe.jpg";
+import Mark from "./Mark.jpg";
+import Steven from "./Steven.jpg";
+import Tom from "./Tom.jpg";
 
 function AboutPage() {
     return (
@@ -23,12 +27,15 @@ function AboutPage() {
             </Grid>
             <Grid container item xs={12} sm={6}>
                 <Grid item xs={3}>
-                    <Avatar alt="Gabe" src={"GABE"} sx={{ width: 100, height: 100 }} />
+                    <Avatar alt="Gabe" src={Gabe} sx={{ width: 100, height: 100 }} />
                 </Grid>
                 <Grid item xs={9}>
                     <Box className="padding-10">
                         <Typography variant="h5"> Gabe Bierman</Typography>
-                        <Typography variant="body2">
+                        <Typography
+                            variant="body2"
+                            style={{ marginLeft: "15px", textAlign: "left" }}
+                        >
                             I'm a junior developer with a long history working in IT and a
                             formal education in music and audio engineering. My experience
                             working with music informatics and MIR while in college gave me a
@@ -53,18 +60,20 @@ function AboutPage() {
                         >
                             <LinkedInIcon />
                         </IconButton>
-                        <GabePopover></GabePopover>
                     </Box>
                 </Grid>
             </Grid>
             <Grid container item xs={12} sm={6}>
                 <Grid item xs={3}>
-                    <Avatar alt="Tom" src={"TOM PIC"} sx={{ width: 100, height: 100 }} />
+                    <Avatar alt="Tom" src={Tom} sx={{ width: 100, height: 100 }} />
                 </Grid>
                 <Grid item xs={9}>
                     <Box className="padding-10">
                         <Typography variant="h5"> Tom Heafey</Typography>
-                        <Typography variant="body2">
+                        <Typography
+                            variant="body2"
+                            style={{ marginLeft: "15px", textAlign: "left" }}
+                        >
                             Hello! I'm a junior developer with a background in tech
                             support/system administration. In my previous role, I began
                             teaching myself programming to automate tasks in Python and
@@ -89,12 +98,15 @@ function AboutPage() {
             </Grid>
             <Grid container item xs={12} sm={6}>
                 <Grid item xs={3}>
-                    <Avatar src={"STEVEN PIC"} alt="Steven" sx={{ width: 100, height: 100 }} />
+                    <Avatar src={Steven} alt="Steven" sx={{ width: 100, height: 100 }} />
                 </Grid>
                 <Grid item xs={9}>
                     <Box className="padding-10">
                         <Typography variant="h5">Steven May</Typography>
-                        <Typography variant="body2">
+                        <Typography
+                            variant="body2"
+                            style={{ marginLeft: "15px", textAlign: "left" }}
+                        >
                             I was a student at the University of Nebraska Omaha where I learned
                             to program. A friend of mine had taken the Code Academy class at
                             Midland University and recommended it to me. At Code Academy I
@@ -119,12 +131,15 @@ function AboutPage() {
             </Grid>
             <Grid container item xs={12} sm={6}>
                 <Grid item xs={3}>
-                    <Avatar alt="Mark" src={"MARK PIC"} sx={{ width: 100, height: 100 }} />
+                    <Avatar alt="Mark" src={Mark} sx={{ width: 100, height: 100 }} />
                 </Grid>
                 <Grid item xs={9}>
                     <Box className="padding-10">
                         <Typography variant="h5">Mark Waring</Typography>
-                        <Typography variant="body2">
+                        <Typography
+                            variant="body2"
+                            style={{ marginLeft: "15px", textAlign: "left" }}
+                        >
                             I'm Mark Waring, a junior developer based out of Omaha, NE. A St.
                             John's University alum, I completed the Midland University Code
                             Academy in 2022 before beginning my development career as a
