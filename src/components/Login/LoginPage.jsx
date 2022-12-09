@@ -12,7 +12,6 @@ const provider = new GoogleAuthProvider();
 
 function LoginPage() {
   const { setUser } = useUserContext();
-  // const navigate = useNavigate();
   async function signIn() {
     try {
       const result = await signInWithPopup(auth, provider);
