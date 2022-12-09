@@ -72,7 +72,6 @@ export function EnhancedTableHead(props) {
 //!
 
 export function ServerTable({ server }) {
-    console.log(server);
     return (
         <>
             {server && (
