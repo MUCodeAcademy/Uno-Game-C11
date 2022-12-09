@@ -175,48 +175,43 @@ const useSocketHook = (roomID, username) => {
       "user disconnect",
       ({ username, uid, activeGame, isHost }) => {
         setPlayers((curr) => {
-          //Check for player to remove
           let playerIndex = curr.findIndex((p) => p.uid === uid);
-          if (playerIndex === -1) {
+          let needsWaitHost = false;
+          if (playerIndex >= 0) {
+            curr.splice(playerIndex, 1);
+            needsWaitHost = curr.length === 0 && isHost;
+            if (!needsWaitHost && isHost) {
+              curr[0].isHost = true;
+            } else if (needsWaitHost && isHost) {
+              setWaitingUsers((currWait) => {
+                currWait[0].isHost;
+                return [...currWait];
+              });
+            }
+            if (activeGame) {
+              setTurn((currTurn) =>
+                currTurn >= playerIndex ? currTurn - 1 : currTurn
+              );
+              setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
+            }
+            return [...curr];
+          } else {
             setWaitingUsers((currWait) => {
-              let playerWaitIDX = currWait.findIndex((p) => p.uid === uid);
-              currWait.splice(playerWaitIDX, 1);
+              let waitIndex = currWait.findIndex((p) => p.uid === uid);
+              currWait.splice(waitIndex, 1);
               if (isHost && curr.length === 0) {
                 currWait[0].isHost = true;
-              } else {
-                setPlayers((curr) => {
-                  curr[0].isHost = true;
-                  return [...curr];
-                });
               }
+
               return [...currWait];
             });
+            if (isHost && curr.length > 0) {
+              curr[0].isHost = true;
+              return [...curr];
+            }
             return curr;
           }
-          let playerToRemove = curr[playerIndex];
-          curr.splice(playerIndex, 1);
-          // Get their cards
-          // Update turn order
-          if (isHost && curr.length > 0) {
-            curr[0].isHost = true;
-          } else if (isHost) {
-            setWaitingUsers((currWait) => {
-              currWait[0].isHost = true;
-              return [...currWait];
-            });
-          }
-          if (activeGame) {
-            setTurn((currTurn) =>
-              currTurn >= playerIndex ? currTurn - 1 : currTurn
-            );
-            setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
-          }
-          return [...curr];
         });
-        setMessages((curr) => [
-          ...curr,
-          { body: `${username} has disconnected` },
-        ]);
       }
     );
 
