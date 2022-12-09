@@ -90,7 +90,6 @@ export function UserTable({ leaderBoard }) {
         () => leaderBoard.find((user) => user.uid === auth.currentUser?.uid),
         [leaderBoard, auth.currentUser?.uid]
     );
-    console.log(personalStats);
     return (
         <>
             {personalStats && (

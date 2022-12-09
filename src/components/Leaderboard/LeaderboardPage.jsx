@@ -2,8 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { theme } from "../../shared/styled/themes/Theme";
 import { ref, child, get } from "firebase/database";
 import { database } from "../../firebase.config";
-import { auth } from "../../firebase.config";
-import { Container, Grid, Typography, Table, TableContainer } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import { EnhancedTable } from "./tables/LeaderboardTable";
 import { UserTable } from "./tables/UserTable";
 
