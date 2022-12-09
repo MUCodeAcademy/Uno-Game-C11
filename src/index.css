@@ -1,23 +1,28 @@
 .chat-button {
   display: none !important;
 }
+
 .chat-btn-container {
   height: 44.5px;
 }
+
 @media (max-width: 900px) {
   .chat {
     position: absolute;
-    right: -400px;
+    left: -400px;
     top: 161px;
   }
+
   .chat-button {
     display: inline-flex !important;
   }
+
   .show-chat {
-    right: 0px;
+    left: 0px;
   }
 }
 
-body {
+body,
+html {
   overflow-x: hidden;
 }

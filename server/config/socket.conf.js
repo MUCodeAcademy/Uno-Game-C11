@@ -72,7 +72,7 @@ function socketConfig(io) {
                 return r;
             });
             io.emit("rooms", { rooms });
-            io.to(roomID).emit("start game", { players, playDeck, activeCard, turn });
+            io.to(roomID).emit("start game", { players, playDeck, activeCard, turn, uid });
         });
 
         socket.on("end game", ({ message }) => {
@@ -88,7 +88,13 @@ function socketConfig(io) {
 
         socket.on("disconnect", () => {
             if (roomID) {
-                io.to(roomID).emit("user disconnect", { username, uid, isHost });
+                let roomDisconnect = rooms.find((r) => r.id === roomID);
+                io.to(roomID).emit("user disconnect", {
+                    username,
+                    uid,
+                    isHost,
+                    activeGame: roomDisconnect.activeGame,
+                });
                 let roomCount = parseInt(io.sockets.adapter.rooms.get(roomID)?.size);
                 if (isNaN(roomCount) && !startingRooms.includes(roomID)) {
                     rooms = rooms.filter((room) => room.id !== roomID);
