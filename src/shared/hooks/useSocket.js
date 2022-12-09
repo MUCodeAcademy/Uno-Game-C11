@@ -199,7 +199,7 @@ const useSocketHook = (roomID, username) => {
           // Update turn order
           if (isHost && curr.length > 0) {
             curr[0].isHost = true;
-          } else {
+          } else if (isHost) {
             setWaitingUsers((currWait) => {
               currWait[0].isHost = true;
               return [...currWait];
