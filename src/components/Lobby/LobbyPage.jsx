@@ -226,7 +226,6 @@ function LobbyPage() {
                             fullWidth
                             type="submit"
                             variant="contained"
-                            // disabled={joinErrorMsg === "Room doesn't exist"}
                             onClick={(e) => {
                                 e.preventDefault();
                                 setHasClickedJoin(true);
@@ -235,9 +234,9 @@ function LobbyPage() {
                                     rooms.some(
                                         (room) =>
                                             room.id.replace(/\s+/g, "-").toLowerCase() ===
-                                                joinRoomNum
-                                                    .replace(/\s+/g, "-")
-                                                    .toLowerCase() && room.playerCount < 6
+                                            joinRoomNum
+                                                .replace(/\s+/g, "-")
+                                                .toLowerCase() && room.playerCount < 6
                                     )
                                 ) {
                                     navigate(

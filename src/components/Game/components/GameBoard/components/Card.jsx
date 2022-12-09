@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { theme } from "../../../../../shared/styled/themes/Theme";
 
 export function Card({
   isTurn,

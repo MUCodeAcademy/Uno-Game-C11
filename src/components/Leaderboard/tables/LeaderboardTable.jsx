@@ -111,6 +111,7 @@ export function EnhancedTableHead(props) {
 //!
 //!
 
+
 export function LeaderboardTable({ leaderBoard, playerUID }) {
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("win%");
@@ -199,6 +200,7 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                                   fontWeight: "800",
                                               }
                                             : {};
+
                                     return (
                                         <TableRow
                                             hover
@@ -212,7 +214,10 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                             selected={isItemSelected}
                                         >
                                             <TableCell
+
                                                 sx={styling}
+
+
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
@@ -220,6 +225,7 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                             >
                                                 {leaderBoard.name}
                                             </TableCell>
+
                                             <TableCell sx={styling} align="right">
                                                 {leaderBoard.pct}%
                                             </TableCell>
