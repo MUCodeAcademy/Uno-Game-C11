@@ -2,7 +2,6 @@ import React from "react";
 import { Avatar, Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import GabePopover from "./popover";
 import Gabe from "./Gabe.jpg";
 import Mark from "./Mark.jpg";
 import Steven from "./Steven.jpg";
@@ -62,7 +61,6 @@ function AboutPage() {
                             <LinkedInIcon />
                         </IconButton>
                         <GabePopover></GabePopover>
-
                     </Box>
                 </Grid>
             </Grid>
