@@ -4,11 +4,12 @@ import { ref, child, get } from "firebase/database";
 import { database } from "../../firebase.config";
 import { Container, Grid, Typography } from "@mui/material";
 import { EnhancedTable } from "./tables/LeaderboardTable";
-import { UserTable } from "./tables/UserTable";
+import { UserTable, LeaderboardTable } from "./tables/UserTable";
 
 function LeaderBoardPage() {
     const [leaderBoard, setLeaderBoard] = useState([]);
     const dbRef = ref(database);
+    const playerUID = auth.currentUser.uid;
 
     async function getDB() {
         try {
@@ -101,7 +102,10 @@ function LeaderBoardPage() {
                         <Typography variant="h5" textAlign="center">
                             Leader Board
                         </Typography>
-                        <EnhancedTable leaderBoard={leaderBoard}></EnhancedTable>
+                        <LeaderboardTable
+                            leaderBoard={leaderBoard}
+                            playerUID={playerUID}
+                        ></LeaderboardTable>
                     </Grid>
                 </Grid>
             </Container>
