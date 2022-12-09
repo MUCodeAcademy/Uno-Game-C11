@@ -15,7 +15,7 @@ import { visuallyHidden } from "@mui/utils";
 const headCells = [
     {
         id: "gamesstarted",
-        numeric: false,
+        numeric: true,
         disablePadding: true,
         label: "Games Started",
     },
@@ -71,10 +71,11 @@ export function EnhancedTableHead(props) {
 //!
 //!
 
-export function ServerTable({ leaderBoard }) {
+export function ServerTable({ server }) {
+    console.log(server);
     return (
         <>
-            {personalStats && (
+            {server && (
                 <Box sx={{ width: "100%" }}>
                     <Paper sx={{ width: "100%", mb: 2 }}>
                         <TableContainer>
@@ -86,24 +87,10 @@ export function ServerTable({ leaderBoard }) {
                                 <EnhancedTableHead rowCount={1} />
                                 <TableBody>
                                     <TableRow hover role="checkbox" tabIndex={-1}>
-                                        <TableCell component="th" scope="row" padding="none">
-                                            {personalStats.name}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {personalStats.pct}%
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {personalStats.played}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {personalStats.won}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {personalStats.lost}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {personalStats.drawn}
-                                        </TableCell>
+                                        <TableCell align="right">{server.started}</TableCell>
+                                        <TableCell align="right">{server.completed}</TableCell>
+                                        <TableCell align="right">{server.drawn}</TableCell>
+                                        <TableCell align="right">{server.abandoned}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>

@@ -6,9 +6,12 @@ import { auth } from "../../firebase.config";
 import { Container, Grid, Typography } from "@mui/material";
 import { LeaderboardTable } from "./tables/LeaderboardTable";
 import { UserTable } from "./tables/UserTable";
+import { ServerTable } from "./tables/ServerTable";
+import { FilterDramaTwoTone } from "@mui/icons-material";
 
 function LeaderBoardPage() {
     const [leaderBoard, setLeaderBoard] = useState([]);
+    const [server, setServer] = useState([]);
     const dbRef = ref(database);
     const playerUID = auth.currentUser.uid;
 
@@ -25,6 +28,35 @@ function LeaderBoardPage() {
         } catch (err) {
             console.error(err);
         }
+    }
+
+    async function getServerDB() {
+        try {
+            await get(child(dbRef, `/server`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    let data = snapshot.val();
+                    setServer(formatServerData(data));
+                } else {
+                    console.log("snapshot doesn't exist");
+                }
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function formatServerData(data) {
+        const started = parseInt(data["total games started"]);
+        const drawn = parseInt(data["total games stalemate"]);
+        const completed = parseInt(data["total games completed"]);
+        const abandoned = started - completed;
+        let output = {
+            started,
+            drawn,
+            completed,
+            abandoned,
+        };
+        return output;
     }
 
     function putJSONinArray(data) {
@@ -53,6 +85,7 @@ function LeaderBoardPage() {
     useEffect(() => {
         async function getData() {
             await getDB();
+            await getServerDB();
         }
         getData();
     }, []);
@@ -106,6 +139,24 @@ function LeaderBoardPage() {
                             leaderBoard={leaderBoard}
                             playerUID={playerUID}
                         ></LeaderboardTable>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={12}
+                        style={{
+                            backgroundColor: theme.palette.background.paper,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            padding: "15px",
+                            margin: "5px 0",
+                            color: "white",
+                        }}
+                    >
+                        <Typography variant="h5" textAlign="center">
+                            Server Statistics
+                        </Typography>
+                        <ServerTable server={server}></ServerTable>
                     </Grid>
                 </Grid>
             </Container>

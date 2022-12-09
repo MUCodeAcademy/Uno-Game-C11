@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { visuallyHidden } from "@mui/utils";
+import { theme } from "../../../shared/styled/themes/Theme";
 
 function getComparator(order, orderBy) {
     return order === "desc"
@@ -111,7 +112,6 @@ export function EnhancedTableHead(props) {
 //!
 //!
 
-
 export function LeaderboardTable({ leaderBoard, playerUID }) {
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("win%");
@@ -196,7 +196,7 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                     const styling =
                                         playerUID === leaderBoard.uid
                                             ? {
-                                                  color: "#a10093",
+                                                  color: theme.palette.secondary.main,
                                                   fontWeight: "800",
                                               }
                                             : {};
@@ -214,10 +214,7 @@ export function LeaderboardTable({ leaderBoard, playerUID }) {
                                             selected={isItemSelected}
                                         >
                                             <TableCell
-
                                                 sx={styling}
-
-
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
