@@ -4,11 +4,12 @@ import { ref, child, get } from "firebase/database";
 import { database } from "../../firebase.config";
 import { auth } from "../../firebase.config";
 import { Container, Grid, Typography, Table, TableContainer } from "@mui/material";
-import { EnhancedTable, EnhancedTableHead } from "./LeaderboardTable";
+import { EnhancedTable, EnhancedTableHead, LeaderboardTable } from "./LeaderboardTable";
 
 function LeaderBoardPage() {
     const [leaderBoard, setLeaderBoard] = useState([]);
     const dbRef = ref(database);
+    const playerUID = auth.currentUser.uid;
 
     async function getDB() {
         try {
@@ -54,20 +55,13 @@ function LeaderBoardPage() {
         getData();
     }, []);
 
-    const personalStats = useMemo(
-        () => leaderBoard.find((u) => u.uid === auth.currentUser?.uid),
-        [leaderBoard, auth.currentUser?.uid]
-    );
+    const personalStats = useMemo(() => leaderBoard.find((u) => u.uid === auth.currentUser?.uid), [leaderBoard, auth.currentUser?.uid]);
 
     console.log(personalStats);
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
             <Container style={{ margin: "10px 0px" }}>
-                <Typography
-                    style={{ margin: "10px", padding: "15px" }}
-                    variant="h4"
-                    textAlign="center"
-                >
+                <Typography style={{ margin: "10px", padding: "15px" }} variant="h4" textAlign="center">
                     Game Statistics
                 </Typography>
                 <Grid container spacing={1} justifyContent="center">
@@ -106,7 +100,7 @@ function LeaderBoardPage() {
                         <Typography variant="h5" textAlign="center">
                             Leader Board
                         </Typography>
-                        <EnhancedTable leaderBoard={leaderBoard}></EnhancedTable>
+                        <LeaderboardTable leaderBoard={leaderBoard} playerUID={playerUID}></LeaderboardTable>
                     </Grid>
                 </Grid>
             </Container>
