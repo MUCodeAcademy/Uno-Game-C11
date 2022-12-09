@@ -192,7 +192,7 @@ const useSocketHook = (roomID, username) => {
               setTurn((currTurn) =>
                 currTurn >= playerIndex ? currTurn - 1 : currTurn
               );
-              setDiscardDeck((curr) => [...curr, ...playerToRemove.hand]);
+              setDiscardDeck((curr) => [...curr, ...curr[playerIndex].hand]);
             }
             return [...curr];
           } else {
