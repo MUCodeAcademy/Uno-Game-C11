@@ -26,16 +26,16 @@ const headCells = [
         label: "Games Completed",
     },
     {
+        id: "gamesdrawn",
+        numeric: true,
+        disablePadding: false,
+        label: "Games Drawn",
+    },
+    {
         id: "gamesabandonded",
         numeric: true,
         disablePadding: false,
         label: "Games Abandoned",
-    },
-    {
-        id: "gamesdrawn",
-        numeric: true,
-        disablePadding: false,
-        label: "Total Games Won",
     },
 ];
 
