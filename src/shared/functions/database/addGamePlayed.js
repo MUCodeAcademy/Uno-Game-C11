@@ -7,6 +7,8 @@ export async function addGamePlayed(uid) {
     let updates = {};
     try {
         updates[`users/${uid}/total games played`] = increment(1);
+        updates[`users/${uid}/total games lost`] = increment(1);
+        updates[`server/total games started`] = increment(1);
         update(dbRef, updates);
     } catch (err) {
         console.error(err);

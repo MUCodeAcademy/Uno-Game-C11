@@ -148,6 +148,7 @@ const useSocketHook = (roomID, username) => {
             setIsGameActive(true);
             setTurn(turn);
             setWaitingUsers([]);
+            addGamePlayed(auth.currentUser?.uid);
         });
 
         socketRef.current.on("stalemate", ({ players }) => {
