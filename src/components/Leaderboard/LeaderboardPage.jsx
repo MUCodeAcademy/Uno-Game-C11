@@ -2,9 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { theme } from "../../shared/styled/themes/Theme";
 import { ref, child, get } from "firebase/database";
 import { database } from "../../firebase.config";
+import { auth } from "../../firebase.config";
 import { Container, Grid, Typography } from "@mui/material";
-import { EnhancedTable } from "./tables/LeaderboardTable";
-import { UserTable, LeaderboardTable } from "./tables/UserTable";
+import { LeaderboardTable } from "./tables/LeaderboardTable";
+import { UserTable } from "./tables/UserTable";
 
 function LeaderBoardPage() {
     const [leaderBoard, setLeaderBoard] = useState([]);
@@ -55,7 +56,6 @@ function LeaderBoardPage() {
         }
         getData();
     }, []);
-
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
             <Container style={{ margin: "10px 0px" }}>

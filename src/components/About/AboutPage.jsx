@@ -7,6 +7,7 @@ import Gabe from "./Gabe.jpg";
 import Mark from "./Mark.jpg";
 import Steven from "./Steven.jpg";
 import Tom from "./Tom.jpg";
+import GabePopover from "./GabePopover";
 
 function AboutPage() {
     return (
@@ -60,6 +61,8 @@ function AboutPage() {
                         >
                             <LinkedInIcon />
                         </IconButton>
+                        <GabePopover></GabePopover>
+
                     </Box>
                 </Grid>
             </Grid>

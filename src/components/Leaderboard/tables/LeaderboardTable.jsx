@@ -111,7 +111,8 @@ export function EnhancedTableHead(props) {
 //!
 //!
 
-export function EnhancedTable({ leaderBoard }) {
+
+export function LeaderboardTable({ leaderBoard, playerUID }) {
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("win%");
     const [selected, setSelected] = React.useState([]);
@@ -190,6 +191,16 @@ export function EnhancedTable({ leaderBoard }) {
                                 .map((leaderBoard, index) => {
                                     const isItemSelected = isSelected(leaderBoard.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
+                                    const highlight =
+                                        playerUID === leaderBoard.uid ? "hotpink" : "";
+                                    const styling =
+                                        playerUID === leaderBoard.uid
+                                            ? {
+                                                  color: "#a10093",
+                                                  fontWeight: "800",
+                                              }
+                                            : {};
+
                                     return (
                                         <TableRow
                                             hover
@@ -203,6 +214,10 @@ export function EnhancedTable({ leaderBoard }) {
                                             selected={isItemSelected}
                                         >
                                             <TableCell
+
+                                                sx={styling}
+
+
                                                 component="th"
                                                 id={labelId}
                                                 scope="row"
@@ -210,19 +225,20 @@ export function EnhancedTable({ leaderBoard }) {
                                             >
                                                 {leaderBoard.name}
                                             </TableCell>
-                                            <TableCell align="right">
+
+                                            <TableCell sx={styling} align="right">
                                                 {leaderBoard.pct}%
                                             </TableCell>
-                                            <TableCell align="right">
+                                            <TableCell sx={styling} align="right">
                                                 {leaderBoard.played}
                                             </TableCell>
-                                            <TableCell align="right">
+                                            <TableCell sx={styling} align="right">
                                                 {leaderBoard.won}
                                             </TableCell>
-                                            <TableCell align="right">
+                                            <TableCell sx={styling} align="right">
                                                 {leaderBoard.lost}
                                             </TableCell>
-                                            <TableCell align="right">
+                                            <TableCell sx={styling} align="right">
                                                 {leaderBoard.drawn}
                                             </TableCell>
                                         </TableRow>
