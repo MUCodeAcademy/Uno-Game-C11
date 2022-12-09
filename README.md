@@ -4,12 +4,13 @@ This app was was built as a final project for Midland Code Academy.
 
 Technologies used to build the app:
 
--   React,
+-   React
 -   Socket.IO
 -   Node.js
 -   Express
--   Firebase
+-   Firebase (Fireauth and Realtime Database)
 -   Material UI
+-   Emotion
 
 ---
 
